@@ -2,6 +2,7 @@ const TIME_ZONE = "Australia/Sydney";
 const MS_PER_DAY = 86_400_000;
 const EPOCH_DAY = Date.UTC(2026, 0, 1) / MS_PER_DAY;
 const SAVED_READINGS_KEY = "daily-deen-saved-readings-v1";
+const phoneLayoutQuery = window.matchMedia("(max-width: 700px)");
 
 const sourceIcon = `
   <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -770,13 +771,18 @@ function shortSectionName(index) {
   return label.replace(" Of The Day", "").replace("Qur'an Verse", "Qur'an verse").toLowerCase();
 }
 
+function nextActionText(index) {
+  const action = isPhoneLayout() ? "Tap for" : "Scroll for";
+  return `${action} ${shortSectionName(index + 1)} next`;
+}
+
 function nextCue(index) {
   const next = labels[index + 1];
   if (!next) return "";
 
   return `
-    <button class="next-cue" type="button" data-next="${next[0]}" aria-label="Scroll to ${next[1]}">
-      <span>Scroll for ${shortSectionName(index + 1)} next</span>
+    <button class="next-cue" type="button" data-next="${next[0]}" aria-label="Go to ${next[1]}">
+      <span>${nextActionText(index)}</span>
       ${nextIcon}
     </button>
   `;
@@ -787,7 +793,7 @@ function updateRailHint(id) {
   const index = labels.findIndex(([sectionId]) => sectionId === id);
   const message =
     index >= 0 && index < labels.length - 1
-      ? `Scroll for ${shortSectionName(index + 1)} next`
+      ? nextActionText(index)
       : "Today's scroll complete";
 
   if (!railHint || railHint.textContent === message) return;
@@ -795,6 +801,15 @@ function updateRailHint(id) {
   railHint.classList.remove("is-changing");
   void railHint.offsetWidth;
   railHint.classList.add("is-changing");
+}
+
+function updateNextCueCopy() {
+  document.querySelectorAll(".next-cue[data-next]").forEach((button) => {
+    const nextIndex = labels.findIndex(([sectionId]) => sectionId === button.dataset.next);
+    const copy = button.querySelector("span");
+    if (nextIndex <= 0 || !copy) return;
+    copy.textContent = nextActionText(nextIndex - 1);
+  });
 }
 
 function setActiveSectionVisuals(id) {
@@ -1023,6 +1038,12 @@ function setupActiveSectionObserver() {
   if (activeSectionCleanup) activeSectionCleanup();
 
   const sections = [...document.querySelectorAll("[data-section]")];
+  if (isPhoneLayout()) {
+    setActiveSectionVisuals(currentSectionId || sections[0]?.id || labels[0][0]);
+    activeSectionCleanup = () => {};
+    return;
+  }
+
   let activeId = "";
   let frame = 0;
 
@@ -1166,6 +1187,8 @@ function setupSnapScrolling() {
   let touchStart = null;
 
   const onWheel = (event) => {
+    if (isPhoneLayout()) return;
+
     if (isInteractiveScrollTarget(event.target) || Math.abs(event.deltaX) > Math.abs(event.deltaY)) {
       return;
     }
@@ -1186,6 +1209,8 @@ function setupSnapScrolling() {
   };
 
   const onTouchStart = (event) => {
+    if (isPhoneLayout()) return;
+
     if (isInteractiveScrollTarget(event.target)) {
       touchStart = null;
       return;
@@ -1201,6 +1226,7 @@ function setupSnapScrolling() {
   };
 
   const onTouchMove = (event) => {
+    if (isPhoneLayout()) return;
     if (!touchStart || isProgrammaticScroll) return;
 
     const touch = event.touches[0];
@@ -1212,6 +1238,7 @@ function setupSnapScrolling() {
   };
 
   const onTouchEnd = (event) => {
+    if (isPhoneLayout()) return;
     if (!touchStart || isProgrammaticScroll) return;
 
     const touch = event.changedTouches[0];
@@ -1292,6 +1319,21 @@ function smoothScrollToSection(id) {
   });
   target.classList.add("snap-focus");
 
+  if (isPhoneLayout()) {
+    target.scrollTop = 0;
+    window.scrollTo(0, 0);
+    history.replaceState(null, "", `#${id}`);
+    setActiveSectionVisuals(id);
+
+    clearTimeout(snapReleaseTimer);
+    snapReleaseTimer = setTimeout(() => {
+      isProgrammaticScroll = false;
+      target.classList.remove("snap-focus");
+      setActiveSectionVisuals(id);
+    }, 280);
+    return;
+  }
+
   target.scrollIntoView({
     behavior: prefersReducedMotion() ? "auto" : "smooth",
     block: "start",
@@ -1315,6 +1357,14 @@ function syncHashSection() {
     return;
   }
 
+  if (isPhoneLayout()) {
+    setActiveSectionVisuals(id);
+    target.scrollTop = 0;
+    window.scrollTo(0, 0);
+    history.replaceState(null, "", `#${id}`);
+    return;
+  }
+
   setActiveSectionVisuals(id);
   window.setTimeout(() => {
     const baseUrl = `${window.location.pathname}${window.location.search}`;
@@ -1331,6 +1381,10 @@ function getStickyOffset() {
     ? document.querySelector(".reading-rail")?.getBoundingClientRect().height || 0
     : 0;
   return Math.round(headerHeight + railHeight + 14);
+}
+
+function isPhoneLayout() {
+  return phoneLayoutQuery.matches;
 }
 
 function prefersReducedMotion() {
@@ -1561,9 +1615,30 @@ function setupSydneyMidnightCheck() {
   }, 60_000);
 }
 
+function setupResponsiveModeSync() {
+  const syncMode = () => {
+    updateNextCueCopy();
+    updateRailHint(currentSectionId || labels[0][0]);
+    setupActiveSectionObserver();
+    setupSnapScrolling();
+
+    if (isPhoneLayout()) {
+      window.scrollTo(0, 0);
+      document.getElementById(currentSectionId)?.scrollTo({ top: 0, behavior: "auto" });
+    }
+  };
+
+  if (phoneLayoutQuery.addEventListener) {
+    phoneLayoutQuery.addEventListener("change", syncMode);
+  } else {
+    phoneLayoutQuery.addListener(syncMode);
+  }
+}
+
 renderRail();
 renderApp();
 setupControls();
 setupSmoothNavigation();
 setupSnapScrolling();
+setupResponsiveModeSync();
 setupSydneyMidnightCheck();
