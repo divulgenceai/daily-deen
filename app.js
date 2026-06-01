@@ -1208,7 +1208,6 @@ function setupSnapScrolling() {
     const dy = touch.clientY - touchStart.y;
     if (Math.abs(dy) > 18 && Math.abs(dy) > Math.abs(dx) * 1.35) {
       touchStart.locked = true;
-      event.preventDefault();
     }
   };
 
