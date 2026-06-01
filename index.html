@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Daily Deen is a minimal Sydney-time Islamic reading app with a Qur'an verse, dua, dhikr, hadith, quote, and story of the day."
+    />
+    <title>Daily Deen</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="ambient" aria-hidden="true"></div>
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Daily Deen home">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true">
+          <path d="M32 6 40 23 58 32 40 41 32 58 24 41 6 32 24 23Z" />
+          <path d="M32 16 37 27 48 32 37 37 32 48 27 37 16 32 27 27Z" />
+        </svg>
+        <span>Daily Deen</span>
+      </a>
+
+      <div class="date-line" aria-live="polite">
+        <span id="displayDate">Sydney date</span>
+        <span aria-hidden="true">•</span>
+        <span>Sydney, Australia</span>
+      </div>
+
+      <nav class="header-actions" aria-label="Daily controls">
+        <a class="prayer-link" href="https://Prayer.zubibair.com" target="_blank" rel="noopener noreferrer">
+          Prayer Times
+        </a>
+        <button class="icon-button" id="saveButton" type="button" aria-label="Save today's reading">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 4.75A2.75 2.75 0 0 1 8.75 2h6.5A2.75 2.75 0 0 1 18 4.75v16l-6-3.5-6 3.5z" />
+          </svg>
+        </button>
+        <button class="icon-button" id="savedButton" type="button" aria-label="Open saved readings" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 4.75A2.75 2.75 0 0 1 7.75 2h9.5A1.75 1.75 0 0 1 19 3.75v15.5A1.75 1.75 0 0 1 17.25 21h-9.5A2.75 2.75 0 0 1 5 18.25z" />
+            <path d="M8 6.5h7" />
+            <path d="M8 10h7" />
+            <path d="M8 13.5h4" />
+          </svg>
+        </button>
+        <button class="icon-button" id="shareButton" type="button" aria-label="Copy today's app link">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M7.5 12.5 16.5 7.5" />
+            <path d="M7.5 11.5 16.5 16.5" />
+            <circle cx="5.5" cy="13" r="2.5" />
+            <circle cx="18.5" cy="6.5" r="2.5" />
+            <circle cx="18.5" cy="17.5" r="2.5" />
+          </svg>
+        </button>
+        <button class="icon-button" id="menuButton" type="button" aria-label="Open section menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M4 7h16" />
+            <path d="M4 12h16" />
+            <path d="M4 17h16" />
+          </svg>
+        </button>
+      </nav>
+    </header>
+
+    <main id="top" class="app-shell">
+      <aside class="reading-rail" aria-label="Reading progress">
+        <div class="rail-line" aria-hidden="true"></div>
+        <div id="railItems" class="rail-items"></div>
+        <p class="rail-hint" id="railHint">Scroll for dua next</p>
+      </aside>
+
+      <div class="content-flow">
+        <section class="day-note reveal">
+          <p class="lockline" id="lockline">Locked from 12:00 AM to 12:00 AM Sydney time.</p>
+          <p>
+            Source-backed scroll: Qur'an, du'a, dhikr, hadith, quote, and story.
+          </p>
+        </section>
+
+        <div id="sections" class="sections" aria-live="polite"></div>
+      </div>
+    </main>
+
+    <div class="jump-menu" id="jumpMenu" hidden>
+      <div class="jump-panel" role="dialog" aria-modal="false" aria-label="Jump to section">
+        <div class="jump-header">
+          <span>Jump To</span>
+          <button class="icon-button small" id="closeMenuButton" type="button" aria-label="Close section menu">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12" />
+              <path d="M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div id="jumpLinks" class="jump-links"></div>
+      </div>
+    </div>
+
+    <div class="saved-drawer" id="savedDrawer" hidden>
+      <div class="saved-panel" role="dialog" aria-modal="false" aria-label="Saved readings">
+        <div class="saved-header">
+          <div>
+            <span class="mini-label">Saved</span>
+            <h2>Read Later</h2>
+          </div>
+          <button class="icon-button small" id="closeSavedButton" type="button" aria-label="Close saved readings">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6 6l12 12" />
+              <path d="M18 6 6 18" />
+            </svg>
+          </button>
+        </div>
+        <div class="saved-summary" id="savedSummary">Saved readings on this device.</div>
+        <div class="saved-list" id="savedList"></div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <footer class="site-footer">
+      <span>Authenticity labels are shown beside each source.</span>
+      <a href="#top">Back to top</a>
+    </footer>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>

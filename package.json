@@ -1,0 +1,10 @@
+{
+  "name": "daily-deen",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A dependency-free Sydney-time Islamic daily reading app.",
+  "scripts": {
+    "check": "node --check app.js",
+    "dev": "python -m http.server 4173"
+  }
+}
