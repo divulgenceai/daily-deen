@@ -1,4 +1,4 @@
-package com.dailydeen.placeholder;
+package com.zubibair.dailydeen;
 
 import static org.junit.Assert.*;
 
@@ -15,6 +15,6 @@ public class ExampleInstrumentedTest {
     public void useAppContext() throws Exception {
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.dailydeen.placeholder", appContext.getPackageName());
+        assertEquals("com.zubibair.dailydeen", appContext.getPackageName());
     }
 }

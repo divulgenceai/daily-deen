@@ -1,4 +1,4 @@
-package com.dailydeen.placeholder;
+package com.zubibair.dailydeen;
 
 import static org.junit.Assert.*;
 
