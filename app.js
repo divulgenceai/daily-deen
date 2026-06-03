@@ -1473,12 +1473,13 @@ function loadCapacitorBridge() {
 
 function setNativeShellClasses() {
   const root = document.documentElement;
-  const isShell = isLikelyNativeShell();
+  const nativeQaPlatform = new URLSearchParams(location.search).get("native");
+  const isShell = isLikelyNativeShell() || nativeQaPlatform === "android" || nativeQaPlatform === "ios";
   root.classList.toggle("native-shell", isShell);
 
   const platform = typeof window.Capacitor?.getPlatform === "function" ? window.Capacitor.getPlatform() : "";
-  root.classList.toggle("android-shell", platform === "android");
-  root.classList.toggle("ios-shell", platform === "ios");
+  root.classList.toggle("android-shell", platform === "android" || nativeQaPlatform === "android");
+  root.classList.toggle("ios-shell", platform === "ios" || nativeQaPlatform === "ios");
 }
 
 function isLikelyNativeShell() {
