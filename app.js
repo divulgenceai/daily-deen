@@ -700,6 +700,8 @@ const readings = {
   ],
 };
 
+loadCapacitorBridge();
+
 let activeSectionCleanup = null;
 let snapScrollCleanup = null;
 let currentSectionId = labels[0][0];
@@ -1182,6 +1184,36 @@ function setupSmoothNavigation() {
   });
 }
 
+function setupNativeExternalLinks() {
+  document.addEventListener("click", (event) => {
+    if (!isNativeApp()) return;
+
+    const link = event.target.closest("a[href]");
+    if (!link) return;
+
+    const url = new URL(link.href, window.location.href);
+    if (url.protocol !== "http:" && url.protocol !== "https:") return;
+    if (url.origin === window.location.origin) return;
+
+    event.preventDefault();
+    openExternalUrl(url.href);
+  });
+}
+
+async function openExternalUrl(url) {
+  try {
+    const browser = window.Capacitor?.Plugins?.Browser;
+    if (browser?.open) {
+      await browser.open({ url });
+      return;
+    }
+  } catch {
+    // Fall through to the regular browser path.
+  }
+
+  window.open(url, "_blank", "noopener,noreferrer");
+}
+
 function setupSnapScrolling() {
   if (snapScrollCleanup) snapScrollCleanup();
 
@@ -1422,6 +1454,32 @@ function getStickyOffset() {
 
 function isPhoneLayout() {
   return phoneLayoutQuery.matches;
+}
+
+function loadCapacitorBridge() {
+  if (window.Capacitor || !isLikelyNativeShell()) return;
+
+  const script = document.createElement("script");
+  script.src = "capacitor.js";
+  document.head.append(script);
+}
+
+function isLikelyNativeShell() {
+  return (
+    location.protocol === "capacitor:" ||
+    location.origin === "https://localhost" ||
+    location.origin === "http://localhost"
+  );
+}
+
+function isNativeApp() {
+  const capacitor = window.Capacitor;
+  if (!capacitor) return false;
+
+  if (typeof capacitor.isNativePlatform === "function") return capacitor.isNativePlatform();
+
+  const platform = typeof capacitor.getPlatform === "function" ? capacitor.getPlatform() : "";
+  return platform === "ios" || platform === "android";
 }
 
 function setMobileViewportVars(force = false) {
@@ -1719,6 +1777,7 @@ renderRail();
 renderApp();
 setupControls();
 setupSmoothNavigation();
+setupNativeExternalLinks();
 setupSnapScrolling();
 setupMobileScrollGuard();
 setupResponsiveModeSync();

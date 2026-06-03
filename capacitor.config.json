@@ -1,0 +1,11 @@
+{
+  "appId": "com.dailydeen.placeholder",
+  "appName": "Daily Deen",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": false
+  }
+}

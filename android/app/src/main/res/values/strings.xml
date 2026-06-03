@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Daily Deen</string>
+    <string name="title_activity_main">Daily Deen</string>
+    <string name="package_name">com.dailydeen.placeholder</string>
+    <string name="custom_url_scheme">com.dailydeen.placeholder</string>
+</resources>
