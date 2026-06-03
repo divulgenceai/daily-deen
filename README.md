@@ -35,6 +35,7 @@ Useful scripts:
 
 - `npm run build:web` copies the shipped web files into `www/`.
 - `npm run build:android:debug` builds a local Android debug APK on Windows when JDK 21 and the Android SDK are installed.
+- `npm run install:android:debug` installs the local debug APK on a connected Android phone and launches it.
 - `npm run sync` rebuilds `www/` and syncs it into both native projects.
 - `npm run sync:android` syncs Android only.
 - `npm run sync:ios` syncs iOS only.
@@ -57,14 +58,10 @@ iOS project files are included, but iOS simulator/device builds and App Store ar
 Use this for local testing before Play Store release:
 
 ```powershell
-npm run sync:android
-npm run build:android:debug
-& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" uninstall com.dailydeen.placeholder
-& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" uninstall com.zubibair.dailydeen
-& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r "C:\Users\Zubair Mohammed\Downloads\Portfolio\Dua Of The Day\android\app\build\outputs\apk\debug\app-debug.apk"
+npm run install:android:debug
 ```
 
-The uninstall commands are useful while testing because the earlier placeholder package and the final package can both exist on the same phone.
+The install script copies the APK to a short temporary path before calling ADB, which avoids Windows path issues with spaces in the project folder. It also removes the old temporary package if it exists, so the phone does not show two Daily Deen installs.
 
 ### Publishing checklist
 
