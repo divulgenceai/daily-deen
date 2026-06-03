@@ -839,6 +839,11 @@ html:not([data-active-section="verse"]) .day-note {
   justify-items: end;
   padding: 76px max(20px, calc((100vw - var(--page)) / 2)) 20px;
   background: rgba(0, 0, 0, 0.36);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    background 180ms ease;
 }
 
 .jump-panel {
@@ -849,6 +854,22 @@ html:not([data-active-section="verse"]) .day-note {
   background: rgba(5, 15, 11, 0.96);
   box-shadow: var(--shadow);
   backdrop-filter: blur(20px);
+  transform: translateY(10px) scale(0.985);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.jump-menu.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.jump-menu.is-open .jump-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .jump-header {
@@ -896,6 +917,11 @@ html:not([data-active-section="verse"]) .day-note {
   justify-items: end;
   padding: 76px max(20px, calc((100vw - var(--page)) / 2)) 20px;
   background: rgba(0, 0, 0, 0.42);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    background 180ms ease;
 }
 
 .saved-panel {
@@ -909,6 +935,22 @@ html:not([data-active-section="verse"]) .day-note {
   box-shadow: var(--shadow);
   backdrop-filter: blur(20px);
   overflow: hidden;
+  transform: translateY(12px) scale(0.985);
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.saved-drawer.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.saved-drawer.is-open .saved-panel {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
 .saved-header {
@@ -2067,17 +2109,15 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell {
-    --mobile-header: 46px;
-    --mobile-rail: 76px;
-    --mobile-frame-gap: 8px;
+    --mobile-header: 42px;
+    --mobile-rail: 66px;
+    --mobile-frame-gap: 6px;
     font-size: 15px;
     -webkit-tap-highlight-color: transparent;
   }
 
   html.native-shell body::before {
-    background:
-      linear-gradient(180deg, #020504 0%, #04110c 46%, #020604 100%),
-      repeating-linear-gradient(90deg, rgba(86, 226, 139, 0.018) 0 1px, transparent 1px 112px);
+    background: #020604;
   }
 
   html.native-shell .ambient {
@@ -2097,19 +2137,19 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .site-header {
     gap: 6px;
     padding:
-      calc(6px + var(--mobile-safe-top))
+      calc(5px + var(--mobile-safe-top))
       max(9px, env(safe-area-inset-right))
-      6px max(9px, env(safe-area-inset-left));
+      5px max(9px, env(safe-area-inset-left));
   }
 
   html.native-shell.android-shell .brand {
-    gap: 7px;
-    font-size: 0.95rem;
+    gap: 6px;
+    font-size: 0.9rem;
   }
 
   html.native-shell.android-shell .brand-mark {
-    width: 27px;
-    height: 27px;
+    width: 25px;
+    height: 25px;
   }
 
   html.native-shell.android-shell .header-actions {
@@ -2117,25 +2157,25 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .prayer-link {
-    min-height: 30px;
-    padding: 0 9px;
-    font-size: 0.62rem;
+    min-height: 28px;
+    padding: 0 8px;
+    font-size: 0.58rem;
   }
 
   html.native-shell.android-shell .icon-button {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
   }
 
   html.native-shell.android-shell .icon-button svg {
-    width: 17px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
   }
 
   html.native-shell.android-shell .app-shell {
-    height: calc(var(--mobile-vh) - var(--mobile-header-total) - var(--mobile-rail) - var(--mobile-safe-bottom) - var(--mobile-frame-gap) - 4px);
+    height: calc(var(--mobile-vh) - var(--mobile-header-total) - var(--mobile-rail) - var(--mobile-safe-bottom) - var(--mobile-frame-gap));
     padding:
-      8px max(8px, env(safe-area-inset-right))
+      6px max(8px, env(safe-area-inset-right))
       0 max(8px, env(safe-area-inset-left));
   }
 
@@ -2149,26 +2189,25 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .daily-section,
   html.native-shell.android-shell .daily-section.band {
-    padding: 14px 12px 16px;
+    padding: 11px 10px 12px;
     border-color: rgba(86, 226, 139, 0.16);
-    border-radius: 22px;
-    background:
-      linear-gradient(180deg, rgba(7, 20, 14, 0.98), rgba(2, 8, 5, 0.98)),
-      linear-gradient(120deg, rgba(86, 226, 139, 0.08), transparent 42%);
-    box-shadow:
-      inset 0 1px 0 rgba(156, 255, 189, 0.08),
-      0 14px 30px rgba(0, 0, 0, 0.28);
+    border-radius: 20px;
+    background: #05120c;
+    box-shadow: inset 0 1px 0 rgba(156, 255, 189, 0.06);
+    overflow: hidden;
     scrollbar-width: none;
+    touch-action: none;
   }
 
   html.native-shell.android-shell .daily-section.is-current {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
   }
 
   html.native-shell.android-shell .content-block {
     display: flex;
-    min-height: 100%;
+    min-height: 0;
     flex-direction: column;
   }
 
@@ -2177,29 +2216,26 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell #verse {
-    padding-top: 14px;
+    padding-top: 11px;
   }
 
   html.native-shell .reading-rail {
     background: #031009;
-    box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.28);
+    box-shadow: none;
   }
 
   html.native-shell.android-shell .reading-rail {
     top: auto;
     right: max(8px, env(safe-area-inset-right));
-    bottom: calc(var(--mobile-safe-bottom) + 8px);
+    bottom: calc(var(--mobile-safe-bottom) + 6px);
     left: max(8px, env(safe-area-inset-left));
     height: var(--mobile-rail);
     gap: 0;
-    padding: 7px;
+    padding: 6px;
     border-color: rgba(86, 226, 139, 0.18);
-    border-radius: 22px;
-    background:
-      linear-gradient(180deg, rgba(6, 22, 15, 0.98), rgba(2, 8, 5, 0.98));
-    box-shadow:
-      inset 0 1px 0 rgba(156, 255, 189, 0.08),
-      0 -10px 26px rgba(0, 0, 0, 0.34);
+    border-radius: 20px;
+    background: #031009;
+    box-shadow: inset 0 1px 0 rgba(156, 255, 189, 0.06);
   }
 
   html.native-shell.android-shell .rail-items {
@@ -2217,7 +2253,7 @@ html:not([data-active-section="verse"]) .day-note {
     gap: 3px;
     padding: 5px 2px 4px;
     border-color: transparent;
-    border-radius: 16px;
+    border-radius: 14px;
     background: transparent;
     box-shadow: none;
     color: rgba(215, 222, 215, 0.72);
@@ -2250,14 +2286,12 @@ html:not([data-active-section="verse"]) .day-note {
     border-color: rgba(86, 226, 139, 0.34);
     background: rgba(86, 226, 139, 0.12);
     color: var(--accent-2);
-    box-shadow:
-      inset 0 1px 0 rgba(156, 255, 189, 0.1),
-      0 8px 16px rgba(0, 0, 0, 0.18);
+    box-shadow: inset 0 1px 0 rgba(156, 255, 189, 0.08);
     transform: none;
   }
 
   html.native-shell.android-shell .rail-button.active {
-    animation: appTabSettle 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation: none !important;
   }
 
   html.native-shell.android-shell .rail-button.active::after {
@@ -2293,11 +2327,11 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell .next-cue,
   html.native-shell .rail-button,
   html.native-shell .reveal {
-    transition-duration: 120ms;
+    transition-duration: 90ms;
   }
 
   html.native-shell.android-shell .daily-section.is-current {
-    animation: appPaneIn 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+    animation: none !important;
   }
 
   html.native-shell.android-shell .daily-section.is-current .section-kicker,
@@ -2305,19 +2339,23 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .daily-section.is-current .revelation-card,
   html.native-shell.android-shell .daily-section.is-current .dhikr-counter,
   html.native-shell.android-shell .daily-section.is-current .story-note {
-    animation: appDetailIn 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+    animation: none !important;
   }
 
   html.native-shell.android-shell .counter-tap.pulse {
-    animation: counterPress 220ms ease !important;
+    animation: none !important;
   }
 
   html.native-shell.android-shell .counter-feedback.visible {
-    animation: feedbackPop 180ms ease both;
+    animation: none !important;
   }
 
   html.native-shell.android-shell .next-cue svg {
-    animation: arrowDrift 1450ms ease-in-out infinite !important;
+    animation: none !important;
+  }
+
+  html.native-shell.android-shell .next-cue {
+    display: none;
   }
 
   html.native-shell.android-shell .toast {
@@ -2326,59 +2364,58 @@ html:not([data-active-section="verse"]) .day-note {
     left: 12px;
     max-width: none;
     text-align: center;
-    box-shadow:
-      inset 0 1px 0 rgba(156, 255, 189, 0.08),
-      0 12px 24px rgba(0, 0, 0, 0.34);
+    box-shadow: inset 0 1px 0 rgba(156, 255, 189, 0.06);
   }
 
   html.native-shell.android-shell .section-kicker {
-    gap: 7px;
-    margin-bottom: 8px;
-    font-size: 0.6rem;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 0.58rem;
+    line-height: 1.15;
   }
 
   html.native-shell.android-shell .section-kicker::after {
-    width: 26px;
+    width: 22px;
   }
 
   html.native-shell.android-shell .title-row {
-    gap: 7px;
-    margin-bottom: 10px;
+    gap: 6px;
+    margin-bottom: 7px;
   }
 
   html.native-shell.android-shell .section-title {
-    font-size: clamp(1.18rem, 5.45vw, 1.56rem);
-    line-height: 1.08;
+    font-size: clamp(1.14rem, 5.25vw, 1.55rem);
+    line-height: 1.04;
   }
 
   html.native-shell.android-shell .tag {
-    min-height: 20px;
-    padding: 2px 7px;
-    font-size: 0.58rem;
+    min-height: 18px;
+    padding: 2px 6px;
+    font-size: 0.54rem;
   }
 
   html.native-shell.android-shell .count-chip {
-    margin-bottom: 10px;
-    padding: 4px 8px;
-    font-size: 0.66rem;
+    margin-bottom: 6px;
+    padding: 3px 7px;
+    font-size: 0.6rem;
   }
 
   html.native-shell.android-shell .arabic {
-    margin-bottom: 8px;
-    font-size: clamp(1.18rem, 6.4vw, 1.74rem);
-    line-height: 1.46;
+    margin-bottom: 5px;
+    font-size: clamp(1.2rem, 6.45vw, 1.82rem);
+    line-height: 1.38;
   }
 
   html.native-shell.android-shell .translit {
-    margin-bottom: 8px;
-    font-size: 0.78rem;
-    line-height: 1.42;
+    margin-bottom: 5px;
+    font-size: 0.76rem;
+    line-height: 1.35;
   }
 
   html.native-shell.android-shell .meaning,
   html.native-shell.android-shell .quote-text {
-    font-size: clamp(0.94rem, 4.25vw, 1.1rem);
-    line-height: 1.3;
+    font-size: clamp(0.94rem, 4.15vw, 1.12rem);
+    line-height: 1.26;
   }
 
   html.native-shell.android-shell .body-text,
@@ -2386,54 +2423,90 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .effect,
   html.native-shell.android-shell .moral,
   html.native-shell.android-shell .story-action {
-    font-size: 0.76rem;
-    line-height: 1.45;
+    font-size: 0.73rem;
+    line-height: 1.38;
   }
 
   html.native-shell.android-shell .explain,
   html.native-shell.android-shell .effect,
   html.native-shell.android-shell .moral {
-    margin-top: 10px;
+    margin-top: 7px;
   }
 
   html.native-shell.android-shell .mini-label {
-    margin-bottom: 5px;
-    font-size: 0.58rem;
+    margin-bottom: 3px;
+    font-size: 0.52rem;
   }
 
   html.native-shell.android-shell .revelation-card {
-    gap: 8px;
-    margin-top: 10px;
-    padding: 10px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 7px 8px;
+    margin-top: 7px;
+    padding: 8px;
     border-color: rgba(86, 226, 139, 0.16);
     background: rgba(86, 226, 139, 0.045);
   }
 
+  html.native-shell.android-shell .revelation-card .context-link {
+    grid-column: 1 / -1;
+  }
+
   html.native-shell.android-shell .revelation-card p {
-    font-size: 0.7rem;
-    line-height: 1.42;
+    font-size: 0.65rem;
+    line-height: 1.31;
   }
 
   html.native-shell.android-shell .source-row {
-    gap: 7px;
-    margin-top: 10px;
-    font-size: 0.68rem;
+    gap: 6px;
+    margin-top: 7px;
+    font-size: 0.63rem;
+    line-height: 1.2;
   }
 
   html.native-shell.android-shell .source-link svg {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
+  }
+
+  html.native-shell.android-shell .quote-person {
+    margin-top: 7px;
+    font-size: 0.68rem;
+    line-height: 1.25;
+  }
+
+  html.native-shell.android-shell .story-grid {
+    gap: 8px;
+  }
+
+  html.native-shell.android-shell .story-note {
+    border-top-color: rgba(86, 226, 139, 0.16);
+    padding-top: 7px;
+  }
+
+  html.native-shell.android-shell .story-action {
+    margin-top: 6px;
+  }
+
+  html.native-shell.android-shell .context-link {
+    gap: 6px;
+    font-size: 0.56rem;
+    line-height: 1.1;
+  }
+
+  html.native-shell.android-shell .context-link svg {
+    width: 13px;
+    height: 13px;
   }
 
   html.native-shell.android-shell .dhikr-counter {
-    gap: 7px;
-    margin-top: 12px;
+    gap: 5px;
+    margin-top: 7px;
   }
 
   html.native-shell.android-shell .counter-main {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 68px;
-    gap: 7px;
+    grid-template-columns: minmax(0, 1fr) 62px;
+    gap: 6px;
   }
 
   html.native-shell.android-shell .counter-tap,
@@ -2451,31 +2524,31 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .counter-tap {
-    min-height: 58px;
-    padding: 9px 11px;
+    min-height: 48px;
+    padding: 7px 9px;
   }
 
   html.native-shell.android-shell .counter-number {
-    font-size: 1.48rem;
+    font-size: 1.26rem;
   }
 
   html.native-shell.android-shell .counter-label {
-    margin-top: 4px;
-    font-size: 0.56rem;
+    margin-top: 2px;
+    font-size: 0.5rem;
   }
 
   html.native-shell.android-shell .counter-reset {
     min-width: 0;
-    min-height: 58px;
-    padding: 0 9px;
-    font-size: 0.62rem;
+    min-height: 48px;
+    padding: 0 7px;
+    font-size: 0.56rem;
   }
 
   html.native-shell.android-shell .counter-feedback {
-    min-height: 16px;
+    min-height: 13px;
     padding-inline: 3px;
     text-align: center;
-    font-size: 0.56rem;
+    font-size: 0.5rem;
     line-height: 1.2;
   }
 
@@ -2485,6 +2558,355 @@ html:not([data-active-section="verse"]) .day-note {
     border-radius: 16px;
     background: rgba(86, 226, 139, 0.08);
     box-shadow: none;
+  }
+
+  html.native-shell.android-shell .fit-roomy .section-kicker {
+    margin-bottom: 8px;
+    font-size: 0.62rem;
+  }
+
+  html.native-shell.android-shell .fit-roomy .title-row {
+    margin-bottom: 10px;
+  }
+
+  html.native-shell.android-shell .fit-roomy .section-title {
+    font-size: clamp(1.28rem, 6vw, 1.82rem);
+    line-height: 1.04;
+  }
+
+  html.native-shell.android-shell .fit-roomy .tag {
+    min-height: 20px;
+    padding: 2px 7px;
+    font-size: 0.58rem;
+  }
+
+  html.native-shell.android-shell .fit-roomy .count-chip {
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    font-size: 0.66rem;
+  }
+
+  html.native-shell.android-shell .fit-roomy .arabic {
+    margin-bottom: 8px;
+    font-size: clamp(1.36rem, 7.25vw, 2.18rem);
+    line-height: 1.42;
+  }
+
+  html.native-shell.android-shell .fit-roomy .translit {
+    margin-bottom: 7px;
+    font-size: 0.83rem;
+    line-height: 1.42;
+  }
+
+  html.native-shell.android-shell .fit-roomy .meaning,
+  html.native-shell.android-shell .fit-roomy .quote-text {
+    font-size: clamp(1.06rem, 4.75vw, 1.34rem);
+    line-height: 1.28;
+  }
+
+  html.native-shell.android-shell .fit-roomy .body-text,
+  html.native-shell.android-shell .fit-roomy .explain,
+  html.native-shell.android-shell .fit-roomy .effect,
+  html.native-shell.android-shell .fit-roomy .moral,
+  html.native-shell.android-shell .fit-roomy .story-action {
+    font-size: 0.8rem;
+    line-height: 1.42;
+  }
+
+  html.native-shell.android-shell .fit-roomy .explain,
+  html.native-shell.android-shell .fit-roomy .effect,
+  html.native-shell.android-shell .fit-roomy .moral,
+  html.native-shell.android-shell .fit-roomy .revelation-card,
+  html.native-shell.android-shell .fit-roomy .source-row,
+  html.native-shell.android-shell .fit-roomy .dhikr-counter {
+    margin-top: 9px;
+  }
+
+  html.native-shell.android-shell .fit-roomy .mini-label {
+    margin-bottom: 4px;
+    font-size: 0.56rem;
+  }
+
+  html.native-shell.android-shell .fit-roomy .revelation-card {
+    gap: 8px 9px;
+    padding: 9px;
+  }
+
+  html.native-shell.android-shell .fit-roomy .revelation-card p {
+    font-size: 0.69rem;
+    line-height: 1.35;
+  }
+
+  html.native-shell.android-shell .fit-roomy .source-row {
+    font-size: 0.68rem;
+  }
+
+  html.native-shell.android-shell .fit-roomy .quote-person {
+    margin-top: 9px;
+    font-size: 0.76rem;
+  }
+
+  html.native-shell.android-shell .daily-section.fit-tight,
+  html.native-shell.android-shell .daily-section.fit-tight.band {
+    padding: 9px 9px 10px;
+    justify-content: flex-start;
+  }
+
+  html.native-shell.android-shell .fit-tight .section-kicker {
+    margin-bottom: 4px;
+    font-size: 0.5rem;
+  }
+
+  html.native-shell.android-shell .fit-tight .title-row {
+    margin-bottom: 5px;
+  }
+
+  html.native-shell.android-shell .fit-tight .section-title {
+    font-size: clamp(0.98rem, 4.5vw, 1.26rem);
+    line-height: 1.02;
+  }
+
+  html.native-shell.android-shell .fit-tight .arabic {
+    margin-bottom: 4px;
+    font-size: clamp(0.98rem, 5.2vw, 1.38rem);
+    line-height: 1.27;
+  }
+
+  html.native-shell.android-shell .fit-tight .translit {
+    margin-bottom: 4px;
+    font-size: 0.66rem;
+    line-height: 1.23;
+  }
+
+  html.native-shell.android-shell .fit-tight .meaning,
+  html.native-shell.android-shell .fit-tight .quote-text {
+    font-size: clamp(0.8rem, 3.55vw, 0.94rem);
+    line-height: 1.19;
+  }
+
+  html.native-shell.android-shell .fit-tight .body-text,
+  html.native-shell.android-shell .fit-tight .explain,
+  html.native-shell.android-shell .fit-tight .effect,
+  html.native-shell.android-shell .fit-tight .moral,
+  html.native-shell.android-shell .fit-tight .story-action {
+    font-size: 0.63rem;
+    line-height: 1.26;
+  }
+
+  html.native-shell.android-shell .fit-tight .explain,
+  html.native-shell.android-shell .fit-tight .effect,
+  html.native-shell.android-shell .fit-tight .moral,
+  html.native-shell.android-shell .fit-tight .revelation-card,
+  html.native-shell.android-shell .fit-tight .source-row,
+  html.native-shell.android-shell .fit-tight .dhikr-counter {
+    margin-top: 5px;
+  }
+
+  html.native-shell.android-shell .fit-tight .mini-label {
+    margin-bottom: 2px;
+    font-size: 0.48rem;
+  }
+
+  html.native-shell.android-shell .fit-tight .revelation-card {
+    gap: 5px 6px;
+    padding: 6px;
+  }
+
+  html.native-shell.android-shell .fit-tight .revelation-card p {
+    font-size: 0.57rem;
+    line-height: 1.2;
+  }
+
+  html.native-shell.android-shell .fit-tight .source-row {
+    font-size: 0.56rem;
+  }
+
+  html.native-shell.android-shell .daily-section.fit-ultra,
+  html.native-shell.android-shell .daily-section.fit-ultra.band {
+    padding: 7px 8px 8px;
+    justify-content: flex-start;
+  }
+
+  html.native-shell.android-shell .fit-ultra .section-kicker {
+    margin-bottom: 3px;
+    font-size: 0.46rem;
+  }
+
+  html.native-shell.android-shell .fit-ultra .section-kicker::after {
+    width: 16px;
+  }
+
+  html.native-shell.android-shell .fit-ultra .title-row {
+    margin-bottom: 4px;
+  }
+
+  html.native-shell.android-shell .fit-ultra .section-title {
+    font-size: clamp(0.9rem, 4.1vw, 1.14rem);
+  }
+
+  html.native-shell.android-shell .fit-ultra .tag {
+    min-height: 16px;
+    padding: 1px 5px;
+    font-size: 0.48rem;
+  }
+
+  html.native-shell.android-shell .fit-ultra .count-chip {
+    margin-bottom: 4px;
+    padding: 2px 6px;
+    font-size: 0.54rem;
+  }
+
+  html.native-shell.android-shell .fit-ultra .arabic {
+    margin-bottom: 3px;
+    font-size: clamp(0.9rem, 4.7vw, 1.22rem);
+    line-height: 1.18;
+  }
+
+  html.native-shell.android-shell .fit-ultra .translit {
+    margin-bottom: 3px;
+    font-size: 0.6rem;
+    line-height: 1.16;
+  }
+
+  html.native-shell.android-shell .fit-ultra .meaning,
+  html.native-shell.android-shell .fit-ultra .quote-text {
+    font-size: clamp(0.72rem, 3.1vw, 0.84rem);
+    line-height: 1.13;
+  }
+
+  html.native-shell.android-shell .fit-ultra .body-text,
+  html.native-shell.android-shell .fit-ultra .explain,
+  html.native-shell.android-shell .fit-ultra .effect,
+  html.native-shell.android-shell .fit-ultra .moral,
+  html.native-shell.android-shell .fit-ultra .story-action {
+    font-size: 0.57rem;
+    line-height: 1.18;
+  }
+
+  html.native-shell.android-shell .fit-ultra .explain,
+  html.native-shell.android-shell .fit-ultra .effect,
+  html.native-shell.android-shell .fit-ultra .moral,
+  html.native-shell.android-shell .fit-ultra .revelation-card,
+  html.native-shell.android-shell .fit-ultra .source-row,
+  html.native-shell.android-shell .fit-ultra .dhikr-counter {
+    margin-top: 4px;
+  }
+
+  html.native-shell.android-shell .fit-ultra .mini-label {
+    margin-bottom: 1px;
+    font-size: 0.43rem;
+  }
+
+  html.native-shell.android-shell .fit-ultra .revelation-card {
+    gap: 4px;
+    padding: 5px;
+  }
+
+  html.native-shell.android-shell .fit-ultra .revelation-card p {
+    font-size: 0.51rem;
+    line-height: 1.12;
+  }
+
+  html.native-shell.android-shell .fit-ultra .source-row {
+    font-size: 0.51rem;
+  }
+
+  html.native-shell.android-shell .fit-scroll {
+    overflow-y: auto;
+    justify-content: flex-start;
+    scrollbar-width: none;
+    touch-action: pan-y;
+  }
+
+  html.native-shell.android-shell .jump-menu,
+  html.native-shell.android-shell .saved-drawer {
+    align-items: end;
+    justify-items: stretch;
+    padding:
+      0 max(8px, env(safe-area-inset-right))
+      calc(var(--mobile-safe-bottom) + 8px)
+      max(8px, env(safe-area-inset-left));
+    background: rgba(0, 0, 0, 0.5);
+    transition: opacity 120ms linear;
+  }
+
+  html.native-shell.android-shell .jump-panel,
+  html.native-shell.android-shell .saved-panel {
+    width: 100%;
+    border-color: rgba(86, 226, 139, 0.18);
+    border-radius: 22px;
+    background: #031009;
+    box-shadow: inset 0 1px 0 rgba(156, 255, 189, 0.06);
+    transform: translate3d(0, 16px, 0);
+    transition:
+      opacity 120ms linear,
+      transform 150ms cubic-bezier(0.2, 0, 0, 1);
+    will-change: transform, opacity;
+  }
+
+  html.native-shell.android-shell .jump-menu.is-open .jump-panel,
+  html.native-shell.android-shell .saved-drawer.is-open .saved-panel {
+    transform: translate3d(0, 0, 0);
+  }
+
+  html.native-shell.android-shell .jump-panel {
+    max-height: min(56vh, 430px);
+    overflow: hidden;
+  }
+
+  html.native-shell.android-shell .jump-header,
+  html.native-shell.android-shell .saved-header {
+    padding: 12px 12px 10px;
+  }
+
+  html.native-shell.android-shell .jump-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    padding: 8px;
+  }
+
+  html.native-shell.android-shell .jump-links a {
+    min-height: 48px;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 5px;
+    padding: 9px 10px;
+    border: 1px solid rgba(86, 226, 139, 0.12);
+    border-radius: 14px;
+    background: rgba(86, 226, 139, 0.045);
+    font-size: 0.72rem;
+    line-height: 1.1;
+  }
+
+  html.native-shell.android-shell .jump-links a span:last-child {
+    color: var(--accent);
+    font-size: 0.6rem;
+    font-weight: 900;
+  }
+
+  html.native-shell.android-shell .saved-panel {
+    max-height: min(76vh, calc(var(--mobile-vh) - var(--mobile-safe-top) - 44px));
+  }
+
+  html.native-shell.android-shell .saved-summary {
+    padding: 10px 12px;
+    font-size: 0.76rem;
+    line-height: 1.35;
+  }
+
+  html.native-shell.android-shell .saved-list {
+    gap: 9px;
+    padding: 10px;
+  }
+
+  html.native-shell.android-shell .saved-card,
+  html.native-shell.android-shell .saved-empty {
+    border-radius: 16px;
+  }
+
+  html.native-shell.android-shell .saved-card {
+    padding: 11px;
   }
 }
 

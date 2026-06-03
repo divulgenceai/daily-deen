@@ -713,6 +713,11 @@ let currentSydneyParts = null;
 let mobileViewportWidth = 0;
 let mobileViewportTimer = 0;
 let mobileTouchStartY = 0;
+let mobileTouchStartX = 0;
+let mobileTouchStartAt = 0;
+let mobileTouchSection = null;
+let sectionFitFrame = 0;
+let sectionFitSignature = "";
 const SNAP_RELEASE_MS = 920;
 
 function getSydneyParts(date = new Date()) {
@@ -845,6 +850,7 @@ function setActiveSectionVisuals(id) {
   });
 
   updateRailHint(id);
+  scheduleSectionFit();
 }
 
 function centerRailLink(link) {
@@ -1188,15 +1194,29 @@ function setupControls() {
   });
 
   function setMenuOpen(isOpen) {
-    jumpMenu.hidden = !isOpen;
-    menuButton.setAttribute("aria-expanded", String(isOpen));
+    setOverlayOpen(jumpMenu, menuButton, isOpen);
   }
 
   function setSavedOpen(isOpen) {
-    savedDrawer.hidden = !isOpen;
-    savedButton.setAttribute("aria-expanded", String(isOpen));
     if (isOpen) renderSavedReadings();
+    setOverlayOpen(savedDrawer, savedButton, isOpen);
   }
+}
+
+function setOverlayOpen(overlay, trigger, isOpen) {
+  clearTimeout(overlay.hideTimer);
+
+  if (isOpen) {
+    overlay.hidden = false;
+    requestAnimationFrame(() => overlay.classList.add("is-open"));
+  } else {
+    overlay.classList.remove("is-open");
+    overlay.hideTimer = setTimeout(() => {
+      if (!overlay.classList.contains("is-open")) overlay.hidden = true;
+    }, prefersReducedMotion() ? 0 : isNativeApp() ? 150 : 210);
+  }
+
+  trigger.setAttribute("aria-expanded", String(isOpen));
 }
 
 function setupSmoothNavigation() {
@@ -1341,8 +1361,19 @@ function setupMobileScrollGuard() {
     "touchstart",
     (event) => {
       if (!isPhoneLayout()) return;
-      if (!event.target.closest?.(".daily-section.is-current")) return;
-      mobileTouchStartY = event.touches[0]?.clientY || 0;
+      if (isInteractiveScrollTarget(event.target)) {
+        mobileTouchSection = null;
+        return;
+      }
+
+      const section = event.target.closest?.(".daily-section.is-current");
+      if (!section) return;
+
+      const touch = event.touches[0];
+      mobileTouchStartX = touch?.clientX || 0;
+      mobileTouchStartY = touch?.clientY || 0;
+      mobileTouchStartAt = Date.now();
+      mobileTouchSection = section;
     },
     { passive: true },
   );
@@ -1357,6 +1388,11 @@ function setupMobileScrollGuard() {
 
       const y = event.touches[0]?.clientY || 0;
       const dy = y - mobileTouchStartY;
+      if (!scroller.classList.contains("fit-scroll")) {
+        if (!isNativeApp() && Math.abs(dy) > 10) event.preventDefault();
+        return;
+      }
+
       const atTop = scroller.scrollTop <= 0;
       const atBottom = Math.ceil(scroller.scrollTop + scroller.clientHeight) >= scroller.scrollHeight - 1;
 
@@ -1365,6 +1401,31 @@ function setupMobileScrollGuard() {
       }
 
       mobileTouchStartY = y;
+    },
+    { passive: false },
+  );
+
+  window.addEventListener(
+    "touchend",
+    (event) => {
+      if (!isPhoneLayout() || !mobileTouchSection || isProgrammaticScroll) return;
+      if (mobileTouchSection.classList.contains("fit-scroll")) {
+        mobileTouchSection = null;
+        return;
+      }
+
+      const touch = event.changedTouches[0];
+      const dx = (touch?.clientX || 0) - mobileTouchStartX;
+      const dy = mobileTouchStartY - (touch?.clientY || 0);
+      const elapsed = Date.now() - mobileTouchStartAt;
+      mobileTouchSection = null;
+
+      const strongTug = Math.abs(dy) >= 82 && Math.abs(dy) > Math.abs(dx) * 1.35;
+      const quickFlick = Math.abs(dy) >= 62 && elapsed < 320 && Math.abs(dy) > Math.abs(dx) * 1.45;
+      if (!strongTug && !quickFlick) return;
+
+      event.preventDefault();
+      navigateSection(dy > 0 ? 1 : -1);
     },
     { passive: false },
   );
@@ -1411,27 +1472,26 @@ function smoothScrollToSection(id) {
   if (!target) return;
 
   isProgrammaticScroll = true;
-  setActiveSectionVisuals(id);
   document.querySelectorAll(".snap-focus").forEach((section) => {
     if (section !== target) section.classList.remove("snap-focus");
   });
   target.classList.add("snap-focus");
 
   if (isPhoneLayout()) {
+    setActiveSectionVisuals(id);
     target.scrollTop = 0;
     window.scrollTo(0, 0);
     history.replaceState(null, "", `#${id}`);
-    setActiveSectionVisuals(id);
 
     clearTimeout(snapReleaseTimer);
     snapReleaseTimer = setTimeout(() => {
       isProgrammaticScroll = false;
       target.classList.remove("snap-focus");
-      setActiveSectionVisuals(id);
-    }, 280);
+    }, 180);
     return;
   }
 
+  setActiveSectionVisuals(id);
   target.scrollIntoView({
     behavior: shouldReduceMotion() ? "auto" : "smooth",
     block: "start",
@@ -1526,6 +1586,7 @@ function setMobileViewportVars(force = false) {
   if (!isPhoneLayout()) {
     mobileViewportWidth = 0;
     document.documentElement.style.removeProperty("--mobile-vh");
+    scheduleSectionFit();
     return;
   }
 
@@ -1538,6 +1599,7 @@ function setMobileViewportVars(force = false) {
 
   mobileViewportWidth = width;
   document.documentElement.style.setProperty("--mobile-vh", `${height}px`);
+  scheduleSectionFit();
 }
 
 function scheduleMobileViewportVars(force = false) {
@@ -1561,6 +1623,79 @@ function setupMobileViewportStability() {
   } else {
     phoneLayoutQuery.addListener(syncViewportMode);
   }
+}
+
+function scheduleSectionFit() {
+  if (sectionFitFrame) cancelAnimationFrame(sectionFitFrame);
+
+  sectionFitFrame = requestAnimationFrame(() => {
+    sectionFitFrame = 0;
+    fitActivePhoneSection();
+  });
+}
+
+function fitActivePhoneSection() {
+  const sections = [...document.querySelectorAll(".daily-section")];
+  if (!isPhoneLayout() || !document.documentElement.classList.contains("native-shell")) {
+    sectionFitSignature = "";
+    sections.forEach((section) => {
+      section.classList.remove("fit-roomy", "fit-tight", "fit-ultra", "fit-scroll");
+      section.removeAttribute("data-fit-signature");
+    });
+    return;
+  }
+
+  const section = document.querySelector(".daily-section.is-current");
+  if (!section) return;
+
+  sections.forEach((inactiveSection) => {
+    if (inactiveSection === section) return;
+    inactiveSection.classList.remove("fit-roomy", "fit-tight", "fit-ultra", "fit-scroll");
+    inactiveSection.removeAttribute("data-fit-signature");
+  });
+
+  const nextSignature = `${section.id}:${section.clientWidth}x${section.clientHeight}`;
+  if (section.dataset.fitSignature === nextSignature && sectionFitSignature === nextSignature) return;
+
+  sectionFitSignature = nextSignature;
+  section.dataset.fitSignature = nextSignature;
+  section.classList.remove("fit-roomy", "fit-tight", "fit-ultra", "fit-scroll");
+
+  const fits = () => getSectionOverflow(section) <= 2;
+  if (getSectionOverflow(section) <= -150) {
+    section.classList.add("fit-roomy");
+    void section.offsetHeight;
+    if (!fits()) section.classList.remove("fit-roomy");
+  }
+
+  if (fits()) return;
+
+  section.classList.add("fit-tight");
+  void section.offsetHeight;
+  if (fits()) return;
+
+  section.classList.add("fit-ultra");
+  void section.offsetHeight;
+  if (fits()) return;
+
+  section.classList.add("fit-scroll");
+}
+
+function getSectionOverflow(section) {
+  const sectionRect = section.getBoundingClientRect();
+  const contentItems = [...section.querySelectorAll(
+    ".section-kicker, .title-row, .count-chip, .arabic, .translit, .meaning, .quote-text, .quote-person, .body-text, .explain, .effect, .moral, .story-action, .story-note, .revelation-card, .source-row, .dhikr-counter",
+  )].filter((item) => {
+    const style = getComputedStyle(item);
+    return style.display !== "none" && style.visibility !== "hidden";
+  });
+
+  const contentBottom = contentItems.reduce((bottom, item) => {
+    const rect = item.getBoundingClientRect();
+    return Math.max(bottom, rect.bottom);
+  }, sectionRect.top);
+
+  return Math.max(section.scrollHeight - section.clientHeight, contentBottom - sectionRect.bottom);
 }
 
 function prefersReducedMotion() {
@@ -1753,9 +1888,19 @@ function setupDhikrCounter(iso, title) {
     count += 1;
     localStorage.setItem(key, String(count));
     renderCount();
-    tapButton.classList.remove("pulse");
-    void tapButton.offsetWidth;
-    tapButton.classList.add("pulse");
+    if (tapButton.animate && isNativeApp()) {
+      tapButton.animate(
+        [
+          { transform: "scale(0.985)" },
+          { transform: "scale(1)" },
+        ],
+        { duration: 110, easing: "cubic-bezier(0.2, 0, 0, 1)" },
+      );
+    } else {
+      tapButton.classList.remove("pulse");
+      void tapButton.offsetWidth;
+      tapButton.classList.add("pulse");
+    }
   });
 
   resetButton.addEventListener("click", () => {
@@ -1820,6 +1965,8 @@ function setupResponsiveModeSync() {
       window.scrollTo(0, 0);
       document.getElementById(currentSectionId)?.scrollTo({ top: 0, behavior: "auto" });
     }
+
+    scheduleSectionFit();
   };
 
   if (phoneLayoutQuery.addEventListener) {
