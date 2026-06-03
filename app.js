@@ -861,11 +861,14 @@ function centerRailLink(link) {
 function dhikrCounterMarkup() {
   return `
     <div class="dhikr-counter" aria-label="Dhikr counter">
-      <button class="counter-tap" id="dhikrTapButton" type="button">
-        <span class="counter-number" id="dhikrCount">0</span>
-        <span class="counter-label">Tap to count this dhikr</span>
-      </button>
-      <button class="counter-reset" id="dhikrResetButton" type="button">Reset</button>
+      <div class="counter-main">
+        <button class="counter-tap" id="dhikrTapButton" type="button">
+          <span class="counter-number" id="dhikrCount">0</span>
+          <span class="counter-label">Tap to count this dhikr</span>
+        </button>
+        <button class="counter-reset" id="dhikrResetButton" type="button">Reset</button>
+      </div>
+      <p class="counter-feedback" id="dhikrCounterFeedback" aria-live="polite"></p>
     </div>
   `;
 }
@@ -976,7 +979,14 @@ function renderRail() {
   const jumps = document.querySelector("#jumpLinks");
 
   rail.innerHTML = labels
-    .map(([id], index) => `<a class="rail-button" href="#${id}" data-target="${id}">${String(index + 1).padStart(2, "0")}</a>`)
+    .map(
+      ([id], index) => `
+        <a class="rail-button" href="#${id}" data-target="${id}" aria-label="${navLabelName(id)}">
+          <span class="rail-index">${String(index + 1).padStart(2, "0")}</span>
+          <span class="rail-label">${navLabelName(id)}</span>
+        </a>
+      `,
+    )
     .join("");
 
   jumps.innerHTML = labels
@@ -989,6 +999,19 @@ function renderRail() {
       `,
     )
     .join("");
+}
+
+function navLabelName(id) {
+  const names = {
+    verse: "Verse",
+    dua: "Dua",
+    dhikr: "Dhikr",
+    hadith: "Hadith",
+    quote: "Quote",
+    story: "Story",
+  };
+
+  return names[id] || id;
 }
 
 function renderApp() {
@@ -1716,6 +1739,7 @@ function setupDhikrCounter(iso, title) {
   const tapButton = document.querySelector("#dhikrTapButton");
   const resetButton = document.querySelector("#dhikrResetButton");
   const countText = document.querySelector("#dhikrCount");
+  const feedback = document.querySelector("#dhikrCounterFeedback");
   if (!tapButton || !resetButton || !countText) return;
 
   const key = `daily-deen-dhikr-count-${iso}-${slugify(title)}`;
@@ -1738,7 +1762,15 @@ function setupDhikrCounter(iso, title) {
     count = 0;
     localStorage.setItem(key, "0");
     renderCount();
-    showToast("Dhikr counter reset.");
+    if (feedback) {
+      feedback.textContent = "Counter reset";
+      feedback.classList.add("visible");
+      clearTimeout(feedback.hideTimer);
+      feedback.hideTimer = setTimeout(() => {
+        feedback.classList.remove("visible");
+        feedback.textContent = "";
+      }, 1600);
+    }
   });
 
   renderCount();

@@ -299,6 +299,15 @@ button {
   pointer-events: none;
 }
 
+.rail-index {
+  position: relative;
+  z-index: 1;
+}
+
+.rail-label {
+  display: none;
+}
+
 .rail-hint {
   position: relative;
   z-index: 1;
@@ -670,11 +679,16 @@ html:not([data-active-section="verse"]) .day-note {
 }
 
 .dhikr-counter {
+  display: grid;
+  gap: 10px;
+  margin: 18px 0 4px;
+}
+
+.counter-main {
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
   gap: 10px;
-  margin: 18px 0 4px;
 }
 
 .counter-tap,
@@ -736,6 +750,26 @@ html:not([data-active-section="verse"]) .day-note {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.counter-feedback {
+  min-height: 18px;
+  margin: 0;
+  color: var(--accent-2);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 160ms ease,
+    transform 160ms ease;
+  text-transform: uppercase;
+}
+
+.counter-feedback.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .counter-tap.pulse {
@@ -1230,6 +1264,56 @@ html:not([data-active-section="verse"]) .day-note {
   }
 }
 
+@keyframes appPaneIn {
+  0% {
+    opacity: 0.82;
+    transform: translateY(14px) scale(0.992);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes appDetailIn {
+  0% {
+    opacity: 0.58;
+    transform: translateY(10px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes appTabSettle {
+  0% {
+    transform: translateY(3px) scale(0.96);
+  }
+
+  70% {
+    transform: translateY(-1px) scale(1.035);
+  }
+
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes feedbackPop {
+  0% {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1488,6 +1572,10 @@ html:not([data-active-section="verse"]) .day-note {
 
   .dhikr-counter {
     display: grid;
+  }
+
+  .counter-main {
+    grid-template-columns: 1fr;
   }
 
   .counter-tap,
@@ -1846,9 +1934,14 @@ html:not([data-active-section="verse"]) .day-note {
 
   .dhikr-counter {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
     gap: 8px;
     margin-top: 14px;
+  }
+
+  .counter-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
   }
 
   .counter-tap,
@@ -1975,14 +2068,16 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell {
     --mobile-header: 46px;
-    --mobile-rail: 68px;
+    --mobile-rail: 76px;
     --mobile-frame-gap: 8px;
     font-size: 15px;
     -webkit-tap-highlight-color: transparent;
   }
 
   html.native-shell body::before {
-    background: linear-gradient(180deg, #020504, #031009);
+    background:
+      linear-gradient(180deg, #020504 0%, #04110c 46%, #020604 100%),
+      repeating-linear-gradient(90deg, rgba(86, 226, 139, 0.018) 0 1px, transparent 1px 112px);
   }
 
   html.native-shell .ambient {
@@ -2056,7 +2151,13 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .daily-section.band {
     padding: 14px 12px 16px;
     border-color: rgba(86, 226, 139, 0.16);
-    border-radius: 14px;
+    border-radius: 22px;
+    background:
+      linear-gradient(180deg, rgba(7, 20, 14, 0.98), rgba(2, 8, 5, 0.98)),
+      linear-gradient(120deg, rgba(86, 226, 139, 0.08), transparent 42%);
+    box-shadow:
+      inset 0 1px 0 rgba(156, 255, 189, 0.08),
+      0 14px 30px rgba(0, 0, 0, 0.28);
     scrollbar-width: none;
   }
 
@@ -2085,30 +2186,86 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .reading-rail {
-    top: calc(var(--mobile-vh) - var(--mobile-rail) - var(--mobile-safe-bottom) - 6px);
+    top: auto;
     right: max(8px, env(safe-area-inset-right));
+    bottom: calc(var(--mobile-safe-bottom) + 8px);
     left: max(8px, env(safe-area-inset-left));
     height: var(--mobile-rail);
-    gap: 5px;
+    gap: 0;
     padding: 7px;
-    border-radius: 15px;
-    box-shadow: none;
+    border-color: rgba(86, 226, 139, 0.18);
+    border-radius: 22px;
+    background:
+      linear-gradient(180deg, rgba(6, 22, 15, 0.98), rgba(2, 8, 5, 0.98));
+    box-shadow:
+      inset 0 1px 0 rgba(156, 255, 189, 0.08),
+      0 -10px 26px rgba(0, 0, 0, 0.34);
   }
 
   html.native-shell.android-shell .rail-items {
-    gap: 5px;
+    height: 100%;
+    gap: 4px;
+    align-items: stretch;
   }
 
   html.native-shell.android-shell .rail-button {
-    height: 29px;
-    font-size: 0.64rem;
+    display: grid;
+    height: 100%;
+    min-height: 0;
+    align-content: center;
+    justify-items: center;
+    gap: 3px;
+    padding: 5px 2px 4px;
+    border-color: transparent;
+    border-radius: 16px;
+    background: transparent;
+    box-shadow: none;
+    color: rgba(215, 222, 215, 0.72);
+    font-family: var(--sans);
+    font-size: 0.55rem;
+    font-weight: 800;
+    letter-spacing: 0;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  html.native-shell.android-shell .rail-index {
+    color: inherit;
+    font-size: 0.58rem;
+    line-height: 1;
+  }
+
+  html.native-shell.android-shell .rail-label {
+    display: block;
+    max-width: 100%;
+    overflow: hidden;
+    font-size: 0.5rem;
+    line-height: 1;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  html.native-shell.android-shell .rail-button:hover,
+  html.native-shell.android-shell .rail-button.active {
+    border-color: rgba(86, 226, 139, 0.34);
+    background: rgba(86, 226, 139, 0.12);
+    color: var(--accent-2);
+    box-shadow:
+      inset 0 1px 0 rgba(156, 255, 189, 0.1),
+      0 8px 16px rgba(0, 0, 0, 0.18);
+    transform: none;
+  }
+
+  html.native-shell.android-shell .rail-button.active {
+    animation: appTabSettle 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  html.native-shell.android-shell .rail-button.active::after {
+    display: none;
   }
 
   html.native-shell.android-shell .rail-hint {
-    min-height: 12px;
-    margin-bottom: 3px;
-    font-size: 0.54rem;
-    line-height: 1.15;
+    display: none;
   }
 
   html.native-shell .daily-section::after,
@@ -2139,11 +2296,39 @@ html:not([data-active-section="verse"]) .day-note {
     transition-duration: 120ms;
   }
 
-  html.native-shell.android-shell *,
-  html.native-shell.android-shell *::before,
-  html.native-shell.android-shell *::after {
-    animation-duration: 1ms !important;
-    transition-duration: 90ms !important;
+  html.native-shell.android-shell .daily-section.is-current {
+    animation: appPaneIn 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+
+  html.native-shell.android-shell .daily-section.is-current .section-kicker,
+  html.native-shell.android-shell .daily-section.is-current .source-row,
+  html.native-shell.android-shell .daily-section.is-current .revelation-card,
+  html.native-shell.android-shell .daily-section.is-current .dhikr-counter,
+  html.native-shell.android-shell .daily-section.is-current .story-note {
+    animation: appDetailIn 300ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+
+  html.native-shell.android-shell .counter-tap.pulse {
+    animation: counterPress 220ms ease !important;
+  }
+
+  html.native-shell.android-shell .counter-feedback.visible {
+    animation: feedbackPop 180ms ease both;
+  }
+
+  html.native-shell.android-shell .next-cue svg {
+    animation: arrowDrift 1450ms ease-in-out infinite !important;
+  }
+
+  html.native-shell.android-shell .toast {
+    right: 12px;
+    bottom: calc(var(--mobile-safe-bottom) + var(--mobile-rail) + 18px);
+    left: 12px;
+    max-width: none;
+    text-align: center;
+    box-shadow:
+      inset 0 1px 0 rgba(156, 255, 189, 0.08),
+      0 12px 24px rgba(0, 0, 0, 0.34);
   }
 
   html.native-shell.android-shell .section-kicker {
@@ -2245,6 +2430,26 @@ html:not([data-active-section="verse"]) .day-note {
     margin-top: 12px;
   }
 
+  html.native-shell.android-shell .counter-main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 68px;
+    gap: 7px;
+  }
+
+  html.native-shell.android-shell .counter-tap,
+  html.native-shell.android-shell .counter-reset {
+    width: 100%;
+    border-radius: 16px;
+    background: rgba(86, 226, 139, 0.075);
+  }
+
+  html.native-shell.android-shell .counter-tap:active,
+  html.native-shell.android-shell .counter-reset:active,
+  html.native-shell.android-shell .next-cue:active,
+  html.native-shell.android-shell .rail-button:active {
+    transform: scale(0.98);
+  }
+
   html.native-shell.android-shell .counter-tap {
     min-height: 58px;
     padding: 9px 11px;
@@ -2260,15 +2465,25 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .counter-reset {
-    min-width: 66px;
+    min-width: 0;
     min-height: 58px;
     padding: 0 9px;
     font-size: 0.62rem;
   }
 
+  html.native-shell.android-shell .counter-feedback {
+    min-height: 16px;
+    padding-inline: 3px;
+    text-align: center;
+    font-size: 0.56rem;
+    line-height: 1.2;
+  }
+
   html.native-shell.android-shell .next-cue {
     margin-top: auto;
     padding: 9px 10px;
+    border-radius: 16px;
+    background: rgba(86, 226, 139, 0.08);
     box-shadow: none;
   }
 }
@@ -2341,6 +2556,15 @@ html:not([data-active-section="verse"]) .day-note {
     height: 32px;
     font-size: 0.68rem;
   }
+
+  html.native-shell.android-shell .rail-button {
+    height: 100%;
+    font-size: 0.52rem;
+  }
+
+  html.native-shell.android-shell .rail-label {
+    font-size: 0.48rem;
+  }
 }
 
 @media (max-width: 700px) and (max-height: 720px) {
@@ -2360,6 +2584,10 @@ html:not([data-active-section="verse"]) .day-note {
 
   .rail-button {
     height: 31px;
+  }
+
+  html.native-shell.android-shell .rail-button {
+    height: 100%;
   }
 
   .rail-hint {
