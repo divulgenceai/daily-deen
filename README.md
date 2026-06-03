@@ -52,6 +52,20 @@ Android can be built locally with Android Studio or Gradle after installing the 
 
 iOS project files are included, but iOS simulator/device builds and App Store archives require macOS with Xcode.
 
+### Android phone install
+
+Use this for local testing before Play Store release:
+
+```powershell
+npm run sync:android
+npm run build:android:debug
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" uninstall com.dailydeen.placeholder
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" uninstall com.zubibair.dailydeen
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r "C:\Users\Zubair Mohammed\Downloads\Portfolio\Dua Of The Day\android\app\build\outputs\apk\debug\app-debug.apk"
+```
+
+The uninstall commands are useful while testing because the earlier placeholder package and the final package can both exist on the same phone.
+
 ### Publishing checklist
 
 Android Play Store:
@@ -62,6 +76,7 @@ Android Play Store:
 4. Choose **Android App Bundle**.
 5. Create or select an upload keystore, keep it outside the repo, and back it up.
 6. Upload the generated `.aab` to Google Play Console for package `com.zubibair.dailydeen`.
+7. Complete the store listing, content rating, privacy policy, data safety, target audience, and testing track checklist in Play Console.
 
 iOS App Store:
 

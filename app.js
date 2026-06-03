@@ -700,6 +700,7 @@ const readings = {
   ],
 };
 
+setNativeShellClasses();
 loadCapacitorBridge();
 
 let activeSectionCleanup = null;
@@ -853,7 +854,7 @@ function centerRailLink(link) {
   const left = link.offsetLeft - (scroller.clientWidth - link.offsetWidth) / 2;
   scroller.scrollTo({
     left: Math.max(0, left),
-    behavior: prefersReducedMotion() ? "auto" : "smooth",
+    behavior: shouldReduceMotion() ? "auto" : "smooth",
   });
 }
 
@@ -1016,6 +1017,11 @@ function renderApp() {
 
 function setupRevealObserver() {
   const revealItems = document.querySelectorAll(".reveal");
+  if (isNativePerformanceShell() && isPhoneLayout()) {
+    revealItems.forEach((item) => item.classList.add("is-visible"));
+    return;
+  }
+
   const revealVisibleItems = () => {
     revealItems.forEach((item) => {
       const rect = item.getBoundingClientRect();
@@ -1404,7 +1410,7 @@ function smoothScrollToSection(id) {
   }
 
   target.scrollIntoView({
-    behavior: prefersReducedMotion() ? "auto" : "smooth",
+    behavior: shouldReduceMotion() ? "auto" : "smooth",
     block: "start",
   });
   history.replaceState(null, "", `#${id}`);
@@ -1461,14 +1467,24 @@ function loadCapacitorBridge() {
 
   const script = document.createElement("script");
   script.src = "capacitor.js";
+  script.addEventListener("load", setNativeShellClasses, { once: true });
   document.head.append(script);
+}
+
+function setNativeShellClasses() {
+  const root = document.documentElement;
+  const isShell = isLikelyNativeShell();
+  root.classList.toggle("native-shell", isShell);
+
+  const platform = typeof window.Capacitor?.getPlatform === "function" ? window.Capacitor.getPlatform() : "";
+  root.classList.toggle("android-shell", platform === "android");
+  root.classList.toggle("ios-shell", platform === "ios");
 }
 
 function isLikelyNativeShell() {
   return (
     location.protocol === "capacitor:" ||
-    location.origin === "https://localhost" ||
-    location.origin === "http://localhost"
+    location.origin === "https://localhost"
   );
 }
 
@@ -1525,6 +1541,14 @@ function setupMobileViewportStability() {
 
 function prefersReducedMotion() {
   return matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
+function shouldReduceMotion() {
+  return prefersReducedMotion() || isNativePerformanceShell();
+}
+
+function isNativePerformanceShell() {
+  return document.documentElement.classList.contains("native-shell");
 }
 
 function isInteractiveScrollTarget(target) {
@@ -1659,7 +1683,7 @@ function openSavedReading(iso) {
   if (!card || !details) return;
 
   details.open = true;
-  card.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "nearest" });
+  card.scrollIntoView({ behavior: shouldReduceMotion() ? "auto" : "smooth", block: "nearest" });
 }
 
 function formatSavedAt(value) {

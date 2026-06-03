@@ -1968,6 +1968,68 @@ html:not([data-active-section="verse"]) .day-note {
     max-height: calc(var(--mobile-vh) - 16px);
     border-radius: 16px;
   }
+
+  html.native-shell {
+    scroll-behavior: auto;
+  }
+
+  html.native-shell body::before {
+    background: linear-gradient(180deg, #020504, #031009);
+  }
+
+  html.native-shell .ambient {
+    display: none;
+  }
+
+  html.native-shell .site-header,
+  html.native-shell .reading-rail,
+  html.native-shell .saved-panel {
+    backdrop-filter: none;
+  }
+
+  html.native-shell .site-header {
+    background: #020504;
+  }
+
+  html.native-shell .daily-section,
+  html.native-shell .daily-section.band {
+    background: #06120d;
+    box-shadow: none;
+    contain: content;
+  }
+
+  html.native-shell .reading-rail {
+    background: #031009;
+    box-shadow: 0 -8px 22px rgba(0, 0, 0, 0.28);
+  }
+
+  html.native-shell .daily-section::after,
+  html.native-shell .revelation-card::before {
+    display: none;
+  }
+
+  html.native-shell .daily-section.is-current,
+  html.native-shell .daily-section.is-current .section-kicker,
+  html.native-shell .daily-section.is-current .source-row,
+  html.native-shell .daily-section.is-current .revelation-card,
+  html.native-shell .daily-section.is-current .dhikr-counter,
+  html.native-shell .daily-section.is-current .story-note,
+  html.native-shell .daily-section.snap-focus .content-block,
+  html.native-shell .rail-hint.is-changing,
+  html.native-shell .count-pop,
+  html.native-shell .next-cue svg {
+    animation: none !important;
+  }
+
+  html.native-shell .content-block,
+  html.native-shell .source-link,
+  html.native-shell .counter-tap,
+  html.native-shell .counter-reset,
+  html.native-shell .next-cue,
+  html.native-shell .rail-button,
+  html.native-shell .reveal {
+    transition-duration: 120ms;
+  }
 }
 
 @media (max-width: 380px) {
