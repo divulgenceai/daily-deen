@@ -707,6 +707,9 @@ let isProgrammaticScroll = false;
 let snapReleaseTimer = 0;
 let currentDailyReadings = null;
 let currentSydneyParts = null;
+let mobileViewportWidth = 0;
+let mobileViewportTimer = 0;
+let mobileTouchStartY = 0;
 const SNAP_RELEASE_MS = 920;
 
 function getSydneyParts(date = new Date()) {
@@ -1272,6 +1275,40 @@ function setupSnapScrolling() {
   };
 }
 
+function setupMobileScrollGuard() {
+  window.addEventListener(
+    "touchstart",
+    (event) => {
+      if (!isPhoneLayout()) return;
+      if (!event.target.closest?.(".daily-section.is-current")) return;
+      mobileTouchStartY = event.touches[0]?.clientY || 0;
+    },
+    { passive: true },
+  );
+
+  window.addEventListener(
+    "touchmove",
+    (event) => {
+      if (!isPhoneLayout()) return;
+
+      const scroller = event.target.closest?.(".daily-section.is-current");
+      if (!scroller) return;
+
+      const y = event.touches[0]?.clientY || 0;
+      const dy = y - mobileTouchStartY;
+      const atTop = scroller.scrollTop <= 0;
+      const atBottom = Math.ceil(scroller.scrollTop + scroller.clientHeight) >= scroller.scrollHeight - 1;
+
+      if ((atTop && dy > 0) || (atBottom && dy < 0)) {
+        event.preventDefault();
+      }
+
+      mobileTouchStartY = y;
+    },
+    { passive: false },
+  );
+}
+
 function navigateSection(direction) {
   const sections = [...document.querySelectorAll("[data-section]")];
   if (!sections.length) return;
@@ -1385,6 +1422,47 @@ function getStickyOffset() {
 
 function isPhoneLayout() {
   return phoneLayoutQuery.matches;
+}
+
+function setMobileViewportVars(force = false) {
+  if (!isPhoneLayout()) {
+    mobileViewportWidth = 0;
+    document.documentElement.style.removeProperty("--mobile-vh");
+    return;
+  }
+
+  const viewport = window.visualViewport;
+  const width = Math.round(viewport?.width || window.innerWidth);
+  const height = Math.round(viewport?.height || window.innerHeight);
+  const widthChanged = !mobileViewportWidth || Math.abs(width - mobileViewportWidth) > 24;
+
+  if (!force && !widthChanged) return;
+
+  mobileViewportWidth = width;
+  document.documentElement.style.setProperty("--mobile-vh", `${height}px`);
+}
+
+function scheduleMobileViewportVars(force = false) {
+  clearTimeout(mobileViewportTimer);
+  mobileViewportTimer = setTimeout(() => setMobileViewportVars(force), force ? 80 : 180);
+}
+
+function setupMobileViewportStability() {
+  setMobileViewportVars(true);
+
+  window.addEventListener("resize", () => scheduleMobileViewportVars(false), { passive: true });
+  window.addEventListener("orientationchange", () => {
+    mobileViewportWidth = 0;
+    scheduleMobileViewportVars(true);
+  });
+  window.visualViewport?.addEventListener("resize", () => scheduleMobileViewportVars(false), { passive: true });
+
+  const syncViewportMode = () => scheduleMobileViewportVars(true);
+  if (phoneLayoutQuery.addEventListener) {
+    phoneLayoutQuery.addEventListener("change", syncViewportMode);
+  } else {
+    phoneLayoutQuery.addListener(syncViewportMode);
+  }
 }
 
 function prefersReducedMotion() {
@@ -1617,6 +1695,7 @@ function setupSydneyMidnightCheck() {
 
 function setupResponsiveModeSync() {
   const syncMode = () => {
+    setMobileViewportVars(true);
     updateNextCueCopy();
     updateRailHint(currentSectionId || labels[0][0]);
     setupActiveSectionObserver();
@@ -1635,10 +1714,12 @@ function setupResponsiveModeSync() {
   }
 }
 
+setupMobileViewportStability();
 renderRail();
 renderApp();
 setupControls();
 setupSmoothNavigation();
 setupSnapScrolling();
+setupMobileScrollGuard();
 setupResponsiveModeSync();
 setupSydneyMidnightCheck();
