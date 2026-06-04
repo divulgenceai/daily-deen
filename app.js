@@ -719,7 +719,11 @@ let mobileTouchSection = null;
 let sectionFitFrame = 0;
 let sectionFitSignature = "";
 let phoneTransitionTimer = 0;
+let phoneTransitionFrame = 0;
+const nextCuePressTimers = new WeakMap();
 const SNAP_RELEASE_MS = 920;
+const PHONE_SECTION_TRANSITION_MS = 430;
+const NEXT_CUE_PRESS_MS = 320;
 
 function getSydneyParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -1230,7 +1234,27 @@ function setupSmoothNavigation() {
     if (!target) return;
 
     event.preventDefault();
+    playNextCuePress(trigger);
     smoothScrollToSection(id);
+  });
+}
+
+function playNextCuePress(trigger) {
+  if (!trigger.classList.contains("next-cue") || prefersReducedMotion()) return;
+
+  const previousTimer = nextCuePressTimers.get(trigger);
+  if (previousTimer) clearTimeout(previousTimer);
+
+  trigger.classList.remove("is-pressing");
+  requestAnimationFrame(() => {
+    trigger.classList.add("is-pressing");
+    nextCuePressTimers.set(
+      trigger,
+      window.setTimeout(() => {
+        trigger.classList.remove("is-pressing");
+        nextCuePressTimers.delete(trigger);
+      }, NEXT_CUE_PRESS_MS),
+    );
   });
 }
 
@@ -1469,7 +1493,7 @@ function getCurrentSectionIndex(sections = [...document.querySelectorAll("[data-
 }
 
 function preparePhoneSectionTransition(id) {
-  if (!isPhoneLayout() || !document.documentElement.classList.contains("native-shell") || shouldReduceMotion()) {
+  if (!isPhoneLayout() || !document.documentElement.classList.contains("native-shell") || prefersReducedMotion()) {
     cleanupPhoneSectionTransition();
     return 0;
   }
@@ -1491,14 +1515,20 @@ function preparePhoneSectionTransition(id) {
   from.classList.add("section-exiting");
   to.classList.add("section-entering");
 
-  phoneTransitionTimer = window.setTimeout(cleanupPhoneSectionTransition, 280);
-  return 280;
+  phoneTransitionFrame = requestAnimationFrame(() => {
+    phoneTransitionFrame = 0;
+    document.documentElement.classList.add("section-motion");
+  });
+  phoneTransitionTimer = window.setTimeout(cleanupPhoneSectionTransition, PHONE_SECTION_TRANSITION_MS);
+  return PHONE_SECTION_TRANSITION_MS;
 }
 
 function cleanupPhoneSectionTransition() {
+  if (phoneTransitionFrame) cancelAnimationFrame(phoneTransitionFrame);
+  phoneTransitionFrame = 0;
   clearTimeout(phoneTransitionTimer);
   phoneTransitionTimer = 0;
-  document.documentElement.classList.remove("section-switching", "section-forward", "section-back");
+  document.documentElement.classList.remove("section-switching", "section-motion", "section-forward", "section-back");
   document.querySelectorAll(".section-entering, .section-exiting").forEach((section) => {
     section.classList.remove("section-entering", "section-exiting");
   });

@@ -1359,7 +1359,15 @@ html:not([data-active-section="verse"]) .day-note {
 @keyframes nativePaneEnterForward {
   0% {
     opacity: 0;
-    transform: translate3d(0, 32px, 0) scale(0.988);
+    transform: translate3d(0, 46px, 0) scale(0.982);
+  }
+
+  16% {
+    opacity: 0;
+  }
+
+  58% {
+    opacity: 1;
   }
 
   100% {
@@ -1374,16 +1382,28 @@ html:not([data-active-section="verse"]) .day-note {
     transform: translate3d(0, 0, 0) scale(1);
   }
 
+  38% {
+    opacity: 0.16;
+  }
+
   100% {
     opacity: 0;
-    transform: translate3d(0, -26px, 0) scale(0.992);
+    transform: translate3d(0, -34px, 0) scale(0.986);
   }
 }
 
 @keyframes nativePaneEnterBack {
   0% {
     opacity: 0;
-    transform: translate3d(0, -28px, 0) scale(0.99);
+    transform: translate3d(0, -42px, 0) scale(0.984);
+  }
+
+  16% {
+    opacity: 0;
+  }
+
+  58% {
+    opacity: 1;
   }
 
   100% {
@@ -1398,9 +1418,55 @@ html:not([data-active-section="verse"]) .day-note {
     transform: translate3d(0, 0, 0) scale(1);
   }
 
+  38% {
+    opacity: 0.16;
+  }
+
   100% {
     opacity: 0;
-    transform: translate3d(0, 30px, 0) scale(0.992);
+    transform: translate3d(0, 36px, 0) scale(0.986);
+  }
+}
+
+@keyframes nativeContentReveal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes nativeCueRipple {
+  0% {
+    opacity: 0;
+    transform: scale(0.68);
+  }
+
+  42% {
+    opacity: 0.72;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.28);
+  }
+}
+
+@keyframes nativeArrowTap {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  45% {
+    transform: translate3d(0, 5px, 0) scale(1.12);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
   }
 }
 
@@ -2397,7 +2463,7 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .daily-section.section-exiting {
     position: absolute;
     inset: 0;
-    z-index: 3;
+    z-index: 2;
     display: flex !important;
     flex-direction: column;
     overflow: hidden;
@@ -2406,24 +2472,15 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .daily-section.section-entering.is-current {
-    z-index: 2;
+    z-index: 3;
     will-change: transform, opacity;
   }
 
-  html.native-shell.android-shell.section-forward .daily-section.section-entering.is-current {
-    animation: nativePaneEnterForward 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
-  }
-
-  html.native-shell.android-shell.section-forward .daily-section.section-exiting {
-    animation: nativePaneExitForward 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
-  }
-
-  html.native-shell.android-shell.section-back .daily-section.section-entering.is-current {
-    animation: nativePaneEnterBack 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
-  }
-
-  html.native-shell.android-shell.section-back .daily-section.section-exiting {
-    animation: nativePaneExitBack 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  html.native-shell.android-shell .daily-section.section-exiting .next-cue {
+    opacity: 0;
+    transition:
+      opacity 130ms ease,
+      transform 130ms ease;
   }
 
   html.native-shell.android-shell .daily-section.is-current .section-kicker,
@@ -2440,6 +2497,49 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .counter-feedback.visible {
     animation: none !important;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html.native-shell.android-shell.section-motion.section-forward .daily-section.section-entering.is-current {
+      animation: nativePaneEnterForward 420ms cubic-bezier(0.16, 0.82, 0.26, 1) both !important;
+    }
+
+    html.native-shell.android-shell.section-motion.section-forward .daily-section.section-exiting {
+      animation: nativePaneExitForward 360ms cubic-bezier(0.5, 0, 0.25, 1) both !important;
+    }
+
+    html.native-shell.android-shell.section-motion.section-back .daily-section.section-entering.is-current {
+      animation: nativePaneEnterBack 420ms cubic-bezier(0.16, 0.82, 0.26, 1) both !important;
+    }
+
+    html.native-shell.android-shell.section-motion.section-back .daily-section.section-exiting {
+      animation: nativePaneExitBack 360ms cubic-bezier(0.5, 0, 0.25, 1) both !important;
+    }
+
+    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > * {
+      animation: nativeContentReveal 330ms cubic-bezier(0.2, 0.82, 0.2, 1) both !important;
+      will-change: transform, opacity;
+    }
+
+    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > *:nth-child(2) {
+      animation-delay: 35ms !important;
+    }
+
+    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > *:nth-child(3) {
+      animation-delay: 60ms !important;
+    }
+
+    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > *:nth-child(n + 4) {
+      animation-delay: 85ms !important;
+    }
+
+    html.native-shell.android-shell .counter-tap.pulse {
+      animation: counterPress 220ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    }
+
+    html.native-shell.android-shell .counter-feedback.visible {
+      animation: feedbackPop 170ms ease both !important;
+    }
   }
 
   html.native-shell.android-shell .next-cue svg {
@@ -2460,6 +2560,7 @@ html:not([data-active-section="verse"]) .day-note {
     align-items: center;
     justify-content: center;
     gap: 8px;
+    overflow: hidden;
     margin: 0;
     padding: 0 13px 0 14px;
     border-color: rgba(86, 226, 139, 0.26);
@@ -2470,13 +2571,29 @@ html:not([data-active-section="verse"]) .day-note {
       0 0 0 1px rgba(86, 226, 139, 0.08);
     color: var(--accent-2);
     font-size: 0.58rem;
+    isolation: isolate;
     letter-spacing: 0.07em;
     line-height: 1;
     transform: translate3d(-50%, 0, 0);
     transition:
       background 110ms linear,
       border-color 110ms linear,
+      box-shadow 170ms ease,
       transform 130ms cubic-bezier(0.2, 0, 0, 1);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html.native-shell.android-shell .next-cue::after {
+    position: absolute;
+    inset: -2px;
+    z-index: -1;
+    border-radius: inherit;
+    background:
+      radial-gradient(circle at 50% 50%, rgba(118, 255, 173, 0.45), rgba(86, 226, 139, 0.15) 42%, transparent 68%);
+    content: "";
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.72);
   }
 
   html.native-shell.android-shell .next-cue span {
@@ -2488,6 +2605,26 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .next-cue:active {
     transform: translate3d(-50%, 1px, 0) scale(0.98);
+  }
+
+  html.native-shell.android-shell .next-cue.is-pressing {
+    border-color: rgba(118, 255, 173, 0.62);
+    background: #082819;
+    box-shadow:
+      inset 0 1px 0 rgba(214, 255, 228, 0.16),
+      0 0 0 1px rgba(86, 226, 139, 0.2),
+      0 10px 26px rgba(20, 186, 90, 0.18);
+    transform: translate3d(-50%, -2px, 0) scale(1.025);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html.native-shell.android-shell .next-cue.is-pressing::after {
+      animation: nativeCueRipple 320ms ease-out both;
+    }
+
+    html.native-shell.android-shell .next-cue.is-pressing svg {
+      animation: nativeArrowTap 320ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+    }
   }
 
   html.native-shell.android-shell .next-cue svg {
