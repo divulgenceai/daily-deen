@@ -2276,6 +2276,7 @@ html:not([data-active-section="verse"]) .day-note {
     display: flex;
     min-height: 0;
     flex-direction: column;
+    position: static;
   }
 
   html.native-shell.android-shell .sections {
@@ -2447,8 +2448,9 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .next-cue {
     position: absolute;
-    right: 12px;
-    bottom: 12px;
+    right: auto;
+    bottom: 14px;
+    left: 50%;
     z-index: 5;
     display: inline-flex;
     width: auto;
@@ -2470,7 +2472,7 @@ html:not([data-active-section="verse"]) .day-note {
     font-size: 0.58rem;
     letter-spacing: 0.07em;
     line-height: 1;
-    transform: translate3d(0, 0, 0);
+    transform: translate3d(-50%, 0, 0);
     transition:
       background 110ms linear,
       border-color 110ms linear,
@@ -2485,7 +2487,7 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .next-cue:active {
-    transform: translate3d(0, 1px, 0) scale(0.98);
+    transform: translate3d(-50%, 1px, 0) scale(0.98);
   }
 
   html.native-shell.android-shell .next-cue svg {
