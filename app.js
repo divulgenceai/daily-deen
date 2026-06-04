@@ -718,6 +718,7 @@ let mobileTouchStartAt = 0;
 let mobileTouchSection = null;
 let sectionFitFrame = 0;
 let sectionFitSignature = "";
+let phoneTransitionTimer = 0;
 const SNAP_RELEASE_MS = 920;
 
 function getSydneyParts(date = new Date()) {
@@ -783,8 +784,8 @@ function shortSectionName(index) {
 }
 
 function nextActionText(index) {
-  const action = isPhoneLayout() ? "Tap for" : "Scroll for";
-  return `${action} ${shortSectionName(index + 1)} next`;
+  if (isPhoneLayout()) return `${shortSectionName(index + 1)} next`;
+  return `Scroll for ${shortSectionName(index + 1)} next`;
 }
 
 function nextCue(index) {
@@ -1467,6 +1468,42 @@ function getCurrentSectionIndex(sections = [...document.querySelectorAll("[data-
   return nearestIndex;
 }
 
+function preparePhoneSectionTransition(id) {
+  if (!isPhoneLayout() || !document.documentElement.classList.contains("native-shell") || shouldReduceMotion()) {
+    cleanupPhoneSectionTransition();
+    return 0;
+  }
+
+  const from = document.querySelector(".daily-section.is-current");
+  const to = document.getElementById(id);
+  if (!from || !to || from === to) {
+    cleanupPhoneSectionTransition();
+    return 0;
+  }
+
+  cleanupPhoneSectionTransition();
+
+  const fromIndex = labels.findIndex(([sectionId]) => sectionId === from.id);
+  const toIndex = labels.findIndex(([sectionId]) => sectionId === id);
+  const directionClass = toIndex >= fromIndex ? "section-forward" : "section-back";
+
+  document.documentElement.classList.add("section-switching", directionClass);
+  from.classList.add("section-exiting");
+  to.classList.add("section-entering");
+
+  phoneTransitionTimer = window.setTimeout(cleanupPhoneSectionTransition, 280);
+  return 280;
+}
+
+function cleanupPhoneSectionTransition() {
+  clearTimeout(phoneTransitionTimer);
+  phoneTransitionTimer = 0;
+  document.documentElement.classList.remove("section-switching", "section-forward", "section-back");
+  document.querySelectorAll(".section-entering, .section-exiting").forEach((section) => {
+    section.classList.remove("section-entering", "section-exiting");
+  });
+}
+
 function smoothScrollToSection(id) {
   const target = document.getElementById(id);
   if (!target) return;
@@ -1478,6 +1515,7 @@ function smoothScrollToSection(id) {
   target.classList.add("snap-focus");
 
   if (isPhoneLayout()) {
+    const transitionMs = preparePhoneSectionTransition(id);
     setActiveSectionVisuals(id);
     target.scrollTop = 0;
     window.scrollTo(0, 0);
@@ -1487,7 +1525,8 @@ function smoothScrollToSection(id) {
     snapReleaseTimer = setTimeout(() => {
       isProgrammaticScroll = false;
       target.classList.remove("snap-focus");
-    }, 180);
+      cleanupPhoneSectionTransition();
+    }, transitionMs || 180);
     return;
   }
 
@@ -1516,6 +1555,7 @@ function syncHashSection() {
   }
 
   if (isPhoneLayout()) {
+    cleanupPhoneSectionTransition();
     setActiveSectionVisuals(id);
     target.scrollTop = 0;
     window.scrollTo(0, 0);

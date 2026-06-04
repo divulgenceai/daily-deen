@@ -1356,6 +1356,65 @@ html:not([data-active-section="verse"]) .day-note {
   }
 }
 
+@keyframes nativePaneEnterForward {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 32px, 0) scale(0.988);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes nativePaneExitForward {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -26px, 0) scale(0.992);
+  }
+}
+
+@keyframes nativePaneEnterBack {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -28px, 0) scale(0.99);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes nativePaneExitBack {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 30px, 0) scale(0.992);
+  }
+}
+
+@keyframes nativeArrowFloat {
+  0%,
+  100% {
+    transform: translate3d(0, -1px, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 3px, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -2110,7 +2169,7 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell {
     --mobile-header: 42px;
-    --mobile-rail: 66px;
+    --mobile-rail: 0px;
     --mobile-frame-gap: 6px;
     font-size: 15px;
     -webkit-tap-highlight-color: transparent;
@@ -2156,6 +2215,14 @@ html:not([data-active-section="verse"]) .day-note {
     gap: 3px;
   }
 
+  html.native-shell.android-shell #menuButton {
+    display: none !important;
+  }
+
+  html.native-shell.android-shell .content-flow {
+    padding-right: 0 !important;
+  }
+
   html.native-shell.android-shell .prayer-link {
     min-height: 28px;
     padding: 0 8px;
@@ -2189,7 +2256,7 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .daily-section,
   html.native-shell.android-shell .daily-section.band {
-    padding: 11px 10px 12px;
+    padding: 11px 10px 70px;
     border-color: rgba(86, 226, 139, 0.16);
     border-radius: 20px;
     background: #05120c;
@@ -2211,6 +2278,10 @@ html:not([data-active-section="verse"]) .day-note {
     flex-direction: column;
   }
 
+  html.native-shell.android-shell .sections {
+    position: relative;
+  }
+
   html.native-shell.android-shell .daily-section::-webkit-scrollbar {
     display: none;
   }
@@ -2220,22 +2291,11 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell .reading-rail {
-    background: #031009;
-    box-shadow: none;
+    display: none;
   }
 
   html.native-shell.android-shell .reading-rail {
-    top: auto;
-    right: max(8px, env(safe-area-inset-right));
-    bottom: calc(var(--mobile-safe-bottom) + 6px);
-    left: max(8px, env(safe-area-inset-left));
-    height: var(--mobile-rail);
-    gap: 0;
-    padding: 6px;
-    border-color: rgba(86, 226, 139, 0.18);
-    border-radius: 20px;
-    background: #031009;
-    box-shadow: inset 0 1px 0 rgba(156, 255, 189, 0.06);
+    display: none;
   }
 
   html.native-shell.android-shell .rail-items {
@@ -2315,8 +2375,7 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell .daily-section.is-current .story-note,
   html.native-shell .daily-section.snap-focus .content-block,
   html.native-shell .rail-hint.is-changing,
-  html.native-shell .count-pop,
-  html.native-shell .next-cue svg {
+  html.native-shell .count-pop {
     animation: none !important;
   }
 
@@ -2332,6 +2391,38 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .daily-section.is-current {
     animation: none !important;
+  }
+
+  html.native-shell.android-shell .daily-section.section-exiting {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    display: flex !important;
+    flex-direction: column;
+    overflow: hidden;
+    pointer-events: none;
+    will-change: transform, opacity;
+  }
+
+  html.native-shell.android-shell .daily-section.section-entering.is-current {
+    z-index: 2;
+    will-change: transform, opacity;
+  }
+
+  html.native-shell.android-shell.section-forward .daily-section.section-entering.is-current {
+    animation: nativePaneEnterForward 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+
+  html.native-shell.android-shell.section-forward .daily-section.section-exiting {
+    animation: nativePaneExitForward 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+
+  html.native-shell.android-shell.section-back .daily-section.section-entering.is-current {
+    animation: nativePaneEnterBack 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
+  }
+
+  html.native-shell.android-shell.section-back .daily-section.section-exiting {
+    animation: nativePaneExitBack 230ms cubic-bezier(0.2, 0.8, 0.2, 1) both !important;
   }
 
   html.native-shell.android-shell .daily-section.is-current .section-kicker,
@@ -2351,16 +2442,60 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .next-cue svg {
-    animation: none !important;
+    animation: nativeArrowFloat 1250ms cubic-bezier(0.45, 0, 0.25, 1) infinite !important;
   }
 
   html.native-shell.android-shell .next-cue {
-    display: none;
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 5;
+    display: inline-flex;
+    width: auto;
+    min-width: 118px;
+    min-height: 44px;
+    max-width: min(58vw, 210px);
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    padding: 0 13px 0 14px;
+    border-color: rgba(86, 226, 139, 0.26);
+    border-radius: 999px;
+    background: #062014;
+    box-shadow:
+      inset 0 1px 0 rgba(156, 255, 189, 0.08),
+      0 0 0 1px rgba(86, 226, 139, 0.08);
+    color: var(--accent-2);
+    font-size: 0.58rem;
+    letter-spacing: 0.07em;
+    line-height: 1;
+    transform: translate3d(0, 0, 0);
+    transition:
+      background 110ms linear,
+      border-color 110ms linear,
+      transform 130ms cubic-bezier(0.2, 0, 0, 1);
+  }
+
+  html.native-shell.android-shell .next-cue span {
+    max-width: min(38vw, 145px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  html.native-shell.android-shell .next-cue:active {
+    transform: translate3d(0, 1px, 0) scale(0.98);
+  }
+
+  html.native-shell.android-shell .next-cue svg {
+    width: 16px;
+    height: 16px;
   }
 
   html.native-shell.android-shell .toast {
     right: 12px;
-    bottom: calc(var(--mobile-safe-bottom) + var(--mobile-rail) + 18px);
+    bottom: calc(var(--mobile-safe-bottom) + 68px);
     left: 12px;
     max-width: none;
     text-align: center;
@@ -2518,7 +2653,6 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .counter-tap:active,
   html.native-shell.android-shell .counter-reset:active,
-  html.native-shell.android-shell .next-cue:active,
   html.native-shell.android-shell .rail-button:active {
     transform: scale(0.98);
   }
@@ -2550,14 +2684,6 @@ html:not([data-active-section="verse"]) .day-note {
     text-align: center;
     font-size: 0.5rem;
     line-height: 1.2;
-  }
-
-  html.native-shell.android-shell .next-cue {
-    margin-top: auto;
-    padding: 9px 10px;
-    border-radius: 16px;
-    background: rgba(86, 226, 139, 0.08);
-    box-shadow: none;
   }
 
   html.native-shell.android-shell .fit-roomy .section-kicker {
@@ -2648,7 +2774,7 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .daily-section.fit-tight,
   html.native-shell.android-shell .daily-section.fit-tight.band {
-    padding: 9px 9px 10px;
+    padding: 9px 9px 62px;
     justify-content: flex-start;
   }
 
@@ -2723,7 +2849,7 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .daily-section.fit-ultra,
   html.native-shell.android-shell .daily-section.fit-ultra.band {
-    padding: 7px 8px 8px;
+    padding: 7px 8px 58px;
     justify-content: flex-start;
   }
 
