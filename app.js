@@ -715,6 +715,8 @@ let mobileViewportTimer = 0;
 let mobileTouchStartY = 0;
 let mobileTouchStartX = 0;
 let mobileTouchStartAt = 0;
+let mobileTouchLastY = 0;
+let mobileTouchLocked = false;
 let mobileTouchSection = null;
 let sectionFitFrame = 0;
 let sectionFitSignature = "";
@@ -724,6 +726,7 @@ const nextCuePressTimers = new WeakMap();
 const SNAP_RELEASE_MS = 920;
 const PHONE_SECTION_TRANSITION_MS = 430;
 const NEXT_CUE_PRESS_MS = 320;
+const NEXT_CUE_NAV_DELAY_MS = 75;
 
 function getSydneyParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -1234,28 +1237,34 @@ function setupSmoothNavigation() {
     if (!target) return;
 
     event.preventDefault();
-    playNextCuePress(trigger);
+    const shouldDelayForPress = playNextCuePress(trigger);
+    if (shouldDelayForPress) {
+      window.setTimeout(() => smoothScrollToSection(id), NEXT_CUE_NAV_DELAY_MS);
+      return;
+    }
+
     smoothScrollToSection(id);
   });
 }
 
 function playNextCuePress(trigger) {
-  if (!trigger.classList.contains("next-cue") || prefersReducedMotion()) return;
+  if (!trigger.classList.contains("next-cue") || prefersReducedMotion()) return false;
 
   const previousTimer = nextCuePressTimers.get(trigger);
   if (previousTimer) clearTimeout(previousTimer);
 
   trigger.classList.remove("is-pressing");
-  requestAnimationFrame(() => {
-    trigger.classList.add("is-pressing");
-    nextCuePressTimers.set(
-      trigger,
-      window.setTimeout(() => {
-        trigger.classList.remove("is-pressing");
-        nextCuePressTimers.delete(trigger);
-      }, NEXT_CUE_PRESS_MS),
-    );
-  });
+  void trigger.offsetWidth;
+  trigger.classList.add("is-pressing");
+  nextCuePressTimers.set(
+    trigger,
+    window.setTimeout(() => {
+      trigger.classList.remove("is-pressing");
+      nextCuePressTimers.delete(trigger);
+    }, NEXT_CUE_PRESS_MS),
+  );
+
+  return isPhoneLayout() && document.documentElement.classList.contains("native-shell");
 }
 
 function setupNativeExternalLinks() {
@@ -1397,7 +1406,9 @@ function setupMobileScrollGuard() {
       const touch = event.touches[0];
       mobileTouchStartX = touch?.clientX || 0;
       mobileTouchStartY = touch?.clientY || 0;
+      mobileTouchLastY = mobileTouchStartY;
       mobileTouchStartAt = Date.now();
+      mobileTouchLocked = false;
       mobileTouchSection = section;
     },
     { passive: true },
@@ -1411,21 +1422,35 @@ function setupMobileScrollGuard() {
       const scroller = event.target.closest?.(".daily-section.is-current");
       if (!scroller) return;
 
+      const x = event.touches[0]?.clientX || 0;
       const y = event.touches[0]?.clientY || 0;
-      const dy = y - mobileTouchStartY;
+      const totalDx = x - mobileTouchStartX;
+      const totalDy = y - mobileTouchStartY;
+      const stepDy = y - mobileTouchLastY;
+      const verticalIntent = Math.abs(totalDy) > 10 && Math.abs(totalDy) > Math.abs(totalDx) * 1.18;
+      const nativeShell = document.documentElement.classList.contains("native-shell");
+
+      if (nativeShell && verticalIntent) {
+        mobileTouchLocked = true;
+        event.preventDefault();
+        mobileTouchLastY = y;
+        return;
+      }
+
       if (!scroller.classList.contains("fit-scroll")) {
-        if (!isNativeApp() && Math.abs(dy) > 10) event.preventDefault();
+        if (verticalIntent) event.preventDefault();
+        mobileTouchLastY = y;
         return;
       }
 
       const atTop = scroller.scrollTop <= 0;
       const atBottom = Math.ceil(scroller.scrollTop + scroller.clientHeight) >= scroller.scrollHeight - 1;
 
-      if ((atTop && dy > 0) || (atBottom && dy < 0)) {
+      if ((atTop && stepDy > 0) || (atBottom && stepDy < 0)) {
         event.preventDefault();
       }
 
-      mobileTouchStartY = y;
+      mobileTouchLastY = y;
     },
     { passive: false },
   );
@@ -1434,22 +1459,27 @@ function setupMobileScrollGuard() {
     "touchend",
     (event) => {
       if (!isPhoneLayout() || !mobileTouchSection || isProgrammaticScroll) return;
-      if (mobileTouchSection.classList.contains("fit-scroll")) {
-        mobileTouchSection = null;
-        return;
-      }
 
       const touch = event.changedTouches[0];
       const dx = (touch?.clientX || 0) - mobileTouchStartX;
       const dy = mobileTouchStartY - (touch?.clientY || 0);
       const elapsed = Date.now() - mobileTouchStartAt;
+      const nativeShell = document.documentElement.classList.contains("native-shell");
       mobileTouchSection = null;
+      mobileTouchLastY = 0;
 
-      const strongTug = Math.abs(dy) >= 82 && Math.abs(dy) > Math.abs(dx) * 1.35;
-      const quickFlick = Math.abs(dy) >= 62 && elapsed < 320 && Math.abs(dy) > Math.abs(dx) * 1.45;
-      if (!strongTug && !quickFlick) return;
+      const strongThreshold = nativeShell ? 68 : 82;
+      const quickThreshold = nativeShell ? 52 : 62;
+      const strongTug = Math.abs(dy) >= strongThreshold && Math.abs(dy) > Math.abs(dx) * 1.28;
+      const quickFlick = Math.abs(dy) >= quickThreshold && elapsed < 340 && Math.abs(dy) > Math.abs(dx) * 1.35;
+      if (!strongTug && !quickFlick) {
+        if (mobileTouchLocked) event.preventDefault();
+        mobileTouchLocked = false;
+        return;
+      }
 
       event.preventDefault();
+      mobileTouchLocked = false;
       navigateSection(dy > 0 ? 1 : -1);
     },
     { passive: false },

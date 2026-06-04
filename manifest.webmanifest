@@ -4,6 +4,7 @@
   "description": "A Sydney-time daily Islamic reading app with Qur'an, dua, dhikr, hadith, quote, and story.",
   "start_url": ".",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#020504",
   "theme_color": "#020504",
   "icons": [
