@@ -724,9 +724,9 @@ let phoneTransitionTimer = 0;
 let phoneTransitionFrame = 0;
 const nextCuePressTimers = new WeakMap();
 const SNAP_RELEASE_MS = 920;
-const PHONE_SECTION_TRANSITION_MS = 430;
+const PHONE_SECTION_TRANSITION_MS = 380;
 const NEXT_CUE_PRESS_MS = 320;
-const NEXT_CUE_NAV_DELAY_MS = 75;
+const NEXT_CUE_NAV_DELAY_MS = 70;
 
 function getSydneyParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -1528,21 +1528,19 @@ function preparePhoneSectionTransition(id) {
     return 0;
   }
 
-  const from = document.querySelector(".daily-section.is-current");
   const to = document.getElementById(id);
-  if (!from || !to || from === to) {
+  if (!to || to.classList.contains("is-current")) {
     cleanupPhoneSectionTransition();
     return 0;
   }
 
   cleanupPhoneSectionTransition();
 
-  const fromIndex = labels.findIndex(([sectionId]) => sectionId === from.id);
+  const fromIndex = labels.findIndex(([sectionId]) => sectionId === currentSectionId);
   const toIndex = labels.findIndex(([sectionId]) => sectionId === id);
   const directionClass = toIndex >= fromIndex ? "section-forward" : "section-back";
 
   document.documentElement.classList.add("section-switching", directionClass);
-  from.classList.add("section-exiting");
   to.classList.add("section-entering");
 
   phoneTransitionFrame = requestAnimationFrame(() => {
@@ -1755,7 +1753,10 @@ function fitActivePhoneSection() {
   });
 
   const nextSignature = `${section.id}:${section.clientWidth}x${section.clientHeight}`;
-  if (section.dataset.fitSignature === nextSignature && sectionFitSignature === nextSignature) return;
+  const hasFitClass = ["fit-roomy", "fit-tight", "fit-ultra", "fit-scroll"].some((className) =>
+    section.classList.contains(className),
+  );
+  if (hasFitClass && section.dataset.fitSignature === nextSignature && sectionFitSignature === nextSignature) return;
 
   sectionFitSignature = nextSignature;
   section.dataset.fitSignature = nextSignature;
@@ -1783,6 +1784,7 @@ function fitActivePhoneSection() {
 
 function getSectionOverflow(section) {
   const sectionRect = section.getBoundingClientRect();
+  const isNativePhoneSection = isPhoneLayout() && document.documentElement.classList.contains("native-shell");
   const contentItems = [...section.querySelectorAll(
     ".section-kicker, .title-row, .count-chip, .arabic, .translit, .meaning, .quote-text, .quote-person, .body-text, .explain, .effect, .moral, .story-action, .story-note, .revelation-card, .source-row, .dhikr-counter",
   )].filter((item) => {
@@ -1794,6 +1796,13 @@ function getSectionOverflow(section) {
     const rect = item.getBoundingClientRect();
     return Math.max(bottom, rect.bottom);
   }, sectionRect.top);
+
+  if (isNativePhoneSection) {
+    const nextButton = section.querySelector(".next-cue");
+    const nextButtonTop = nextButton?.getBoundingClientRect().top ?? sectionRect.bottom;
+    const readableBottom = Math.min(sectionRect.bottom, nextButtonTop - 10);
+    return contentBottom - readableBottom;
+  }
 
   return Math.max(section.scrollHeight - section.clientHeight, contentBottom - sectionRect.bottom);
 }
