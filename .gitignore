@@ -4,3 +4,6 @@ www/
 .DS_Store
 Thumbs.db
 *.log
+android/key.properties
+android/*.jks
+android/*.keystore

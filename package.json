@@ -5,9 +5,11 @@
   "description": "A dependency-free Sydney-time Islamic daily reading app.",
   "scripts": {
     "build:android:debug": "powershell -ExecutionPolicy Bypass -File scripts/build-android-debug.ps1",
+    "build:android:play": "npm run sync:android && powershell -ExecutionPolicy Bypass -File scripts/build-android-play.ps1",
     "build:web": "node scripts/build-web.mjs",
     "cap": "cap",
     "check": "node --check app.js",
+    "create:android:upload-key": "powershell -ExecutionPolicy Bypass -File scripts/create-play-upload-key.ps1",
     "dev": "python -m http.server 4173",
     "install:android:debug": "npm run sync:android && npm run build:android:debug && powershell -ExecutionPolicy Bypass -File scripts/install-android-debug.ps1",
     "open:android": "cap open android",
