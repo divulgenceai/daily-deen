@@ -720,18 +720,50 @@ html:not([data-active-section="verse"]) .day-note {
 }
 
 .counter-tap {
+  position: relative;
   display: grid;
   min-width: min(100%, 270px);
   min-height: 76px;
+  align-content: center;
   justify-items: start;
+  overflow: hidden;
   padding: 12px 16px;
+  isolation: isolate;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.counter-tap::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(156, 255, 189, 0.16), transparent 34%),
+    linear-gradient(135deg, rgba(86, 226, 139, 0.08), rgba(86, 226, 139, 0.02));
+  content: "";
+  opacity: 0.76;
+  transition: opacity 180ms ease;
+}
+
+.counter-tap.is-pressing-counter {
+  border-color: rgba(156, 255, 189, 0.64);
+  background: rgba(86, 226, 139, 0.12);
+  transform: translateY(1px) scale(0.992);
 }
 
 .counter-number {
   color: var(--text);
   font-family: var(--serif);
   font-size: 2rem;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.counter-number.is-bumping {
+  animation: counterNumberBump 240ms cubic-bezier(0.2, 0.9, 0.2, 1) both;
 }
 
 .counter-label {
@@ -741,6 +773,23 @@ html:not([data-active-section="verse"]) .day-note {
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+}
+
+.counter-burst {
+  position: absolute;
+  top: 15px;
+  right: 16px;
+  color: var(--accent-2);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate3d(0, 8px, 0);
+}
+
+.counter-burst.visible {
+  animation: counterBurst 360ms cubic-bezier(0.18, 0.88, 0.2, 1) both;
 }
 
 .counter-reset {
@@ -813,14 +862,25 @@ html:not([data-active-section="verse"]) .day-note {
 
 .story-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
-  gap: 34px;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 0.46fr);
+  gap: 38px;
   align-items: start;
 }
 
 .story-note {
   border-left: 1px solid var(--line-strong);
   padding-left: 22px;
+}
+
+#story .body-text {
+  max-width: 820px;
+  font-size: clamp(1.02rem, 1.45vw, 1.18rem);
+  line-height: 1.72;
+}
+
+.story-note .moral {
+  font-size: clamp(1rem, 1.4vw, 1.14rem);
+  line-height: 1.62;
 }
 
 .story-action {
@@ -1212,6 +1272,42 @@ html:not([data-active-section="verse"]) .day-note {
 
   50% {
     transform: scale(1.025);
+  }
+}
+
+@keyframes counterNumberBump {
+  0% {
+    color: var(--text);
+    filter: drop-shadow(0 0 0 rgba(156, 255, 189, 0));
+    transform: translateY(0) scale(1);
+  }
+
+  42% {
+    color: var(--accent-2);
+    filter: drop-shadow(0 0 14px rgba(86, 226, 139, 0.34));
+    transform: translateY(-1px) scale(1.08);
+  }
+
+  100% {
+    color: var(--text);
+    filter: drop-shadow(0 0 0 rgba(156, 255, 189, 0));
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes counterBurst {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.86);
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(0, -18px, 0) scale(1);
   }
 }
 
@@ -2545,6 +2641,14 @@ html:not([data-active-section="verse"]) .day-note {
     animation: none !important;
   }
 
+  html.native-shell.android-shell .counter-number.is-bumping {
+    animation: counterNumberBump 210ms cubic-bezier(0.2, 0.9, 0.2, 1) both !important;
+  }
+
+  html.native-shell.android-shell .counter-burst.visible {
+    animation: counterBurst 320ms cubic-bezier(0.18, 0.88, 0.2, 1) both !important;
+  }
+
   html.native-shell.android-shell .counter-feedback.visible {
     animation: none !important;
   }
@@ -2577,6 +2681,14 @@ html:not([data-active-section="verse"]) .day-note {
 
     html.native-shell.android-shell .counter-tap.pulse {
       animation: counterPress 220ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+    }
+
+    html.native-shell.android-shell .counter-number.is-bumping {
+      animation: counterNumberBump 210ms cubic-bezier(0.2, 0.9, 0.2, 1) both !important;
+    }
+
+    html.native-shell.android-shell .counter-burst.visible {
+      animation: counterBurst 320ms cubic-bezier(0.18, 0.88, 0.2, 1) both !important;
     }
 
     html.native-shell.android-shell .counter-feedback.visible {
@@ -2820,8 +2932,18 @@ html:not([data-active-section="verse"]) .day-note {
     padding-top: 7px;
   }
 
+  html.native-shell.android-shell #story .body-text {
+    font-size: 0.82rem;
+    line-height: 1.48;
+  }
+
   html.native-shell.android-shell .story-action {
     margin-top: 6px;
+  }
+
+  html.native-shell.android-shell .story-note .moral {
+    font-size: 0.78rem;
+    line-height: 1.42;
   }
 
   html.native-shell.android-shell .context-link {
@@ -2862,15 +2984,23 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .counter-tap {
     min-height: 48px;
     padding: 7px 9px;
+    transform-origin: center;
   }
 
   html.native-shell.android-shell .counter-number {
     font-size: 1.26rem;
+    font-variant-numeric: tabular-nums;
   }
 
   html.native-shell.android-shell .counter-label {
     margin-top: 2px;
     font-size: 0.5rem;
+  }
+
+  html.native-shell.android-shell .counter-burst {
+    top: 8px;
+    right: 10px;
+    font-size: 0.66rem;
   }
 
   html.native-shell.android-shell .counter-reset {
@@ -2955,6 +3085,17 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .fit-roomy .story-action {
     font-size: 0.8rem;
     line-height: 1.42;
+  }
+
+  html.native-shell.android-shell #story.fit-roomy .body-text {
+    font-size: 0.86rem;
+    line-height: 1.52;
+  }
+
+  html.native-shell.android-shell #story.fit-roomy .moral,
+  html.native-shell.android-shell #story.fit-roomy .story-action {
+    font-size: 0.82rem;
+    line-height: 1.48;
   }
 
   html.native-shell.android-shell .fit-roomy .explain,

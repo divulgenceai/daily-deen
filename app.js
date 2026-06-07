@@ -700,6 +700,119 @@ const readings = {
   ],
 };
 
+readings.stories = [
+  {
+    title: "Yunus In The Darkness",
+    body:
+      "Prophet Yunus left his people after they rejected him, then found himself in the belly of the fish, beneath the sea, in layered darkness. He did not argue with Allah or blame the world. He called with tawhid, tasbih, and confession: there is no god but You; glory be to You; I was among the wrongdoers. Allah rescued him and made his deliverance a sign that sincere return can reach Allah from any depth.",
+    moral:
+      "When consequences close in, despair is not the believer's only script. Return with truth: Allah is perfect, and I am the one in need of mercy.",
+    action: "Make the dua of Yunus slowly once today, especially over one mistake you are ready to correct.",
+    source: "Qur'an 21:87-88",
+    quality: "Revelation",
+    url: "https://quran.com/21/87-88",
+  },
+  {
+    title: "Yusuf Forgives His Brothers",
+    body:
+      "Prophet Yusuf was separated from his father, thrown into hardship, sold, tested, and imprisoned. Years later, Allah raised him to a position where the brothers who wronged him stood before him in need. He could have used power to reopen every wound. Instead, he said there was no blame upon them that day and directed them to Allah's mercy.",
+    moral:
+      "Strength is not always taking revenge when you can. Sometimes real strength is refusing to let the past make you unjust in the present.",
+    action: "Release one old resentment into dua, and ask Allah to replace bitterness with wisdom.",
+    source: "Qur'an 12:89-92",
+    quality: "Revelation",
+    url: "https://quran.com/12/89-92",
+  },
+  {
+    title: "Musa And Khidr",
+    body:
+      "Prophet Musa traveled to learn from Khidr and witnessed moments that looked wrong from the outside: a damaged boat, a painful loss, and a wall repaired for people who had not shown hospitality. Musa objected because he cared about justice, but later the hidden wisdom was explained. What looked like loss was protection, what looked unbearable had mercy behind it, and what looked unrewarded preserved an orphan's future.",
+    moral:
+      "Not every closed door is punishment. Some are protection whose mercy becomes visible only when Allah allows the full picture to appear.",
+    action: "Say alhamdulillah for one thing you do not yet understand, and ask Allah for patience until its wisdom becomes clear.",
+    source: "Qur'an 18:60-82",
+    quality: "Revelation",
+    url: "https://quran.com/18/60-82",
+  },
+  {
+    title: "The People Of The Cave",
+    body:
+      "A group of young believers lived among people whose beliefs and pressure threatened their faith. They did not have worldly power, but they had conviction. They withdrew to a cave seeking Allah's mercy, and Allah protected them in a way no one could have engineered. Their sleep became a sign for later generations that Allah can preserve faith when people choose Him over approval.",
+    moral:
+      "A young heart can be serious about Allah. Leaving a harmful setting may not be weakness; it may be the first step into mercy.",
+    action: "Name one environment that strengthens your deen and one that weakens it, then make one practical change.",
+    source: "Qur'an 18:13-26",
+    quality: "Revelation",
+    url: "https://quran.com/18/13-26",
+  },
+  {
+    title: "Maryam's Provision",
+    body:
+      "Maryam was placed under the care of Zakariya, and he would find provision with her in a way that made him ask where it came from. Her answer was simple and certain: it was from Allah, who provides without measure. That scene also awakened hope in Zakariya's own heart, leading him to call upon Allah for a child despite old age and apparent impossibility.",
+    moral:
+      "Allah's provision is not limited to the doors people can see. Private worship can open private gifts, and another person's blessing can remind you to ask Allah again.",
+    action: "Protect one sincere deed between you and Allah, and make one dua you had almost stopped making.",
+    source: "Qur'an 3:37",
+    quality: "Revelation",
+    url: "https://quran.com/3/37",
+  },
+  {
+    title: "A Small Group With Great Certainty",
+    body:
+      "When Talut's army faced Jalut, the size of the enemy made many hearts shake. Some saw the situation only through numbers, strength, and visible odds. A smaller group looked through faith and said that many small groups have overcome larger ones by Allah's permission. Their certainty did not make them passive; it made them steady enough to move.",
+    moral:
+      "Numbers matter, but they do not rule Allah's decree. Courage grows when reliance on Allah is joined to obedience and action.",
+    action: "Ask Allah for firmness before a difficult task, then take the next responsible step.",
+    source: "Qur'an 2:249-251",
+    quality: "Revelation",
+    url: "https://quran.com/2/249-251",
+  },
+  {
+    title: "Ibrahim Seeks Certainty",
+    body:
+      "Prophet Ibrahim asked Allah to show him how the dead are brought to life. When asked whether he did not believe, he answered that he did believe, but wanted his heart to be reassured. Allah taught him through a sign that moved certainty from belief held in the heart to reassurance witnessed by the heart.",
+    moral:
+      "Seeking reassurance with adab is not the enemy of faith. The problem is not having a question; the problem is feeding suspicion instead of seeking guidance.",
+    action: "Turn one sincere question into study, not suspicion, and ask someone trustworthy if you need help.",
+    source: "Qur'an 2:260",
+    quality: "Revelation",
+    url: "https://quran.com/2/260",
+  },
+  {
+    title: "The Three Men In The Cave",
+    body:
+      "Three travelers took shelter in a cave, and a rock sealed the entrance until they could not escape. Each man called upon Allah by mentioning a deed he had done sincerely for Him: honoring parents, restraining himself from sin, and returning another person's wealth faithfully. With each sincere plea, the rock moved until Allah opened the way out.",
+    moral:
+      "Hidden sincerity is a provision for days you cannot predict. Deeds done quietly for Allah are not lost just because people never applauded them.",
+    action: "Choose one deed today that no one needs to know about, and guard it from being shown off.",
+    source: "Sahih al-Bukhari 2215; Sahih Muslim 2743",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:2215",
+  },
+  {
+    title: "Asiyah's Higher Home",
+    body:
+      "Asiyah lived in the house of Fir'awn, surrounded by power, luxury, and oppression. Yet her heart was not owned by the palace. She asked Allah for a home near Him in Paradise and for rescue from Fir'awn, his actions, and wrongdoing people. Her dua shows that true success is not being close to power, but being close to Allah.",
+    moral:
+      "A corrupt environment does not own the believer's heart. Loyalty to Allah can survive pressure from every side when the Hereafter is more real than status.",
+    action: "Ask Allah for a heart attached to the Hereafter, especially when the world looks impressive.",
+    source: "Qur'an 66:11",
+    quality: "Revelation",
+    url: "https://quran.com/66/11",
+  },
+  {
+    title: "Luqman's Advice",
+    body:
+      "Luqman advised his son with priorities that began deep in the heart and reached ordinary daily behavior. He warned him against shirk, taught gratitude, reminded him that Allah knows even the smallest hidden deed, and connected prayer with patience and moral courage. His advice also shaped manners: do not turn from people in pride, do not walk arrogantly, and keep speech measured.",
+    moral:
+      "Good advice is not only information. It is love shaped into priorities, and the best reminders teach both belief and character.",
+    action: "Give one gentle reminder with mercy, or accept one without pride when someone reminds you.",
+    source: "Qur'an 31:12-19",
+    quality: "Revelation",
+    url: "https://quran.com/31/12-19",
+  },
+];
+
 setNativeShellClasses();
 loadCapacitorBridge();
 
@@ -876,9 +989,10 @@ function dhikrCounterMarkup() {
   return `
     <div class="dhikr-counter" aria-label="Dhikr counter">
       <div class="counter-main">
-        <button class="counter-tap" id="dhikrTapButton" type="button">
+        <button class="counter-tap" id="dhikrTapButton" type="button" aria-label="Dhikr count 0. Tap to add one.">
           <span class="counter-number" id="dhikrCount">0</span>
           <span class="counter-label">Tap to count this dhikr</span>
+          <span class="counter-burst" id="dhikrBurst" aria-hidden="true">+1</span>
         </button>
         <button class="counter-reset" id="dhikrResetButton" type="button">Reset</button>
       </div>
@@ -1984,50 +2098,86 @@ function setupDhikrCounter(iso, title) {
   const resetButton = document.querySelector("#dhikrResetButton");
   const countText = document.querySelector("#dhikrCount");
   const feedback = document.querySelector("#dhikrCounterFeedback");
+  const burst = document.querySelector("#dhikrBurst");
   if (!tapButton || !resetButton || !countText) return;
 
   const key = `daily-deen-dhikr-count-${iso}-${slugify(title)}`;
-  let count = Number(localStorage.getItem(key) || 0);
+  let count = getStoredDhikrCount(key);
+  let feedbackTimer = 0;
 
-  const renderCount = () => {
-    countText.textContent = String(count);
+  const saveCount = () => {
+    try {
+      localStorage.setItem(key, String(count));
+    } catch {
+      // The counter still works for the session if storage is blocked.
+    }
   };
 
-  tapButton.addEventListener("click", () => {
+  const renderCount = (animate = false) => {
+    const formatted = new Intl.NumberFormat("en-AU").format(count);
+    countText.textContent = formatted;
+    tapButton.setAttribute("aria-label", `Dhikr count ${formatted}. Tap to add one.`);
+
+    if (!animate || prefersReducedMotion()) return;
+
+    countText.classList.remove("is-bumping");
+    burst?.classList.remove("visible");
+    void countText.offsetWidth;
+    countText.classList.add("is-bumping");
+    burst?.classList.add("visible");
+  };
+
+  const showCounterFeedback = (message) => {
+    if (!feedback) return;
+
+    feedback.textContent = message;
+    feedback.classList.add("visible");
+    clearTimeout(feedbackTimer);
+    feedbackTimer = setTimeout(() => {
+      feedback.classList.remove("visible");
+      feedback.textContent = "";
+    }, 1300);
+  };
+
+  const increment = () => {
     count += 1;
-    localStorage.setItem(key, String(count));
-    renderCount();
-    if (tapButton.animate && isNativeApp()) {
-      tapButton.animate(
-        [
-          { transform: "scale(0.985)" },
-          { transform: "scale(1)" },
-        ],
-        { duration: 110, easing: "cubic-bezier(0.2, 0, 0, 1)" },
-      );
-    } else {
-      tapButton.classList.remove("pulse");
-      void tapButton.offsetWidth;
-      tapButton.classList.add("pulse");
-    }
+    saveCount();
+    renderCount(true);
+  };
+
+  tapButton.addEventListener("pointerdown", () => {
+    tapButton.classList.add("is-pressing-counter");
   });
 
-  resetButton.addEventListener("click", () => {
+  ["pointerup", "pointercancel", "pointerleave", "blur"].forEach((eventName) => {
+    tapButton.addEventListener(eventName, () => {
+      tapButton.classList.remove("is-pressing-counter");
+    });
+  });
+
+  tapButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    increment();
+  });
+
+  resetButton.addEventListener("click", (event) => {
+    event.preventDefault();
     count = 0;
-    localStorage.setItem(key, "0");
-    renderCount();
-    if (feedback) {
-      feedback.textContent = "Counter reset";
-      feedback.classList.add("visible");
-      clearTimeout(feedback.hideTimer);
-      feedback.hideTimer = setTimeout(() => {
-        feedback.classList.remove("visible");
-        feedback.textContent = "";
-      }, 1600);
-    }
+    saveCount();
+    renderCount(true);
+    showCounterFeedback("Counter reset");
   });
 
   renderCount();
+}
+
+function getStoredDhikrCount(key) {
+  try {
+    const stored = Number.parseInt(localStorage.getItem(key) || "0", 10);
+    return Number.isFinite(stored) && stored > 0 ? stored : 0;
+  } catch {
+    return 0;
+  }
 }
 
 function slugify(value) {
