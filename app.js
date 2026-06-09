@@ -27,6 +27,7 @@ const labels = [
   ["hadith", "Hadith Of The Day"],
   ["quote", "Quote Of The Day"],
   ["story", "Story Of The Day"],
+  ["ruling", "Halal / Haram Fact Of The Day"],
 ];
 
 const readings = {
@@ -704,9 +705,11 @@ readings.stories = [
   {
     title: "Yunus In The Darkness",
     body:
-      "Prophet Yunus left his people after they rejected him, then found himself in the belly of the fish, beneath the sea, in layered darkness. He did not argue with Allah or blame the world. He called with tawhid, tasbih, and confession: there is no god but You; glory be to You; I was among the wrongdoers. Allah rescued him and made his deliverance a sign that sincere return can reach Allah from any depth.",
+      "Prophet Yunus left his people after they rejected him, and the next part of his story placed him in a situation no person could engineer their way out of: the belly of the fish, beneath the sea, in layered darkness. The Qur'an does not present his rescue as luck or cleverness. It shows a servant who recognized Allah's perfection and his own need. He called with tawhid, tasbih, and confession: there is no god but You, glory be to You, I was among the wrongdoers. The moment is powerful because Yunus did not dress up his mistake. He did not bargain with Allah or blame everyone around him. He returned to the truth, and Allah answered him from a place where no human help could reach.",
+    lesson:
+      "Notice the order of his dua: Allah's oneness first, Allah's perfection second, and personal accountability third. That is why the story teaches hope without excuses.",
     moral:
-      "When consequences close in, despair is not the believer's only script. Return with truth: Allah is perfect, and I am the one in need of mercy.",
+      "When consequences close in, despair is not the believer's only script. Return with truth: Allah is perfect, and I am the one in need of mercy. A dark place can become the beginning of rescue when it becomes the place of sincere repentance.",
     action: "Make the dua of Yunus slowly once today, especially over one mistake you are ready to correct.",
     source: "Qur'an 21:87-88",
     quality: "Revelation",
@@ -715,9 +718,11 @@ readings.stories = [
   {
     title: "Yusuf Forgives His Brothers",
     body:
-      "Prophet Yusuf was separated from his father, thrown into hardship, sold, tested, and imprisoned. Years later, Allah raised him to a position where the brothers who wronged him stood before him in need. He could have used power to reopen every wound. Instead, he said there was no blame upon them that day and directed them to Allah's mercy.",
+      "Prophet Yusuf was separated from his father, thrown into the well, sold into another land, tested in private, and imprisoned despite his innocence. Years later, Allah raised him to authority, and the brothers who had once planned against him came before him in need. This was the kind of moment where wounded pride can become cruelty. Yusuf had memory, power, and the legal ability to expose them. Instead, he chose prophetic nobility. He reminded them that Allah had been kind, refused to humiliate them, and said there was no blame upon them that day. His forgiveness did not erase the wrong, but it refused to let the wrong become the ruler of his character.",
+    lesson:
+      "The story is not saying every harm should be ignored. It is showing that when Allah gives you the upper hand, taqwa must still control how you use it.",
     moral:
-      "Strength is not always taking revenge when you can. Sometimes real strength is refusing to let the past make you unjust in the present.",
+      "Strength is not always taking revenge when you can. Sometimes real strength is refusing to let the past make you unjust in the present. Yusuf's forgiveness was not weakness; it was a heart healed enough to choose Allah's pleasure over a dramatic payback.",
     action: "Release one old resentment into dua, and ask Allah to replace bitterness with wisdom.",
     source: "Qur'an 12:89-92",
     quality: "Revelation",
@@ -726,9 +731,11 @@ readings.stories = [
   {
     title: "Musa And Khidr",
     body:
-      "Prophet Musa traveled to learn from Khidr and witnessed moments that looked wrong from the outside: a damaged boat, a painful loss, and a wall repaired for people who had not shown hospitality. Musa objected because he cared about justice, but later the hidden wisdom was explained. What looked like loss was protection, what looked unbearable had mercy behind it, and what looked unrewarded preserved an orphan's future.",
+      "Prophet Musa traveled to learn from Khidr and witnessed moments that looked wrong from the outside: a boat was damaged, a painful loss occurred, and a wall was repaired for people who had refused hospitality. Musa objected because he loved justice and could only see the visible layer of events. Later, Khidr explained what Allah had taught him: damaging the boat protected poor owners from a tyrant, the painful matter protected believing parents from a future trial, and repairing the wall preserved the inheritance of two orphans because their father had been righteous. The story slows the heart down. It teaches that Allah's wisdom can be present even when the first reading of a situation feels confusing.",
+    lesson:
+      "The lesson is not to stop caring about right and wrong. The lesson is to admit that human sight is limited, while Allah's knowledge covers the visible and hidden future.",
     moral:
-      "Not every closed door is punishment. Some are protection whose mercy becomes visible only when Allah allows the full picture to appear.",
+      "Not every closed door is punishment. Some are protection whose mercy becomes visible only when Allah allows the full picture to appear. Patience is not pretending pain is easy; it is trusting Allah while the meaning is still covered.",
     action: "Say alhamdulillah for one thing you do not yet understand, and ask Allah for patience until its wisdom becomes clear.",
     source: "Qur'an 18:60-82",
     quality: "Revelation",
@@ -737,9 +744,11 @@ readings.stories = [
   {
     title: "The People Of The Cave",
     body:
-      "A group of young believers lived among people whose beliefs and pressure threatened their faith. They did not have worldly power, but they had conviction. They withdrew to a cave seeking Allah's mercy, and Allah protected them in a way no one could have engineered. Their sleep became a sign for later generations that Allah can preserve faith when people choose Him over approval.",
+      "A group of young believers lived among people whose pressure threatened their faith. They did not have the public power to reshape the society around them, but they had enough conviction to protect what mattered most. They withdrew to a cave and asked Allah for mercy and right guidance. Allah protected them in a way no plan could have produced, causing them to sleep for years and making their story a sign for later generations. Their courage was not loud or performative. It was the quiet decision to choose Allah over approval when the cost felt real.",
+    lesson:
+      "Youth is not an excuse for shallow faith. The Qur'an specifically highlights them as young people whose guidance increased because they believed and acted on that belief.",
     moral:
-      "A young heart can be serious about Allah. Leaving a harmful setting may not be weakness; it may be the first step into mercy.",
+      "A young heart can be serious about Allah. Leaving a harmful setting may not be weakness; it may be the first step into mercy. Sometimes protecting iman means choosing a smaller circle, a quieter place, and a cleaner influence.",
     action: "Name one environment that strengthens your deen and one that weakens it, then make one practical change.",
     source: "Qur'an 18:13-26",
     quality: "Revelation",
@@ -748,9 +757,11 @@ readings.stories = [
   {
     title: "Maryam's Provision",
     body:
-      "Maryam was placed under the care of Zakariya, and he would find provision with her in a way that made him ask where it came from. Her answer was simple and certain: it was from Allah, who provides without measure. That scene also awakened hope in Zakariya's own heart, leading him to call upon Allah for a child despite old age and apparent impossibility.",
+      "Maryam was placed under the care of Zakariya, and he would find provision with her in a way that made him ask where it came from. Her answer was simple and certain: it was from Allah, who provides without measure. That answer did more than explain her provision. It awakened hope in Zakariya's own heart. Seeing Allah provide for Maryam in an unexpected way reminded him to ask for something that looked impossible by ordinary means: a child in old age. Her private honor became a doorway for another prophet's dua.",
+    lesson:
+      "A blessing in someone else's life does not need to trigger envy. It can trigger remembrance, hope, and a renewed dua from your own heart.",
     moral:
-      "Allah's provision is not limited to the doors people can see. Private worship can open private gifts, and another person's blessing can remind you to ask Allah again.",
+      "Allah's provision is not limited to the doors people can see. Private worship can open private gifts, and another person's blessing can remind you to ask Allah again. The one who gives without measure is not restricted by your timeline.",
     action: "Protect one sincere deed between you and Allah, and make one dua you had almost stopped making.",
     source: "Qur'an 3:37",
     quality: "Revelation",
@@ -759,9 +770,11 @@ readings.stories = [
   {
     title: "A Small Group With Great Certainty",
     body:
-      "When Talut's army faced Jalut, the size of the enemy made many hearts shake. Some saw the situation only through numbers, strength, and visible odds. A smaller group looked through faith and said that many small groups have overcome larger ones by Allah's permission. Their certainty did not make them passive; it made them steady enough to move.",
+      "When Talut's army faced Jalut, the visible odds looked frightening. Some people read the situation only through numbers, size, and military strength, and their hearts collapsed before the battle even began. A smaller group saw the same scene through faith and said that many small groups have overcome larger ones by Allah's permission. Their certainty did not make them careless. It made them steady enough to obey, move, and ask Allah for patience and firmness. The Qur'an shows that courage is not the absence of fear; it is fear placed under obedience to Allah.",
+    lesson:
+      "Reliance on Allah is not passive optimism. The believing group made dua, stayed firm, and still stepped into the responsibility in front of them.",
     moral:
-      "Numbers matter, but they do not rule Allah's decree. Courage grows when reliance on Allah is joined to obedience and action.",
+      "Numbers matter, but they do not rule Allah's decree. Courage grows when reliance on Allah is joined to obedience and action. A small group with sincerity can be heavier with Allah than a crowd without certainty.",
     action: "Ask Allah for firmness before a difficult task, then take the next responsible step.",
     source: "Qur'an 2:249-251",
     quality: "Revelation",
@@ -770,9 +783,11 @@ readings.stories = [
   {
     title: "Ibrahim Seeks Certainty",
     body:
-      "Prophet Ibrahim asked Allah to show him how the dead are brought to life. When asked whether he did not believe, he answered that he did believe, but wanted his heart to be reassured. Allah taught him through a sign that moved certainty from belief held in the heart to reassurance witnessed by the heart.",
+      "Prophet Ibrahim asked Allah to show him how the dead are brought to life. When Allah asked whether he did not believe, Ibrahim answered that he did believe, but wanted his heart to be reassured. That answer matters. It separates sincere reassurance from arrogant doubt. Allah then taught him through a sign, moving certainty from belief held in the heart to reassurance witnessed by the heart. The story gives believers room to seek understanding with adab, without turning questions into suspicion against Allah.",
+    lesson:
+      "A question can either become a path to guidance or a doorway to restlessness. Ibrahim shows the first path: belief, humility, and a request for reassurance from Allah.",
     moral:
-      "Seeking reassurance with adab is not the enemy of faith. The problem is not having a question; the problem is feeding suspicion instead of seeking guidance.",
+      "Seeking reassurance with adab is not the enemy of faith. The problem is not having a question; the problem is feeding suspicion instead of seeking guidance. A heart can believe and still ask Allah to make that belief calmer and deeper.",
     action: "Turn one sincere question into study, not suspicion, and ask someone trustworthy if you need help.",
     source: "Qur'an 2:260",
     quality: "Revelation",
@@ -781,9 +796,11 @@ readings.stories = [
   {
     title: "The Three Men In The Cave",
     body:
-      "Three travelers took shelter in a cave, and a rock sealed the entrance until they could not escape. Each man called upon Allah by mentioning a deed he had done sincerely for Him: honoring parents, restraining himself from sin, and returning another person's wealth faithfully. With each sincere plea, the rock moved until Allah opened the way out.",
+      "Three travelers took shelter in a cave, and a rock sealed the entrance until they could not escape. No tool, status, or clever speech could move it. Each man called upon Allah by mentioning a deed he had done sincerely for Him: one had honored his parents with deep patience, one had restrained himself from a major sin at the moment he could have fallen into it, and one had protected another person's wealth until it grew and returned it faithfully. With each sincere plea, the rock moved, until Allah opened the way out. The story teaches that hidden sincerity is not wasted. It may become the very thing Allah makes a means of rescue later.",
+    lesson:
+      "Each deed was difficult in a different way: family duty, private self-control, and financial trust. Sincerity is proven in the places where the ego has something to gain.",
     moral:
-      "Hidden sincerity is a provision for days you cannot predict. Deeds done quietly for Allah are not lost just because people never applauded them.",
+      "Hidden sincerity is a provision for days you cannot predict. Deeds done quietly for Allah are not lost just because people never applauded them. What is private with Allah can become protection when everything public fails.",
     action: "Choose one deed today that no one needs to know about, and guard it from being shown off.",
     source: "Sahih al-Bukhari 2215; Sahih Muslim 2743",
     quality: "Sahih",
@@ -792,9 +809,11 @@ readings.stories = [
   {
     title: "Asiyah's Higher Home",
     body:
-      "Asiyah lived in the house of Fir'awn, surrounded by power, luxury, and oppression. Yet her heart was not owned by the palace. She asked Allah for a home near Him in Paradise and for rescue from Fir'awn, his actions, and wrongdoing people. Her dua shows that true success is not being close to power, but being close to Allah.",
+      "Asiyah lived in the house of Fir'awn, surrounded by power, luxury, and oppression. From the outside, the palace looked like success. From the inside, it was a place where truth was fought and believers were harmed. Yet her heart was not owned by the palace. She asked Allah for a home near Him in Paradise and for rescue from Fir'awn, his actions, and wrongdoing people. Her dua is precise: she did not merely ask to escape difficulty; she asked for nearness to Allah first. The order of her dua exposes the real scale of success. A person can be near worldly power and far from peace, or hidden from people and near Allah.",
+    lesson:
+      "Asiyah's example is especially powerful because environment did not excuse surrender. Faith can stay alive even when the room around it is hostile.",
     moral:
-      "A corrupt environment does not own the believer's heart. Loyalty to Allah can survive pressure from every side when the Hereafter is more real than status.",
+      "A corrupt environment does not own the believer's heart. Loyalty to Allah can survive pressure from every side when the Hereafter is more real than status. The highest home is the one near Allah, not the one admired by people.",
     action: "Ask Allah for a heart attached to the Hereafter, especially when the world looks impressive.",
     source: "Qur'an 66:11",
     quality: "Revelation",
@@ -803,13 +822,148 @@ readings.stories = [
   {
     title: "Luqman's Advice",
     body:
-      "Luqman advised his son with priorities that began deep in the heart and reached ordinary daily behavior. He warned him against shirk, taught gratitude, reminded him that Allah knows even the smallest hidden deed, and connected prayer with patience and moral courage. His advice also shaped manners: do not turn from people in pride, do not walk arrogantly, and keep speech measured.",
+      "Luqman advised his son with priorities that began deep in the heart and reached ordinary daily behavior. He warned him against shirk, taught gratitude, reminded him that Allah knows even the smallest hidden deed, and connected prayer with patience and moral courage. His advice did not stop at belief as an idea. It shaped manners: do not turn from people in pride, do not walk arrogantly, and keep speech measured. That is what makes the passage complete. It teaches that a believer's creed should become a believer's character, posture, voice, patience, and public behavior.",
+    lesson:
+      "Luqman teaches in layers: correct worship, grateful heart, awareness of Allah, prayer, patience, humility, and speech. A balanced Islamic life needs all of them.",
     moral:
-      "Good advice is not only information. It is love shaped into priorities, and the best reminders teach both belief and character.",
+      "Good advice is not only information. It is love shaped into priorities, and the best reminders teach both belief and character. The best advice does not just win an argument; it grows a person.",
     action: "Give one gentle reminder with mercy, or accept one without pride when someone reminds you.",
     source: "Qur'an 31:12-19",
     quality: "Revelation",
     url: "https://quran.com/31/12-19",
+  },
+];
+
+readings.rulings = [
+  {
+    title: "A Little Alcohol Is Still Not Halal",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "Some people treat a small drink, a party sip, or a drink that feels socially normal as harmless.",
+    ruling:
+      "Intoxicants are haram, and the rule is not based on whether the person personally feels they can control it.",
+    why:
+      "Allah commands believers to avoid intoxicants, and the hadith states that whatever intoxicates in large amounts is unlawful even in small amounts.",
+    consequence:
+      "The specific warning for drinking and becoming drunk is severe: the hadith says that prayer is not accepted for forty days, while also mentioning that repentance is accepted when the person repents.",
+    source: "Qur'an 5:90",
+    quality: "Revelation",
+    url: "https://quran.com/5/90",
+    extraSources: [
+      { source: "Jami` at-Tirmidhi 1865", quality: "Hasan", url: "https://sunnah.com/tirmidhi:1865" },
+      { source: "Sunan Ibn Majah 3377", quality: "Hadith warning", url: "https://sunnah.com/ibnmajah:3377" },
+    ],
+  },
+  {
+    title: "Horoscopes Are Not Harmless Fun",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "People sometimes read horoscopes, tarot-style posts, or fortune-teller content as entertainment.",
+    ruling:
+      "Seeking hidden knowledge from fortune-tellers, diviners, or prediction systems is haram and contradicts reliance on Allah.",
+    why:
+      "The unseen belongs to Allah. Sahih Muslim records a direct warning about visiting a diviner and asking about anything.",
+    consequence:
+      "The hadith gives a specific consequence: the person's prayers for forty nights will not be accepted. That wording is specific to this sin, so the app does not apply it to every haram matter.",
+    source: "Sahih Muslim 2230",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2230",
+  },
+  {
+    title: "Interest Is Not Made Halal By Calling It Normal",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "Because modern interest is everywhere, people may assume riba becomes acceptable when banks make it routine.",
+    ruling:
+      "Riba remains haram. A common financial system does not override revelation.",
+    why:
+      "The Qur'an commands believers to give up what remains of riba and warns those who refuse. Sahih Muslim also records a curse on the one who consumes riba, pays it, records it, and witnesses it.",
+    consequence:
+      "The Qur'an gives one of the strongest warnings in the deen: if people do not give it up, they are warned of war from Allah and His Messenger.",
+    source: "Qur'an 2:278-279",
+    quality: "Revelation",
+    url: "https://quran.com/2/278-279",
+    extraSources: [
+      { source: "Sahih Muslim 1598", quality: "Sahih", url: "https://sunnah.com/muslim:1598" },
+    ],
+  },
+  {
+    title: "Backbiting Is Haram Even When It Is True",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "A common excuse is, 'But what I said about them is true.'",
+    ruling:
+      "Backbiting is mentioning a person in a way they would dislike, even if the fault is real. If the claim is false, it becomes slander.",
+    why:
+      "The Qur'an directly forbids backbiting, and Sahih Muslim defines it through the Prophet's explanation.",
+    consequence:
+      "The Qur'an makes the warning emotionally heavy by comparing backbiting to eating the flesh of one's dead brother. That is the warning given here, not a made-up prayer penalty.",
+    source: "Qur'an 49:12",
+    quality: "Revelation",
+    url: "https://quran.com/49/12",
+    extraSources: [
+      { source: "Sahih Muslim 2589", quality: "Sahih", url: "https://sunnah.com/muslim:2589" },
+    ],
+  },
+  {
+    title: "Seafood Is Halal",
+    verdict: "Halal",
+    tone: "halal",
+    myth: "Some people become suspicious of seafood generally and treat it like it must be avoided unless proven otherwise.",
+    ruling:
+      "Seafood is lawful in the Qur'anic text, with the verse making sea game and its food permissible as provision.",
+    why:
+      "The default here is not suspicion. Allah explicitly permits the food of the sea while giving separate rules for hunting on land during pilgrimage.",
+    consequence:
+      "There is no sin in eating what Allah made lawful. The caution is the opposite: do not declare halal things haram without knowledge.",
+    source: "Qur'an 5:96",
+    quality: "Revelation",
+    url: "https://quran.com/5/96",
+  },
+  {
+    title: "Looking Good Is Halal, Pride Is Not",
+    verdict: "Halal With Limits",
+    tone: "halal",
+    myth: "Some people think clean clothes, nice shoes, and caring about appearance must be pride.",
+    ruling:
+      "Looking presentable is halal when it stays within Islamic limits and does not become arrogance, extravagance, or showing off.",
+    why:
+      "In Sahih Muslim, the Prophet clarified that Allah is beautiful and loves beauty, then defined pride as rejecting truth and looking down on people.",
+    consequence:
+      "The severe warning in the same hadith is against pride: a heart with even a tiny weight of pride is threatened with not entering Paradise.",
+    source: "Sahih Muslim 91a",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:91a",
+  },
+  {
+    title: "Gold And Silk Are Not Men's Fashion In Islam",
+    verdict: "Haram For Men",
+    tone: "haram",
+    myth: "Gold jewellery or pure silk can be treated as just another luxury style for Muslim men.",
+    ruling:
+      "Gold and silk are prohibited for the males of this ummah while being treated differently for women in the hadith tradition.",
+    why:
+      "Sunan Abi Dawud records the Prophet holding silk and gold and saying both are prohibited for the males of his community.",
+    consequence:
+      "The consequence stated in this entry is the prohibition itself. The source does not say prayers are rejected for this, so the app does not invent that detail.",
+    source: "Sunan Abi Dawud 4057",
+    quality: "Sahih",
+    url: "https://sunnah.com/abudawud:4057",
+  },
+  {
+    title: "Gambling Is Haram Even When It Looks Like A Game",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "Betting, casino-style apps, and prize games can feel harmless when they are wrapped in entertainment.",
+    ruling:
+      "Gambling is haram, whether it is dressed up as a game, a challenge, or a quick way to make money.",
+    why:
+      "The Qur'an mentions gambling alongside intoxicants and commands believers to avoid it.",
+    consequence:
+      "The Qur'an explains its damage: it plants hostility and hatred and blocks people from the remembrance of Allah and prayer.",
+    source: "Qur'an 5:90-91",
+    quality: "Revelation",
+    url: "https://quran.com/5/90-91",
   },
 ];
 
@@ -879,6 +1033,7 @@ function pickDailyReadings(dayNumber) {
     hadith: readings.hadiths[positiveMod(dayNumber * 7 + 3, readings.hadiths.length)],
     quote: readings.quotes[positiveMod(dayNumber * 11 + 4, readings.quotes.length)],
     story: readings.stories[positiveMod(dayNumber * 13 + 5, readings.stories.length)],
+    ruling: readings.rulings[positiveMod(dayNumber * 17 + 6, readings.rulings.length)],
   };
 }
 
@@ -887,6 +1042,19 @@ function positiveMod(value, size) {
 }
 
 function sourceRow(item) {
+  const extraSources = Array.isArray(item.extraSources)
+    ? item.extraSources
+        .map(
+          (source) => `
+            <a class="source-link secondary-source" href="${source.url}" target="_blank" rel="noopener noreferrer">
+              ${sourceIcon}
+              <span>${source.source}</span>
+            </a>
+          `,
+        )
+        .join("")
+    : "";
+
   return `
     <div class="source-row">
       <a class="source-link" href="${item.url}" target="_blank" rel="noopener noreferrer">
@@ -894,6 +1062,7 @@ function sourceRow(item) {
         <span>${item.source}</span>
       </a>
       <span class="tag">${item.quality}</span>
+      ${extraSources}
     </div>
   `;
 }
@@ -1022,6 +1191,12 @@ function revelationContextMarkup(item) {
   `;
 }
 
+function rulingToneClass(item) {
+  if (item.tone === "halal") return " verdict-halal";
+  if (item.tone === "haram") return " verdict-haram";
+  return " verdict-limited";
+}
+
 function renderTextSection(type, index, item) {
   const band = index % 2 === 1 ? " band" : "";
   const title = item.title ? `<div class="title-row"><h2 class="section-title">${item.title}</h2><span class="tag">${item.quality}</span></div>` : "";
@@ -1069,9 +1244,45 @@ function renderTextSection(type, index, item) {
             ${nextCue(index)}
           </div>
           <aside class="story-note">
+            ${item.lesson ? `<p class="story-lesson"><span class="mini-label">What To Notice</span>${item.lesson}</p>` : ""}
             <p class="moral"><span class="mini-label">Moral</span>${item.moral}</p>
             <p class="story-action">${item.action}</p>
           </aside>
+        </div>
+      </article>
+    `;
+  }
+
+  if (type === "ruling") {
+    return `
+      <article id="${type}" class="daily-section${band} reveal" data-section="${type}">
+        <div class="section-kicker">${String(index + 1).padStart(2, "0")} ${labels[index][1]}</div>
+        <div class="content-block ruling-block">
+          <div class="title-row">
+            <h2 class="section-title">${item.title}</h2>
+            <span class="tag ruling-verdict${rulingToneClass(item)}">${item.verdict}</span>
+          </div>
+          <div class="ruling-grid">
+            <section class="ruling-card">
+              <span class="mini-label">Common Mix-Up</span>
+              <p>${item.myth}</p>
+            </section>
+            <section class="ruling-card ruling-answer">
+              <span class="mini-label">Ruling</span>
+              <p>${item.ruling}</p>
+            </section>
+            <section class="ruling-card">
+              <span class="mini-label">Why</span>
+              <p>${item.why}</p>
+            </section>
+            <section class="ruling-card ruling-warning">
+              <span class="mini-label">Consequence / Warning</span>
+              <p>${item.consequence}</p>
+            </section>
+          </div>
+          <p class="ruling-note">Personal cases can need a qualified scholar, especially around money, medicine, contracts, and necessity.</p>
+          ${sourceRow(item)}
+          ${nextCue(index)}
         </div>
       </article>
     `;
@@ -1137,6 +1348,7 @@ function navLabelName(id) {
     hadith: "Hadith",
     quote: "Quote",
     story: "Story",
+    ruling: "Ruling",
   };
 
   return names[id] || id;
@@ -1543,15 +1755,16 @@ function setupMobileScrollGuard() {
       const stepDy = y - mobileTouchLastY;
       const verticalIntent = Math.abs(totalDy) > 10 && Math.abs(totalDy) > Math.abs(totalDx) * 1.18;
       const nativeShell = document.documentElement.classList.contains("native-shell");
+      const allowsInternalScroll = scroller.classList.contains("fit-scroll");
 
-      if (nativeShell && verticalIntent) {
+      if (nativeShell && verticalIntent && !allowsInternalScroll) {
         mobileTouchLocked = true;
         event.preventDefault();
         mobileTouchLastY = y;
         return;
       }
 
-      if (!scroller.classList.contains("fit-scroll")) {
+      if (!allowsInternalScroll) {
         if (verticalIntent) event.preventDefault();
         mobileTouchLastY = y;
         return;
@@ -1579,6 +1792,7 @@ function setupMobileScrollGuard() {
       const dy = mobileTouchStartY - (touch?.clientY || 0);
       const elapsed = Date.now() - mobileTouchStartAt;
       const nativeShell = document.documentElement.classList.contains("native-shell");
+      const activeMobileSection = mobileTouchSection;
       mobileTouchSection = null;
       mobileTouchLastY = 0;
 
@@ -1586,6 +1800,22 @@ function setupMobileScrollGuard() {
       const quickThreshold = nativeShell ? 52 : 62;
       const strongTug = Math.abs(dy) >= strongThreshold && Math.abs(dy) > Math.abs(dx) * 1.28;
       const quickFlick = Math.abs(dy) >= quickThreshold && elapsed < 340 && Math.abs(dy) > Math.abs(dx) * 1.35;
+      const allowsInternalScroll = activeMobileSection.classList.contains("fit-scroll");
+
+      if (allowsInternalScroll && activeMobileSection.scrollHeight > activeMobileSection.clientHeight + 2) {
+        const atTop = activeMobileSection.scrollTop <= 1;
+        const atBottom =
+          Math.ceil(activeMobileSection.scrollTop + activeMobileSection.clientHeight) >=
+          activeMobileSection.scrollHeight - 1;
+        const isTryingNext = dy > 0;
+        const isTryingPrevious = dy < 0;
+
+        if ((isTryingNext && !atBottom) || (isTryingPrevious && !atTop)) {
+          mobileTouchLocked = false;
+          return;
+        }
+      }
+
       if (!strongTug && !quickFlick) {
         if (mobileTouchLocked) event.preventDefault();
         mobileTouchLocked = false;
@@ -1900,7 +2130,7 @@ function getSectionOverflow(section) {
   const sectionRect = section.getBoundingClientRect();
   const isNativePhoneSection = isPhoneLayout() && document.documentElement.classList.contains("native-shell");
   const contentItems = [...section.querySelectorAll(
-    ".section-kicker, .title-row, .count-chip, .arabic, .translit, .meaning, .quote-text, .quote-person, .body-text, .explain, .effect, .moral, .story-action, .story-note, .revelation-card, .source-row, .dhikr-counter",
+    ".section-kicker, .title-row, .content-block, .count-chip, .arabic, .translit, .meaning, .quote-text, .quote-person, .body-text, .explain, .effect, .moral, .story-lesson, .story-action, .story-note, .revelation-card, .ruling-grid, .ruling-card, .ruling-note, .source-row, .dhikr-counter",
   )].filter((item) => {
     const style = getComputedStyle(item);
     return style.display !== "none" && style.visibility !== "hidden";
@@ -1962,7 +2192,7 @@ function buildSavedEntry(parts, daily) {
         title: item.title || item.person || item.narrator || label,
         arabic: item.arabic || "",
         primary: getSavedPrimaryText(type, item),
-        note: item.effect || item.explain || item.reflection || item.moral || "",
+        note: item.effect || item.explain || item.reflection || item.lesson || item.moral || item.consequence || "",
         source: item.source,
         quality: item.quality,
         url: item.url,
@@ -1975,6 +2205,7 @@ function getSavedPrimaryText(type, item) {
   if (type === "hadith") return item.text;
   if (type === "quote") return item.quote;
   if (type === "story") return item.body;
+  if (type === "ruling") return `${item.verdict}: ${item.ruling}`;
   return item.meaning;
 }
 
@@ -2013,7 +2244,7 @@ function renderSavedReadings() {
     list.innerHTML = `
       <div class="saved-empty">
         <span class="mini-label">Empty</span>
-        <p>Saved readings will show here with their verse, dua, dhikr, hadith, quote, and story.</p>
+        <p>Saved readings will show here with their verse, dua, dhikr, hadith, quote, story, and halal/haram fact.</p>
       </div>
     `;
     return;
