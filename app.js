@@ -967,6 +967,479 @@ readings.rulings = [
   },
 ];
 
+readings.verses.push(
+  {
+    title: "Remember And Be Remembered",
+    arabic: "فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ",
+    transliteration: "Fadhkuruni adhkurkum washkuru li wa la takfurun.",
+    meaning: "Remember Me; I will remember you. Be grateful to Me and do not be ungrateful.",
+    explain:
+      "Allah makes remembrance personal: the servant remembers Allah with worship and gratitude, and Allah remembers the servant with mercy, reward, and care.",
+    source: "Qur'an 2:152",
+    quality: "Revelation",
+    url: "https://quran.com/2/152",
+    revealed: "Madinan, in Surah Al-Baqarah.",
+    whyRevealed:
+      "It appears after guidance around the qiblah and gratitude, teaching the community that remembrance and thankfulness are daily foundations.",
+    contextUrl: "https://quran.com/2/152",
+  },
+  {
+    title: "Help Through Patience And Prayer",
+    arabic: "يَا أَيُّهَا الَّذِينَ آمَنُوا اسْتَعِينُوا بِالصَّبْرِ وَالصَّلَاةِ",
+    transliteration: "Ya ayyuhalladhina amanu ista'inu bis-sabri was-salah.",
+    meaning: "O believers, seek help through patience and prayer.",
+    explain:
+      "The verse gives a practical way through pressure: hold steady, pray, and remember that Allah is with those who are patient.",
+    source: "Qur'an 2:153",
+    quality: "Revelation",
+    url: "https://quran.com/2/153",
+    revealed: "Madinan, in Surah Al-Baqarah.",
+    whyRevealed:
+      "It trains the early Muslim community to meet tests with sabr and salah, not panic or resentment.",
+    contextUrl: "https://quran.com/2/153",
+  },
+  {
+    title: "Paths Opened By Striving",
+    arabic: "وَالَّذِينَ جَاهَدُوا فِينَا لَنَهْدِيَنَّهُمْ سُبُلَنَا",
+    transliteration: "Walladhina jahadu fina lanahdiyannahum subulana.",
+    meaning: "Those who strive for Us, We will surely guide them to Our ways.",
+    explain:
+      "Guidance grows with sincere effort. The believer does not wait to become perfect before moving toward Allah.",
+    source: "Qur'an 29:69",
+    quality: "Revelation",
+    url: "https://quran.com/29/69",
+    revealed: "Makkan, at the close of Surah Al-'Ankabut.",
+    whyRevealed:
+      "It closes a surah about trials by promising guidance to people who keep striving for Allah despite pressure.",
+    contextUrl: "https://quran.com/surah/29/info",
+  },
+  {
+    title: "The Heart Under Allah's Permission",
+    arabic: "وَمَن يُؤْمِن بِاللَّهِ يَهْدِ قَلْبَهُ",
+    transliteration: "Wa man yu'min billahi yahdi qalbah.",
+    meaning: "Whoever believes in Allah, He guides their heart.",
+    explain:
+      "Faith does not always remove the test, but it gives the heart a direction inside the test.",
+    source: "Qur'an 64:11",
+    quality: "Revelation",
+    url: "https://quran.com/64/11",
+    revealed: "Madinan, in Surah At-Taghabun.",
+    whyRevealed:
+      "It teaches that calamities occur by Allah's permission and that faith guides the heart through what it cannot control.",
+    contextUrl: "https://quran.com/64/11",
+  },
+  {
+    title: "Mercy At Home",
+    arabic: "وَقُل رَّبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا",
+    transliteration: "Wa qul Rabbi irhamhuma kama rabbayani saghira.",
+    meaning: "Say: My Lord, have mercy on them as they raised me when I was small.",
+    explain:
+      "The Qur'an makes gratitude to parents a lived ethic: lowered speech, humility, and dua.",
+    source: "Qur'an 17:23-24",
+    quality: "Revelation",
+    url: "https://quran.com/17/23-24",
+    revealed: "Makkan, in Surah Al-Isra.",
+    whyRevealed:
+      "The passage joins worship of Allah alone with excellent treatment of parents, especially when they become vulnerable.",
+    contextUrl: "https://quran.com/17/23-24",
+  },
+  {
+    title: "A Life That Is Not Loss",
+    arabic: "إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ",
+    transliteration: "Illalladhina amanu wa 'amilus-salihat wa tawasaw bil-haqqi wa tawasaw bis-sabr.",
+    meaning: "Except those who believe, do righteous deeds, and urge one another to truth and patience.",
+    explain:
+      "Surah Al-'Asr compresses the believer's rescue plan: faith, action, truth, and patient community.",
+    source: "Qur'an 103:1-3",
+    quality: "Revelation",
+    url: "https://quran.com/103",
+    revealed: "Makkan, in Surah Al-'Asr.",
+    whyRevealed:
+      "A short Makkan surah that defines what saves a person from loss in time, priorities, and the Hereafter.",
+    contextUrl: "https://quran.com/surah/103/info",
+  },
+);
+
+readings.duas.push(
+  {
+    title: "Mercy And Right Guidance",
+    arabic: "رَبَّنَا آتِنَا مِن لَّدُنكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا",
+    transliteration: "Rabbana atina min ladunka rahmatan wa hayyi' lana min amrina rashada.",
+    meaning: "Our Lord, grant us mercy from Yourself and arrange right guidance for us in our affair.",
+    effect:
+      "The young believers of the cave asked for mercy and sound direction before Allah opened a way no one could predict.",
+    source: "Qur'an 18:10",
+    quality: "Revelation",
+    url: "https://quran.com/18/10",
+  },
+  {
+    title: "Make Me Establish Prayer",
+    arabic: "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِن ذُرِّيَّتِي",
+    transliteration: "Rabbij'alni muqimas-salati wa min dhurriyyati.",
+    meaning: "My Lord, make me one who establishes prayer, and also from my descendants.",
+    effect:
+      "Ibrahim's dua asks not only to pray, but to become a person whose life is built around prayer.",
+    source: "Qur'an 14:40",
+    quality: "Revelation",
+    url: "https://quran.com/14/40",
+  },
+  {
+    title: "In Need Of Your Good",
+    arabic: "رَبِّ إِنِّي لِمَا أَنزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+    transliteration: "Rabbi inni lima anzalta ilayya min khayrin faqir.",
+    meaning: "My Lord, I am truly in need of whatever good You send down to me.",
+    effect:
+      "Musa said this after helping others while he himself was in need, teaching humble dependence without self-pity.",
+    source: "Qur'an 28:24",
+    quality: "Revelation",
+    url: "https://quran.com/28/24",
+  },
+  {
+    title: "Ayyub's Patient Call",
+    arabic: "أَنِّي مَسَّنِيَ الضُّرُّ وَأَنتَ أَرْحَمُ الرَّاحِمِينَ",
+    transliteration: "Anni massaniyad-durru wa Anta arhamur-rahimin.",
+    meaning: "Harm has touched me, and You are the Most Merciful of the merciful.",
+    effect:
+      "Ayyub's dua combines honesty about pain with perfect adab toward Allah's mercy.",
+    source: "Qur'an 21:83",
+    quality: "Revelation",
+    url: "https://quran.com/21/83",
+  },
+  {
+    title: "Wisdom And The Righteous",
+    arabic: "رَبِّ هَبْ لِي حُكْمًا وَأَلْحِقْنِي بِالصَّالِحِينَ",
+    transliteration: "Rabbi hab li hukman wa alhiqni bis-salihin.",
+    meaning: "My Lord, grant me wisdom and join me with the righteous.",
+    effect:
+      "Ibrahim asked for wisdom, righteous company, truthful mention, and Paradise, showing how broad a believer's ambition should be.",
+    source: "Qur'an 26:83-85",
+    quality: "Revelation",
+    url: "https://quran.com/26/83-85",
+  },
+  {
+    title: "Help Me Remember You",
+    arabic: "اللَّهُمَّ أَعِنِّي عَلَى ذِكْرِكَ وَشُكْرِكَ وَحُسْنِ عِبَادَتِكَ",
+    transliteration: "Allahumma a'inni 'ala dhikrika wa shukrika wa husni 'ibadatik.",
+    meaning: "O Allah, help me remember You, thank You, and worship You well.",
+    effect:
+      "The Prophet taught Mu'adh not to leave this supplication after the prescribed prayer.",
+    source: "Sunan Abi Dawud 1522",
+    quality: "Sahih",
+    url: "https://sunnah.com/abudawud:1522",
+  },
+);
+
+readings.dhikr.push(
+  {
+    title: "Morning And Evening Protection",
+    count: "Morning and evening: 3 times",
+    arabic: "بِسْمِ اللَّهِ الَّذِي لَا يَضُرُّ مَعَ اسْمِهِ شَيْءٌ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ وَهُوَ السَّمِيعُ الْعَلِيمُ",
+    transliteration: "Bismillahil-ladhi la yadurru ma'a ismihi shay'un fil-ardi wa la fis-sama'i wa Huwas-Sami'ul-'Alim.",
+    meaning: "In the Name of Allah, with whose Name nothing on earth or in heaven can harm, and He is the All-Hearing, All-Knowing.",
+    effect:
+      "The narration mentions protection for the one who says it three times in the morning and evening.",
+    source: "Jami` at-Tirmidhi 3388",
+    quality: "Hasan",
+    url: "https://sunnah.com/tirmidhi:3388",
+  },
+  {
+    title: "Words Heavier Than A Long Sitting",
+    count: "Morning remembrance",
+    arabic: "سُبْحَانَ اللَّهِ وَبِحَمْدِهِ عَدَدَ خَلْقِهِ وَرِضَا نَفْسِهِ وَزِنَةَ عَرْشِهِ وَمِدَادَ كَلِمَاتِهِ",
+    transliteration: "SubhanAllahi wa bihamdihi 'adada khalqihi wa rida nafsihi wa zinata 'arshihi wa midada kalimatih.",
+    meaning: "Glory and praise be to Allah, as many as His creation, as pleases Him, as heavy as His Throne, and as much as the ink of His words.",
+    effect:
+      "The Prophet taught these words to Juwairiyah after a long morning remembrance, showing how weighty concise dhikr can be.",
+    source: "Sahih Muslim 2726a",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2726a",
+  },
+  {
+    title: "After Wudu Testimony",
+    count: "After completing wudu",
+    arabic: "أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَأَنَّ مُحَمَّدًا عَبْدُ اللَّهِ وَرَسُولُهُ",
+    transliteration: "Ashhadu an la ilaha illallah wa anna Muhammadan 'abdu Allahi wa rasuluh.",
+    meaning: "I testify that there is no god but Allah and that Muhammad is the servant of Allah and His Messenger.",
+    effect:
+      "Sahih Muslim reports that the eight gates of Paradise are opened for the one who completes wudu well and says this.",
+    source: "Sahih Muslim 234a",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:234a",
+  },
+  {
+    title: "Content With Allah",
+    count: "When hearing the adhan",
+    arabic: "رَضِيتُ بِاللَّهِ رَبًّا وَبِمُحَمَّدٍ رَسُولًا وَبِالْإِسْلَامِ دِينًا",
+    transliteration: "Raditu billahi rabban wa bi Muhammadin rasulan wa bil-Islami dina.",
+    meaning: "I am pleased with Allah as Lord, with Muhammad as Messenger, and with Islam as religion.",
+    effect:
+      "Sahih Muslim reports forgiveness for the one who says this when hearing the caller to prayer.",
+    source: "Sahih Muslim 386",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:386",
+  },
+  {
+    title: "After Prayer Tawhid",
+    count: "After the obligatory prayer",
+    arabic: "لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ",
+    transliteration: "La ilaha illallahu wahdahu la sharika lah, lahul-mulku wa lahul-hamd, wa Huwa 'ala kulli shay'in qadir.",
+    meaning: "None has the right to be worshipped except Allah alone, without partner. His is the dominion and praise, and He has power over all things.",
+    effect:
+      "This is among the authentic remembrances taught after the prescribed prayers.",
+    source: "Sahih Muslim 594a",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:594a",
+  },
+);
+
+readings.hadiths.push(
+  {
+    title: "Safety From The Tongue And Hand",
+    text: "A Muslim is the one who avoids harming Muslims with his tongue and hands.",
+    narrator: "Narrated from 'Abdullah ibn 'Amr",
+    explain:
+      "Islamic character is measured by how safe people are from your speech, typing, temper, and physical actions.",
+    source: "Sahih al-Bukhari 10",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:10",
+  },
+  {
+    title: "Allah Looks At Hearts And Deeds",
+    text: "Allah does not look to your faces and your wealth, but He looks to your hearts and your deeds.",
+    narrator: "Narrated from Abu Hurayrah",
+    explain:
+      "Appearance and status are not the scale. The heart and the deeds that flow from it are what need daily attention.",
+    source: "Sahih Muslim 2564c",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2564c",
+  },
+  {
+    title: "Two Blessings People Lose",
+    text: "There are two blessings that many people are deceived into losing: health and free time.",
+    narrator: "Narrated from Ibn 'Abbas",
+    explain:
+      "The hadith turns ordinary time and health into amanah. Use them before they become things you wish you still had.",
+    source: "Sahih al-Bukhari 6412",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:6412",
+  },
+  {
+    title: "Leave The Doubtful",
+    text: "Both lawful and unlawful things are clear, and between them are doubtful matters.",
+    narrator: "Narrated from An-Nu'man ibn Bashir",
+    explain:
+      "When a matter is genuinely doubtful, caution protects both religion and honor.",
+    source: "Sahih al-Bukhari 52; Sahih Muslim 1599a",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:52",
+  },
+  {
+    title: "Hardship Can Cleanse",
+    text: "No fatigue, illness, sorrow, sadness, hurt, or distress befalls a Muslim, even a thorn prick, except that Allah expiates some of his sins for it.",
+    narrator: "Narrated from Abu Sa'id Al-Khudri and Abu Hurayrah",
+    explain:
+      "Pain is not meaningless when met with faith and patience. Allah can make even small suffering a cause of purification.",
+    source: "Sahih al-Bukhari 5641",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:5641",
+  },
+  {
+    title: "Relieve Someone Else",
+    text: "Whoever relieves a believer from a hardship of this world, Allah will relieve him from a hardship of the Day of Resurrection.",
+    narrator: "Narrated from Abu Hurayrah",
+    explain:
+      "Service is not small. Allah helps the servant while the servant is helping another person.",
+    source: "Sahih Muslim 2699a",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2699a",
+  },
+);
+
+readings.quotes.push(
+  {
+    quote: "There are two blessings that many people are deceived into losing: health and free time.",
+    person: "Prophet Muhammad",
+    reflection:
+      "A calm day is still a test. Health and spare time become worship when they are spent with intention.",
+    source: "Sahih al-Bukhari 6412",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:6412",
+  },
+  {
+    quote: "The upper hand is better than the lower hand.",
+    person: "Prophet Muhammad",
+    reflection:
+      "The giving hand is trained in dignity, gratitude, and trust that Allah replaces what is given for His sake.",
+    source: "Sahih al-Bukhari 1429; Sahih Muslim 1033",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:1429",
+  },
+  {
+    quote: "Allah looks to your hearts and to your deeds.",
+    person: "Prophet Muhammad",
+    reflection:
+      "Private sincerity and real action matter more than looking religious, successful, or impressive.",
+    source: "Sahih Muslim 2564c",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2564c",
+  },
+  {
+    quote: "Beware of suspicion, for suspicion is the worst of false tales.",
+    person: "Prophet Muhammad",
+    reflection:
+      "A suspicious mind can invent stories and then punish people for them. Islam teaches restraint before certainty.",
+    source: "Sahih al-Bukhari 6064",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:6064",
+  },
+  {
+    quote: "Allah helps the servant as long as the servant helps his brother.",
+    person: "Prophet Muhammad",
+    reflection:
+      "Helping someone else is not a distraction from your own life. It may be exactly where Allah places help for you.",
+    source: "Sahih Muslim 2699a",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2699a",
+  },
+);
+
+readings.stories.push(
+  {
+    title: "Musa's Mother Lets Go",
+    body:
+      "The mother of Musa was inspired to place her baby in the river when Pharaoh's threat reached its peak. From the outside, it looked like loss: a mother releasing her child into water because danger had surrounded every normal option. But Allah promised to return him and make him among the messengers. The river did not carry Musa away from Allah's plan; it carried him through the middle of that plan, even into Pharaoh's own house. Allah then returned him to his mother so her heart could be comforted.",
+    lesson:
+      "Sometimes tawakkul is not holding tighter. Sometimes it is obeying Allah while your heart is trembling, trusting that His promise is stronger than what you can see.",
+    moral:
+      "Allah can place protection inside the path that looks most frightening. The believer takes the halal means, then trusts the Owner of every outcome.",
+    action: "Name one fear you are carrying, then ask Allah for a heart guided by His promise.",
+    source: "Qur'an 28:7-13",
+    quality: "Revelation",
+    url: "https://quran.com/28/7-13",
+  },
+  {
+    title: "Nuh Builds Before The Rain",
+    body:
+      "Prophet Nuh called his people for a long time, but most rejected him. Allah commanded him to build the ark under His watch. Building a ship before the flood came must have made him a target for mockery, yet Nuh kept obeying. When the command of Allah came, the thing people mocked became the means of rescue. The story teaches that obedience can look strange before its wisdom becomes public.",
+    lesson:
+      "Nuh's ark was not built in panic after the water rose. It was built through obedience before the sign arrived.",
+    moral:
+      "Do not measure truth by how many people laugh at it. If Allah commands a path, dignity is in obeying before the crowd understands.",
+    action: "Do one correct thing today even if it feels unpopular or unseen.",
+    source: "Qur'an 11:36-48",
+    quality: "Revelation",
+    url: "https://quran.com/11/36-48",
+  },
+  {
+    title: "The Queen Who Chose Truth",
+    body:
+      "The Queen of Saba' received a letter from Sulayman calling her to submit to Allah. She did not react with ego. She consulted her people, observed carefully, and recognized that Sulayman's kingdom was not ordinary political power. When truth became clear, she did not cling to status. She entered Islam and acknowledged that she had wronged herself.",
+    lesson:
+      "Her story shows intelligence with humility: she investigates, reflects, and then submits when truth is clear.",
+    moral:
+      "Real leadership is not stubbornness. The strongest people can still say, 'I was wrong,' when guidance becomes clear.",
+    action: "Ask Allah to make truth more beloved to you than winning an argument.",
+    source: "Qur'an 27:20-44",
+    quality: "Revelation",
+    url: "https://quran.com/27/20-44",
+  },
+  {
+    title: "Ka'b Tells The Truth",
+    body:
+      "Ka'b ibn Malik stayed behind from Tabuk without a valid excuse. When people offered false excuses, he chose truth even though it brought painful consequences. For fifty nights he lived with the weight of social separation and regret, but he did not repair one mistake with another lie. Then Allah accepted his repentance and revealed verses about the three who were left behind.",
+    lesson:
+      "Truth can hurt at first and still be the road to rescue. A lie may feel like shelter, but it blocks the clean ending Allah can give.",
+    moral:
+      "Repentance is not only regret. It is truthfulness when hiding would be easier.",
+    action: "Fix one small dishonest pattern before it becomes a larger one.",
+    source: "Sahih Muslim 2769a; Qur'an 9:118",
+    quality: "Sahih",
+    url: "https://sunnah.com/muslim:2769a",
+  },
+  {
+    title: "The Cave During Hijrah",
+    body:
+      "During the Hijrah, the Prophet and Abu Bakr were in the cave while danger came close. Abu Bakr feared for the Messenger of Allah, but the Prophet reminded him that Allah was with them. The Qur'an records that Allah sent down tranquility and supported His Messenger. The cave was physically small, but Allah's protection made it wider than the plans of the enemy.",
+    lesson:
+      "The words 'Allah is with us' are not decorative. They are a worldview when every visible route seems blocked.",
+    moral:
+      "Safety is not only distance from danger. Real safety is being under Allah's care while taking the means He allows.",
+    action: "Say 'Allah is with me' before one difficult responsibility, then take the next right step.",
+    source: "Qur'an 9:40",
+    quality: "Revelation",
+    url: "https://quran.com/9/40",
+  },
+);
+
+readings.rulings.push(
+  {
+    title: "Doubtful Things Are Not A Playground",
+    verdict: "Avoid Doubtful",
+    tone: "halal",
+    myth: "People sometimes say, 'If it is not clearly haram to me, I can play around with it.'",
+    ruling:
+      "When something is genuinely doubtful and a person cannot verify it, caution is part of protecting faith and honor.",
+    why:
+      "The hadith states that halal and haram are clear, with doubtful matters between them that many people do not know.",
+    consequence:
+      "The warning is that grazing near the boundary can lead a person into what is unlawful. The app does not label every doubtful matter haram; it teaches caution until knowledge is clear.",
+    source: "Sahih al-Bukhari 52",
+    quality: "Sahih",
+    url: "https://sunnah.com/bukhari:52",
+    extraSources: [
+      { source: "Sahih Muslim 1599a", quality: "Sahih", url: "https://sunnah.com/muslim:1599a" },
+    ],
+  },
+  {
+    title: "Disrespecting Parents Is Not A Small Attitude",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "Some people treat harsh words to parents as normal because everyone gets annoyed at home.",
+    ruling:
+      "Disrespect, contempt, and harshness toward parents are forbidden, while obedience remains within Allah's limits.",
+    why:
+      "The Qur'an commands excellence to parents and even forbids saying a word of irritation to them.",
+    consequence:
+      "The warning is spiritual and moral: a person can damage one of the greatest rights Allah placed after His worship.",
+    source: "Qur'an 17:23-24",
+    quality: "Revelation",
+    url: "https://quran.com/17/23-24",
+  },
+  {
+    title: "Orphan Wealth Is Not Borrowable Money",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "Someone may think they can temporarily use an orphan's money if they plan to return it later.",
+    ruling:
+      "Consuming or misusing orphan wealth unjustly is haram and one of the clearest financial warnings in the Qur'an.",
+    why:
+      "Allah directly warns against devouring the property of orphans unjustly.",
+    consequence:
+      "The Qur'an says those who consume orphan wealth unjustly are only consuming fire into their bellies and will burn in a blaze.",
+    source: "Qur'an 4:10",
+    quality: "Revelation",
+    url: "https://quran.com/4/10",
+  },
+  {
+    title: "Spying And Suspicion Are Not Investigation",
+    verdict: "Haram",
+    tone: "haram",
+    myth: "People can justify checking phones, stalking accounts, and digging for faults by calling it 'just making sure.'",
+    ruling:
+      "Sinful suspicion, spying, and hunting for people's faults are forbidden.",
+    why:
+      "The Qur'an forbids much suspicion, spying, and backbiting, and Sahih al-Bukhari warns that suspicion is among the worst false tales.",
+    consequence:
+      "The damage is that trust, brotherhood, and honor are eaten away before any clear proof even exists.",
+    source: "Qur'an 49:12",
+    quality: "Revelation",
+    url: "https://quran.com/49/12",
+    extraSources: [
+      { source: "Sahih al-Bukhari 6064", quality: "Sahih", url: "https://sunnah.com/bukhari:6064" },
+    ],
+  },
+);
+
 setNativeShellClasses();
 loadCapacitorBridge();
 
@@ -990,10 +1463,10 @@ let sectionFitSignature = "";
 let phoneTransitionTimer = 0;
 let phoneTransitionFrame = 0;
 const nextCuePressTimers = new WeakMap();
-const SNAP_RELEASE_MS = 920;
-const PHONE_SECTION_TRANSITION_MS = 380;
-const NEXT_CUE_PRESS_MS = 320;
-const NEXT_CUE_NAV_DELAY_MS = 70;
+const SNAP_RELEASE_MS = 760;
+const PHONE_SECTION_TRANSITION_MS = 320;
+const NEXT_CUE_PRESS_MS = 260;
+const NEXT_CUE_NAV_DELAY_MS = 45;
 
 function getSydneyParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
