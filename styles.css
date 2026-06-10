@@ -1258,7 +1258,6 @@ html:not([data-active-section="verse"]) .day-note {
     opacity 180ms ease,
     transform 180ms ease;
   opacity: 0;
-  will-change: transform, opacity;
 }
 
 .saved-drawer.is-open {
@@ -1269,6 +1268,7 @@ html:not([data-active-section="verse"]) .day-note {
 .saved-drawer.is-open .saved-panel {
   opacity: 1;
   transform: translateY(0) scale(1);
+  will-change: transform, opacity;
 }
 
 .saved-header {
@@ -1411,6 +1411,14 @@ html:not([data-active-section="verse"]) .day-note {
 .saved-reading .saved-note {
   color: var(--muted);
   font-size: 0.82rem;
+}
+
+.saved-translit {
+  color: var(--soft) !important;
+  font-family: var(--serif);
+  font-size: 0.86rem !important;
+  font-style: italic;
+  line-height: 1.55 !important;
 }
 
 .saved-arabic {
@@ -1806,7 +1814,7 @@ html:not([data-active-section="verse"]) .day-note {
 @keyframes nativePaneEnterForward {
   0% {
     opacity: 0;
-    transform: translate3d(0, 14px, 0) scale(0.994);
+    transform: translate3d(0, 8px, 0) scale(0.998);
   }
 
   100% {
@@ -1834,7 +1842,7 @@ html:not([data-active-section="verse"]) .day-note {
 @keyframes nativePaneEnterBack {
   0% {
     opacity: 0;
-    transform: translate3d(0, -14px, 0) scale(0.994);
+    transform: translate3d(0, -8px, 0) scale(0.998);
   }
 
   100% {
@@ -2997,6 +3005,8 @@ html:not([data-active-section="verse"]) .day-note {
 
   html.native-shell.android-shell .daily-section.section-entering.is-current {
     z-index: 3;
+    backface-visibility: hidden;
+    transform: translate3d(0, 0, 0);
     will-change: transform, opacity;
   }
 
@@ -3027,28 +3037,11 @@ html:not([data-active-section="verse"]) .day-note {
 
   @media (prefers-reduced-motion: no-preference) {
     html.native-shell.android-shell.section-motion.section-forward .daily-section.section-entering.is-current {
-      animation: nativePaneEnterForward 310ms cubic-bezier(0.18, 0.92, 0.2, 1) both !important;
+      animation: nativePaneEnterForward 240ms cubic-bezier(0.2, 0.84, 0.22, 1) both !important;
     }
 
     html.native-shell.android-shell.section-motion.section-back .daily-section.section-entering.is-current {
-      animation: nativePaneEnterBack 310ms cubic-bezier(0.18, 0.92, 0.2, 1) both !important;
-    }
-
-    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > * {
-      animation: nativeContentReveal 240ms cubic-bezier(0.2, 0.82, 0.2, 1) both !important;
-      will-change: transform, opacity;
-    }
-
-    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > *:nth-child(2) {
-      animation-delay: 18ms !important;
-    }
-
-    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > *:nth-child(3) {
-      animation-delay: 32ms !important;
-    }
-
-    html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current .content-block > *:nth-child(n + 4) {
-      animation-delay: 46ms !important;
+      animation: nativePaneEnterBack 240ms cubic-bezier(0.2, 0.84, 0.22, 1) both !important;
     }
 
     html.native-shell.android-shell .counter-tap.pulse {
@@ -3067,23 +3060,19 @@ html:not([data-active-section="verse"]) .day-note {
       animation: feedbackPop 170ms ease both !important;
     }
 
-    html.native-shell.android-shell .daily-section.is-current::before {
-      animation: nativePanelGlow 3600ms ease-in-out infinite;
-    }
-
     html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current::after {
       display: block;
       top: 0;
       left: 0;
       height: 1px;
       background: linear-gradient(90deg, transparent, rgba(121, 255, 174, 0.72), transparent);
-      animation: nativeCardLine 340ms ease-out both !important;
+      animation: nativeCardLine 260ms ease-out both !important;
       transform-origin: left;
     }
   }
 
   html.native-shell.android-shell .next-cue svg {
-    animation: nativeArrowFloat 1250ms cubic-bezier(0.45, 0, 0.25, 1) infinite !important;
+    animation: none !important;
   }
 
   html.native-shell.android-shell .next-cue {
@@ -3163,10 +3152,6 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    html.native-shell.android-shell .next-cue {
-      animation: nativeCueBreath 2200ms ease-in-out infinite;
-    }
-
     html.native-shell.android-shell .next-cue.is-pressing::after {
       animation: nativeCueRipple 260ms ease-out both;
     }

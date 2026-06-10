@@ -1463,10 +1463,10 @@ let sectionFitSignature = "";
 let phoneTransitionTimer = 0;
 let phoneTransitionFrame = 0;
 const nextCuePressTimers = new WeakMap();
-const SNAP_RELEASE_MS = 760;
-const PHONE_SECTION_TRANSITION_MS = 320;
-const NEXT_CUE_PRESS_MS = 260;
-const NEXT_CUE_NAV_DELAY_MS = 45;
+const SNAP_RELEASE_MS = 680;
+const PHONE_SECTION_TRANSITION_MS = 260;
+const NEXT_CUE_PRESS_MS = 220;
+const NEXT_CUE_NAV_DELAY_MS = 30;
 
 function getSydneyParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -1586,7 +1586,7 @@ function updateNextCueCopy() {
   });
 }
 
-function setActiveSectionVisuals(id) {
+function setActiveSectionVisuals(id, options = {}) {
   const activeIndex = labels.findIndex(([sectionId]) => sectionId === id);
   if (activeIndex < 0) return;
 
@@ -1613,7 +1613,7 @@ function setActiveSectionVisuals(id) {
   });
 
   updateRailHint(id);
-  scheduleSectionFit();
+  if (options.fit !== false) scheduleSectionFit();
 }
 
 function centerRailLink(link) {
@@ -2360,12 +2360,17 @@ function preparePhoneSectionTransition(id) {
   document.documentElement.classList.add("section-switching", directionClass);
   to.classList.add("section-entering");
 
+  phoneTransitionTimer = window.setTimeout(cleanupPhoneSectionTransition, PHONE_SECTION_TRANSITION_MS);
+  return PHONE_SECTION_TRANSITION_MS;
+}
+
+function startPhoneSectionTransitionMotion() {
+  if (!document.documentElement.classList.contains("section-switching")) return;
+  if (phoneTransitionFrame) cancelAnimationFrame(phoneTransitionFrame);
   phoneTransitionFrame = requestAnimationFrame(() => {
     phoneTransitionFrame = 0;
     document.documentElement.classList.add("section-motion");
   });
-  phoneTransitionTimer = window.setTimeout(cleanupPhoneSectionTransition, PHONE_SECTION_TRANSITION_MS);
-  return PHONE_SECTION_TRANSITION_MS;
 }
 
 function cleanupPhoneSectionTransition() {
@@ -2391,10 +2396,16 @@ function smoothScrollToSection(id) {
 
   if (isPhoneLayout()) {
     const transitionMs = preparePhoneSectionTransition(id);
-    setActiveSectionVisuals(id);
+    setActiveSectionVisuals(id, { fit: false });
     target.scrollTop = 0;
     window.scrollTo(0, 0);
     history.replaceState(null, "", `#${id}`);
+    if (transitionMs) {
+      fitActivePhoneSection();
+      startPhoneSectionTransitionMotion();
+    } else {
+      scheduleSectionFit();
+    }
 
     clearTimeout(snapReleaseTimer);
     snapReleaseTimer = setTimeout(() => {
@@ -2550,6 +2561,11 @@ function scheduleSectionFit() {
 }
 
 function fitActivePhoneSection() {
+  if (sectionFitFrame) {
+    cancelAnimationFrame(sectionFitFrame);
+    sectionFitFrame = 0;
+  }
+
   const sections = [...document.querySelectorAll(".daily-section")];
   if (!isPhoneLayout() || !document.documentElement.classList.contains("native-shell")) {
     sectionFitSignature = "";
@@ -2562,12 +2578,6 @@ function fitActivePhoneSection() {
 
   const section = document.querySelector(".daily-section.is-current");
   if (!section) return;
-
-  sections.forEach((inactiveSection) => {
-    if (inactiveSection === section) return;
-    inactiveSection.classList.remove("fit-roomy", "fit-tight", "fit-ultra", "fit-scroll");
-    inactiveSection.removeAttribute("data-fit-signature");
-  });
 
   const nextSignature = `${section.id}:${section.clientWidth}x${section.clientHeight}`;
   const hasFitClass = ["fit-roomy", "fit-tight", "fit-ultra", "fit-scroll"].some((className) =>
@@ -2664,6 +2674,7 @@ function buildSavedEntry(parts, daily) {
         label,
         title: item.title || item.person || item.narrator || label,
         arabic: item.arabic || "",
+        transliteration: item.transliteration || "",
         primary: getSavedPrimaryText(type, item),
         note: item.effect || item.explain || item.reflection || item.lesson || item.moral || item.consequence || "",
         source: item.source,
@@ -2751,16 +2762,37 @@ function renderSavedCard(entry, index) {
 }
 
 function renderSavedItem(item) {
+  const transliteration = getSavedTransliteration(item);
   return `
     <section class="saved-reading">
       <span class="mini-label">${escapeHTML(item.label)}</span>
       <h4>${escapeHTML(item.title)}</h4>
       ${item.arabic ? `<p class="saved-arabic" lang="ar">${escapeHTML(item.arabic)}</p>` : ""}
+      ${transliteration ? `<p class="saved-translit">${escapeHTML(transliteration)}</p>` : ""}
       <p>${escapeHTML(item.primary)}</p>
       ${item.note ? `<p class="saved-note">${escapeHTML(item.note)}</p>` : ""}
       <a href="${escapeHTML(item.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(item.source)} - ${escapeHTML(item.quality)}</a>
     </section>
   `;
+}
+
+function getSavedTransliteration(item) {
+  if (item.transliteration) return item.transliteration;
+
+  const collections = {
+    verse: readings.verses,
+    dua: readings.duas,
+    dhikr: readings.dhikr,
+  };
+  const candidates = collections[item.type] || [];
+  const match = candidates.find((candidate) => {
+    const sameSource = candidate.source && candidate.source === item.source;
+    const sameTitle = candidate.title && candidate.title === item.title;
+    const samePrimary = candidate.meaning && candidate.meaning === item.primary;
+    return candidate.transliteration && ((sameSource && sameTitle) || (sameSource && samePrimary));
+  });
+
+  return match?.transliteration || "";
 }
 
 function openSavedReading(iso) {
