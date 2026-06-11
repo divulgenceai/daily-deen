@@ -951,19 +951,32 @@ readings.rulings = [
     url: "https://sunnah.com/abudawud:4057",
   },
   {
-    title: "Gambling Is Haram Even When It Looks Like A Game",
-    verdict: "Haram",
+    title: "Prize Games Are Not All The Same",
+    verdict: "Check The Stake",
     tone: "haram",
-    myth: "Betting, casino-style apps, and prize games can feel harmless when they are wrapped in entertainment.",
+    myth: "People often mix up a free prize, a sponsor-funded competition, and a participant-funded prize pool as if they are all the same.",
     ruling:
-      "Gambling is haram, whether it is dressed up as a game, a challenge, or a quick way to make money.",
+      "If you risk money or value for a chance to win from others, that is gambling and is haram. A genuinely free or externally funded prize can be a different case and may need scholar review.",
     why:
-      "The Qur'an mentions gambling alongside intoxicants and commands believers to avoid it.",
+      "The Qur'an forbids maysir because it creates enmity, hatred, and heedlessness. Scholars also discuss prize competitions separately, especially where no participant-funded stake is being lost.",
     consequence:
-      "The Qur'an explains its damage: it plants hostility and hatred and blocks people from the remembrance of Allah and prayer.",
+      "The warning is not only about money. The Qur'an says gambling plants hostility and blocks people from the remembrance of Allah and prayer, so doubtful prize schemes should not be treated casually.",
     source: "Qur'an 5:90-91",
     quality: "Revelation",
     url: "https://quran.com/5/90-91",
+    extraSources: [
+      { source: "Sunan an-Nasa'i 3588", quality: "Sahih", url: "https://sunnah.com/nasai:3588" },
+      {
+        source: "IslamWeb Fatwa 142039",
+        quality: "Scholar note",
+        url: "https://www.islamweb.net/en/fatwa/142039/paying-entry-fees-to-participate-in-a-sports-tournament",
+      },
+      {
+        source: "Jordan Dar al-Iftaa 4011",
+        quality: "Scholar note",
+        url: "https://aliftaa.jo/research-fatwa-english/4011/Ruling--of-Islamic-Law-on-Winning-Prizes-from-Competitions-and-Games",
+      },
+    ],
   },
 ];
 
@@ -2417,8 +2430,8 @@ function smoothScrollToSection(id) {
     window.scrollTo(0, 0);
     history.replaceState(null, "", `#${id}`);
     if (transitionMs) {
+      fitActivePhoneSection();
       startPhoneSectionTransitionMotion();
-      window.setTimeout(scheduleSectionFit, transitionMs + 20);
     } else {
       scheduleSectionFit();
     }
