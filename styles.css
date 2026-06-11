@@ -1814,12 +1814,12 @@ html:not([data-active-section="verse"]) .day-note {
 @keyframes nativePaneEnterForward {
   0% {
     opacity: 0;
-    transform: translate3d(0, 8px, 0) scale(0.998);
+    transform: translate3d(0, 6px, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -1842,12 +1842,12 @@ html:not([data-active-section="verse"]) .day-note {
 @keyframes nativePaneEnterBack {
   0% {
     opacity: 0;
-    transform: translate3d(0, -8px, 0) scale(0.998);
+    transform: translate3d(0, -6px, 0);
   }
 
   100% {
     opacity: 1;
-    transform: translate3d(0, 0, 0) scale(1);
+    transform: translate3d(0, 0, 0);
   }
 }
 
@@ -2734,6 +2734,9 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell body {
+    position: fixed;
+    inset: 0;
+    width: 100%;
     height: var(--mobile-vh, 100svh);
     min-height: var(--mobile-vh, 100svh);
     max-height: var(--mobile-vh, 100svh);
@@ -2748,10 +2751,21 @@ html:not([data-active-section="verse"]) .day-note {
       linear-gradient(135deg, rgba(86, 226, 139, 0.035), transparent 56%, rgba(123, 231, 207, 0.025));
   }
 
+  html.native-shell.android-shell body::before {
+    background:
+      linear-gradient(180deg, rgba(2, 6, 4, 0.98), rgba(2, 9, 6, 0.96)),
+      linear-gradient(135deg, rgba(86, 226, 139, 0.035), transparent 58%);
+    animation: none;
+  }
+
   html.native-shell .ambient {
     display: block;
     opacity: 0.36;
     animation-duration: 28s;
+  }
+
+  html.native-shell.android-shell .ambient {
+    display: none;
   }
 
   html.native-shell .ambient::before,
@@ -2786,6 +2800,8 @@ html:not([data-active-section="verse"]) .day-note {
   html.native-shell.android-shell .brand-mark {
     width: 25px;
     height: 25px;
+    animation: none;
+    filter: drop-shadow(0 0 6px rgba(86, 226, 139, 0.18));
   }
 
   html.native-shell.android-shell .header-actions {
@@ -2839,13 +2855,11 @@ html:not([data-active-section="verse"]) .day-note {
     border-color: rgba(86, 226, 139, 0.2);
     border-radius: 18px;
     background:
-      linear-gradient(180deg, rgba(86, 226, 139, 0.075), rgba(86, 226, 139, 0.018) 38%, rgba(5, 18, 12, 0) 70%),
-      linear-gradient(128deg, rgba(123, 231, 207, 0.055), transparent 48%),
+      linear-gradient(180deg, rgba(86, 226, 139, 0.08), rgba(86, 226, 139, 0.018) 44%, rgba(5, 18, 12, 0) 72%),
       #041109;
     box-shadow:
       inset 0 1px 0 rgba(198, 255, 218, 0.1),
-      inset 0 0 0 1px rgba(86, 226, 139, 0.045),
-      0 18px 46px rgba(0, 0, 0, 0.28);
+      inset 0 0 0 1px rgba(86, 226, 139, 0.06);
     overflow: hidden;
     scrollbar-width: none;
     touch-action: none;
@@ -2858,16 +2872,7 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .daily-section.is-current::before {
-    inset: auto -8% -1% 8%;
-    display: block;
-    width: auto;
-    height: 34%;
-    border-radius: 0;
-    background:
-      linear-gradient(118deg, transparent 0 18%, rgba(86, 226, 139, 0.12) 48%, transparent 82%),
-      linear-gradient(8deg, rgba(123, 231, 207, 0.045), transparent 74%);
-    opacity: 0.38;
-    transform: none;
+    display: none;
   }
 
   html.native-shell.android-shell .content-block {
@@ -3037,11 +3042,11 @@ html:not([data-active-section="verse"]) .day-note {
 
   @media (prefers-reduced-motion: no-preference) {
     html.native-shell.android-shell.section-motion.section-forward .daily-section.section-entering.is-current {
-      animation: nativePaneEnterForward 240ms cubic-bezier(0.2, 0.84, 0.22, 1) both !important;
+      animation: nativePaneEnterForward 190ms cubic-bezier(0.2, 0.84, 0.22, 1) both !important;
     }
 
     html.native-shell.android-shell.section-motion.section-back .daily-section.section-entering.is-current {
-      animation: nativePaneEnterBack 240ms cubic-bezier(0.2, 0.84, 0.22, 1) both !important;
+      animation: nativePaneEnterBack 190ms cubic-bezier(0.2, 0.84, 0.22, 1) both !important;
     }
 
     html.native-shell.android-shell .counter-tap.pulse {
@@ -3061,13 +3066,7 @@ html:not([data-active-section="verse"]) .day-note {
     }
 
     html.native-shell.android-shell.section-motion .daily-section.section-entering.is-current::after {
-      display: block;
-      top: 0;
-      left: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(121, 255, 174, 0.72), transparent);
-      animation: nativeCardLine 260ms ease-out both !important;
-      transform-origin: left;
+      display: none;
     }
   }
 
@@ -3101,8 +3100,7 @@ html:not([data-active-section="verse"]) .day-note {
       #062014;
     box-shadow:
       inset 0 1px 0 rgba(156, 255, 189, 0.08),
-      0 0 0 1px rgba(86, 226, 139, 0.1),
-      0 8px 26px rgba(20, 186, 90, 0.1);
+      0 0 0 1px rgba(86, 226, 139, 0.12);
     color: var(--accent-2);
     font-size: 0.58rem;
     isolation: isolate;
@@ -3115,6 +3113,10 @@ html:not([data-active-section="verse"]) .day-note {
       box-shadow 150ms ease,
       opacity 130ms ease;
     -webkit-tap-highlight-color: transparent;
+  }
+
+  html.native-shell.android-shell.section-switching .next-cue {
+    pointer-events: none;
   }
 
   html.native-shell.android-shell .next-cue::after {
@@ -3147,8 +3149,7 @@ html:not([data-active-section="verse"]) .day-note {
     background: #082819;
     box-shadow:
       inset 0 1px 0 rgba(214, 255, 228, 0.16),
-      0 0 0 1px rgba(86, 226, 139, 0.2),
-      0 10px 26px rgba(20, 186, 90, 0.18);
+      0 0 0 1px rgba(86, 226, 139, 0.22);
   }
 
   @media (prefers-reduced-motion: no-preference) {
@@ -3711,12 +3712,12 @@ html:not([data-active-section="verse"]) .day-note {
   }
 
   html.native-shell.android-shell .fit-scroll {
-    overflow-y: auto;
+    overflow-y: hidden;
     justify-content: flex-start;
     scrollbar-width: none;
     overscroll-behavior: contain;
-    touch-action: pan-y;
-    -webkit-overflow-scrolling: touch;
+    touch-action: none;
+    -webkit-overflow-scrolling: auto;
   }
 
   html.native-shell.android-shell .jump-menu,
@@ -3742,12 +3743,12 @@ html:not([data-active-section="verse"]) .day-note {
     transition:
       opacity 120ms linear,
       transform 150ms cubic-bezier(0.2, 0, 0, 1);
-    will-change: transform, opacity;
   }
 
   html.native-shell.android-shell .jump-menu.is-open .jump-panel,
   html.native-shell.android-shell .saved-drawer.is-open .saved-panel {
     transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
   }
 
   html.native-shell.android-shell .jump-panel {

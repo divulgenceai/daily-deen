@@ -1462,11 +1462,12 @@ let sectionFitFrame = 0;
 let sectionFitSignature = "";
 let phoneTransitionTimer = 0;
 let phoneTransitionFrame = 0;
+let phoneNavigationLockedUntil = 0;
 const nextCuePressTimers = new WeakMap();
 const SNAP_RELEASE_MS = 680;
-const PHONE_SECTION_TRANSITION_MS = 260;
-const NEXT_CUE_PRESS_MS = 220;
-const NEXT_CUE_NAV_DELAY_MS = 30;
+const PHONE_SECTION_TRANSITION_MS = 210;
+const NEXT_CUE_PRESS_MS = 180;
+const NEXT_CUE_NAV_DELAY_MS = 20;
 
 function getSydneyParts(date = new Date()) {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -2036,6 +2037,8 @@ function setupSmoothNavigation() {
     if (!target) return;
 
     event.preventDefault();
+    if (isSectionNavigationLocked()) return;
+
     const shouldDelayForPress = playNextCuePress(trigger);
     if (shouldDelayForPress) {
       window.setTimeout(() => smoothScrollToSection(id), NEXT_CUE_NAV_DELAY_MS);
@@ -2052,8 +2055,11 @@ function playNextCuePress(trigger) {
   const previousTimer = nextCuePressTimers.get(trigger);
   if (previousTimer) clearTimeout(previousTimer);
 
-  trigger.classList.remove("is-pressing");
-  void trigger.offsetWidth;
+  const isNativePhone = isPhoneLayout() && document.documentElement.classList.contains("native-shell");
+  if (!isNativePhone) {
+    trigger.classList.remove("is-pressing");
+    void trigger.offsetWidth;
+  }
   trigger.classList.add("is-pressing");
   nextCuePressTimers.set(
     trigger,
@@ -2063,7 +2069,7 @@ function playNextCuePress(trigger) {
     }, NEXT_CUE_PRESS_MS),
   );
 
-  return isPhoneLayout() && document.documentElement.classList.contains("native-shell");
+  return isNativePhone;
 }
 
 function setupNativeExternalLinks() {
@@ -2228,9 +2234,10 @@ function setupMobileScrollGuard() {
       const stepDy = y - mobileTouchLastY;
       const verticalIntent = Math.abs(totalDy) > 10 && Math.abs(totalDy) > Math.abs(totalDx) * 1.18;
       const nativeShell = document.documentElement.classList.contains("native-shell");
-      const allowsInternalScroll = scroller.classList.contains("fit-scroll");
+      const nativeVerticalIntent = Math.abs(totalDy) > 4 && Math.abs(totalDy) > Math.abs(totalDx) * 1.05;
+      const allowsInternalScroll = scroller.classList.contains("fit-scroll") && !nativeShell;
 
-      if (nativeShell && verticalIntent && !allowsInternalScroll) {
+      if (nativeShell && nativeVerticalIntent) {
         mobileTouchLocked = true;
         event.preventDefault();
         mobileTouchLastY = y;
@@ -2273,7 +2280,7 @@ function setupMobileScrollGuard() {
       const quickThreshold = nativeShell ? 52 : 62;
       const strongTug = Math.abs(dy) >= strongThreshold && Math.abs(dy) > Math.abs(dx) * 1.28;
       const quickFlick = Math.abs(dy) >= quickThreshold && elapsed < 340 && Math.abs(dy) > Math.abs(dx) * 1.35;
-      const allowsInternalScroll = activeMobileSection.classList.contains("fit-scroll");
+      const allowsInternalScroll = activeMobileSection.classList.contains("fit-scroll") && !nativeShell;
 
       if (allowsInternalScroll && activeMobileSection.scrollHeight > activeMobileSection.clientHeight + 2) {
         const atTop = activeMobileSection.scrollTop <= 1;
@@ -2304,6 +2311,8 @@ function setupMobileScrollGuard() {
 }
 
 function navigateSection(direction) {
+  if (isSectionNavigationLocked()) return;
+
   const sections = [...document.querySelectorAll("[data-section]")];
   if (!sections.length) return;
 
@@ -2313,6 +2322,10 @@ function navigateSection(direction) {
   if (nextIndex === currentIndex) return;
 
   smoothScrollToSection(sections[nextIndex].id);
+}
+
+function isSectionNavigationLocked() {
+  return isPhoneLayout() && Date.now() < phoneNavigationLockedUntil;
 }
 
 function getCurrentSectionIndex(sections = [...document.querySelectorAll("[data-section]")]) {
@@ -2387,6 +2400,8 @@ function cleanupPhoneSectionTransition() {
 function smoothScrollToSection(id) {
   const target = document.getElementById(id);
   if (!target) return;
+  if (isSectionNavigationLocked() && target.id !== currentSectionId) return;
+  if (isPhoneLayout() && isProgrammaticScroll && target.id === currentSectionId) return;
 
   isProgrammaticScroll = true;
   document.querySelectorAll(".snap-focus").forEach((section) => {
@@ -2395,14 +2410,15 @@ function smoothScrollToSection(id) {
   target.classList.add("snap-focus");
 
   if (isPhoneLayout()) {
+    phoneNavigationLockedUntil = Date.now() + PHONE_SECTION_TRANSITION_MS + 80;
     const transitionMs = preparePhoneSectionTransition(id);
     setActiveSectionVisuals(id, { fit: false });
     target.scrollTop = 0;
     window.scrollTo(0, 0);
     history.replaceState(null, "", `#${id}`);
     if (transitionMs) {
-      fitActivePhoneSection();
       startPhoneSectionTransitionMotion();
+      window.setTimeout(scheduleSectionFit, transitionMs + 20);
     } else {
       scheduleSectionFit();
     }
@@ -2441,6 +2457,7 @@ function syncHashSection() {
   }
 
   if (isPhoneLayout()) {
+    phoneNavigationLockedUntil = 0;
     cleanupPhoneSectionTransition();
     setActiveSectionVisuals(id);
     target.scrollTop = 0;
@@ -2583,41 +2600,49 @@ function fitActivePhoneSection() {
   const hasFitClass = ["fit-roomy", "fit-tight", "fit-ultra", "fit-scroll"].some((className) =>
     section.classList.contains(className),
   );
-  if (hasFitClass && section.dataset.fitSignature === nextSignature && sectionFitSignature === nextSignature) return;
+  if (hasFitClass && section.dataset.fitSignature === nextSignature) {
+    sectionFitSignature = nextSignature;
+    return;
+  }
 
   sectionFitSignature = nextSignature;
   section.dataset.fitSignature = nextSignature;
   section.classList.remove("fit-roomy", "fit-tight", "fit-ultra", "fit-scroll");
 
+  const setFitMode = (...classNames) => {
+    section.classList.remove("fit-roomy", "fit-tight", "fit-ultra", "fit-scroll");
+    if (classNames.length) section.classList.add(...classNames);
+  };
   const fits = () => getSectionOverflow(section) <= 2;
   if (getSectionOverflow(section) <= -150) {
-    section.classList.add("fit-roomy");
-    void section.offsetHeight;
-    if (!fits()) section.classList.remove("fit-roomy");
+    setFitMode("fit-roomy");
+    if (!fits()) setFitMode();
   }
 
   if (fits()) return;
 
-  section.classList.add("fit-tight");
-  void section.offsetHeight;
+  setFitMode("fit-tight");
   if (fits()) return;
 
-  section.classList.add("fit-ultra");
-  void section.offsetHeight;
+  setFitMode("fit-ultra");
   if (fits()) return;
 
-  section.classList.add("fit-scroll");
+  setFitMode("fit-ultra", "fit-scroll");
 }
 
 function getSectionOverflow(section) {
   const sectionRect = section.getBoundingClientRect();
   const isNativePhoneSection = isPhoneLayout() && document.documentElement.classList.contains("native-shell");
-  const contentItems = [...section.querySelectorAll(
-    ".section-kicker, .title-row, .content-block, .count-chip, .arabic, .translit, .meaning, .quote-text, .quote-person, .body-text, .explain, .effect, .moral, .story-lesson, .story-action, .story-note, .revelation-card, .ruling-grid, .ruling-card, .ruling-note, .source-row, .dhikr-counter",
-  )].filter((item) => {
-    const style = getComputedStyle(item);
-    return style.display !== "none" && style.visibility !== "hidden";
-  });
+  const selector = isNativePhoneSection
+    ? ".section-kicker, .content-block > :not(.next-cue), .story-note"
+    : ".section-kicker, .title-row, .content-block, .count-chip, .arabic, .translit, .meaning, .quote-text, .quote-person, .body-text, .explain, .effect, .moral, .story-lesson, .story-action, .story-note, .revelation-card, .ruling-grid, .ruling-card, .ruling-note, .source-row, .dhikr-counter";
+  const candidates = [...section.querySelectorAll(selector)];
+  const contentItems = isNativePhoneSection
+    ? candidates
+    : candidates.filter((item) => {
+      const style = getComputedStyle(item);
+      return style.display !== "none" && style.visibility !== "hidden";
+    });
 
   const contentBottom = contentItems.reduce((bottom, item) => {
     const rect = item.getBoundingClientRect();
