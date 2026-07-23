@@ -1,0 +1,9 @@
+{
+  "appId": "com.zubairmohammed.dailydeenquiz",
+  "appName": "Daily Deen Quiz",
+  "webDir": "www",
+  "backgroundColor": "#000000",
+  "android": {
+    "allowMixedContent": false
+  }
+}

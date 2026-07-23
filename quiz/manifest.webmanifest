@@ -1,0 +1,17 @@
+{
+  "name": "Daily Deen Quiz",
+  "short_name": "Deen Quiz",
+  "description": "A source-backed daily Islamic quiz with streaks and a full Sunday weekly exam.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
