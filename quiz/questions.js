@@ -135,22 +135,11 @@ function surahChoices(surahNumber, ayahNumber) {
   return choices;
 }
 
-function passageTopic(passage) {
-  const text = passage.toLowerCase();
-  if (/\b(muhammad|o prophet|wives of the prophet|messenger of allah)\b/.test(text)) return "Prophetic life";
-  if (/\b(adam|noah|abraham|lot|ishmael|isaac|jacob|joseph|moses|aaron|david|solomon|job|jonah|elijah|elisha|jesus|mary|zachariah|john|hud|salih|shu.?eyb)\b/.test(text)) return "Prophets";
-  if (/\b(worship|prayer|pray|fast|fasting|pilgrimage|hajj|alms|poor-due|prostrat|bow|mosque|sacrifice|ablution|purif|qiblah)\w*/.test(text)) return "Worship";
-  if (/\b(resurrection|judg(e)?ment|hereafter|hell|fire|garden|paradise|doom|punishment|reward|graves?|raised alive|day of)\b/.test(text)) return "Hereafter";
-  if (/\b(kind|kindness|parent|orphan|needy|poor|forgiv|patien|justice|justly|truth|honest|anger|mercy|neighbou?r|charity|good works|righteous|wrong-do)\w*/.test(text)) return "Character";
-  if (/\b(allah|lord|believ|faith|unseen|angel|scripture|revelation|god|creator|sovereignty)\w*/.test(text)) return "Foundations";
-  return "Qur'an";
-}
-
 const QURAN_PASSAGE_QUESTIONS = QURAN_VERSE_PASSAGES.map(([surahNumber, ayahNumber, passage]) => {
   const surahName = SURAH_NAMES[surahNumber - 1];
   return q(
     `quran-passage-${surahNumber}-${ayahNumber}`,
-    passageTopic(passage),
+    "Qur'an",
     `Which surah contains this passage in Pickthall’s English rendering? “${passage}”`,
     surahChoices(surahNumber, ayahNumber),
     surahName,
@@ -167,7 +156,7 @@ export const QUESTION_LIBRARY_META = {
   coreQuestions: CORE_QUESTIONS.length,
   generatedVerseQuestions: QURAN_VERSE_PACK_META.generatedQuestions,
   dailyQuestions: 7,
-  lockoutDays: 320,
-  productionTarget: 2240,
-  reviewPolicy: "Every answer includes a direct Qur'an or sahih hadith reference. Passage questions use Pickthall’s English rendering and link to the exact ayah.",
+  lockoutDays: 730,
+  productionTarget: 5110,
+  reviewPolicy: "Every answer is sourced only to Quran.com or a sahih al-Bukhari/al-Muslim reference on Sunnah.com. Passage wording comes from Quran.com's Pickthall resource and links to the exact ayah.",
 };

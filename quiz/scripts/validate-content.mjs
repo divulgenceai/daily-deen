@@ -1,5 +1,6 @@
 import { selectDailyQuestionIds } from "../daily-selection.js";
 import { QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "../questions.js";
+import { QURAN_VERSE_PACK_META } from "../quran-verse-pack.js";
 import { DAILY_SIZE, LOCKOUT_DAYS } from "../rules.js";
 import { migrateQuestionContent } from "../state-migration.js";
 
@@ -25,6 +26,10 @@ for (const question of QUESTIONS) {
   if (!question.choices.includes(question.answer)) throw new Error(`Question ${question.id} is missing its answer choice.`);
   if (!question.explanation || !question.source || !/^https:\/\/(quran\.com|sunnah\.com)\//.test(question.url)) {
     throw new Error(`Question ${question.id} is missing a supported direct source.`);
+  }
+
+  if (question.url.startsWith("https://sunnah.com/") && !/^https:\/\/sunnah\.com\/(bukhari|muslim):[0-9]+[a-z]?$/.test(question.url)) {
+    throw new Error(`Question ${question.id} must use a Sahih al-Bukhari or Sahih Muslim reference on Sunnah.com.`);
   }
 
   if (question.id.startsWith("quran-passage-")) {
@@ -65,21 +70,30 @@ if (QUESTION_LIBRARY_META.reviewedQuestions !== QUESTIONS.length || QUESTION_LIB
   throw new Error("Question library metadata does not match the runtime rules.");
 }
 
-const exhaustedV1State = {
-  contentVersion: 1,
+for (const sourceUrl of [QURAN_VERSE_PACK_META.source, QURAN_VERSE_PACK_META.chaptersSource]) {
+  if (new URL(sourceUrl).hostname !== "api.quran.com") {
+    throw new Error(`Generated Qur'an content must come from Quran.com; found ${sourceUrl}.`);
+  }
+}
+if (QURAN_VERSE_PACK_META.translationResourceId !== 19 || QURAN_VERSE_PACK_META.generatedQuestions !== 5116) {
+  throw new Error("Quran.com passage-pack metadata does not match the reviewed Pickthall resource.");
+}
+
+const exhaustedV2State = {
+  contentVersion: 2,
   daily: { "2026-08-18": { questionIds: [], completedAt: null } },
-  history: QUESTIONS.slice(0, 84).map((question) => ({ date: "2026-08-17", questionId: question.id })),
+  history: QUESTIONS.slice(0, 2300).map((question) => ({ date: "2026-08-17", questionId: question.id })),
   streak: { count: 27, lastCompletedDate: "2026-08-17", pendingExam: null },
 };
-const migration = migrateQuestionContent(exhaustedV1State, {
-  contentVersion: 2,
+const migration = migrateQuestionContent(exhaustedV2State, {
+  contentVersion: 3,
   todayKey: "2026-08-18",
   dailySize: DAILY_SIZE,
 });
 if (!migration.refreshed || migration.state.history.length || migration.state.daily["2026-08-18"] || migration.state.streak.count !== 27) {
-  throw new Error("The exhausted v1 state did not refresh while preserving the streak.");
+  throw new Error("The exhausted v2 state did not refresh while preserving the streak.");
 }
 
 console.log(
-  `Validated ${QUESTIONS.length.toLocaleString()} unique source-linked questions, the v1 reset, and ${LOCKOUT_DAYS + 45} simulated days with a ${LOCKOUT_DAYS}-day repeat lockout.`,
+  `Validated ${QUESTIONS.length.toLocaleString()} unique source-linked questions, the v2 reset, and ${LOCKOUT_DAYS + 45} simulated days with a ${LOCKOUT_DAYS}-day repeat lockout.`,
 );

@@ -5,7 +5,7 @@ import { seededShuffle, selectDailyQuestionIds } from "./daily-selection.js";
 import { migrateQuestionContent } from "./state-migration.js";
 
 const STORAGE_KEY = "daily-deen-quiz-state-v1";
-const CONTENT_VERSION = 2;
+const CONTENT_VERSION = 3;
 const DAY_MS = 86_400_000;
 const letters = ["A", "B", "C", "D"];
 
@@ -23,7 +23,6 @@ const elements = {
   weekdayLabels: document.querySelector("#weekdayLabels"),
   stageContent: document.querySelector("#stageContent"),
   streakCount: document.querySelector("#streakCount"),
-  examStatusButton: document.querySelector("#examStatusButton"),
   dialog: document.querySelector("#infoDialog"),
   dialogKicker: document.querySelector("#dialogKicker"),
   dialogTitle: document.querySelector("#dialogTitle"),
@@ -43,7 +42,7 @@ reconcileStreak();
 ensureDailyQuiz();
 render();
 if (libraryWasRefreshed) {
-  showToast("Question library refreshed — 2,300 questions are now ready.");
+  showToast(`Question library refreshed — ${QUESTION_LIBRARY_META.reviewedQuestions.toLocaleString()} questions are now ready.`);
 }
 
 document.addEventListener("click", (event) => {
@@ -64,8 +63,6 @@ document.addEventListener("click", (event) => {
     openInfoDialog(dialogTrigger.dataset.dialog);
   }
 });
-
-elements.examStatusButton.addEventListener("click", () => openInfoDialog("exam"));
 
 function emptyStore() {
   return {
@@ -228,7 +225,6 @@ function render() {
   elements.streakCount.textContent = String(store.streak.count || 0);
   renderSteps(session);
   renderWeekdays();
-  updateExamStatusButton();
 
   renderStage(daily, session);
 }
@@ -602,16 +598,6 @@ function renderContentLimit() {
   </section>`;
 }
 
-function updateExamStatusButton() {
-  const pending = store.streak.pendingExam;
-  if (!pending) {
-    elements.examStatusButton.innerHTML = 'See this week’s status <span aria-hidden="true">→</span>';
-    return;
-  }
-  const label = pending.status === "pending" ? "Weekly exam ready" : pending.status === "passed" ? "Weekly exam passed" : pending.status === "failed" ? "Weekly exam not passed" : "Weekly exam missed";
-  elements.examStatusButton.innerHTML = `${label} <span aria-hidden="true">→</span>`;
-}
-
 function openInfoDialog(type) {
   const daily = store.daily[todayKey];
   const pending = store.streak.pendingExam;
@@ -633,7 +619,7 @@ function openInfoDialog(type) {
       body: `<p>Each daily set spreads questions across the available lanes, then fills from the complete source-linked pool.</p>
         <div class="topic-grid">${topicCounts.map(({ topic, count }) => `<div class="topic-row"><strong>${escapeHtml(topic)}</strong><span>${count.toLocaleString()} questions</span></div>`).join("")}</div>
         <h3>Content status</h3>
-        <p>The library now contains ${QUESTION_LIBRARY_META.reviewedQuestions.toLocaleString()} questions: ${QUESTION_LIBRARY_META.coreQuestions} hand-written fundamentals plus ${QUESTION_LIBRARY_META.generatedVerseQuestions.toLocaleString()} exact-reference Qur'an passage questions using Pickthall’s English rendering. The ${LOCKOUT_DAYS}-day lockout prevents a daily question from returning for more than ten months.</p>`,
+        <p>The library now contains ${QUESTION_LIBRARY_META.reviewedQuestions.toLocaleString()} questions: ${QUESTION_LIBRARY_META.coreQuestions} hand-written fundamentals plus ${QUESTION_LIBRARY_META.generatedVerseQuestions.toLocaleString()} exact-reference Qur'an passage questions using Pickthall’s English rendering. The ${LOCKOUT_DAYS}-day lockout prevents a daily question from returning for two full years.</p>`,
     },
     how: {
       kicker: "One clear routine",

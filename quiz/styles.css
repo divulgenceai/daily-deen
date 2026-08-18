@@ -183,13 +183,12 @@ button {
 .quiz-layout {
   min-height: calc(100vh - var(--header-height) - var(--footer-height));
   display: grid;
-  grid-template-columns: minmax(320px, 380px) minmax(540px, 1fr) minmax(290px, 355px);
+  grid-template-columns: minmax(320px, 380px) minmax(540px, 1fr);
   border-bottom: 1px solid var(--line);
 }
 
 .day-rail,
-.quiz-stage,
-.exam-rail {
+.quiz-stage {
   min-width: 0;
 }
 
@@ -812,70 +811,6 @@ button {
   text-decoration: underline;
 }
 
-.exam-rail {
-  padding: 104px 40px 36px 50px;
-  border-left: 1px solid var(--line);
-}
-
-.exam-mark {
-  width: 48px;
-  height: 48px;
-  fill: none;
-  stroke: var(--accent);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.55;
-}
-
-.exam-rail h2 {
-  margin: 32px 0 24px;
-  color: var(--accent);
-  font-family: var(--serif);
-  font-size: 32px;
-  font-weight: 400;
-}
-
-.exam-rule {
-  display: grid;
-  grid-template-columns: 36px 1fr;
-  gap: 15px;
-  align-items: start;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--line);
-}
-
-.exam-rule svg {
-  width: 30px;
-  height: 30px;
-  fill: none;
-  stroke: var(--accent);
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.45;
-}
-
-.exam-rule p {
-  margin: 0;
-  color: #d2d6d2;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-.text-action {
-  margin-top: 24px;
-  padding: 10px 0;
-  border: 0;
-  background: none;
-  color: var(--accent);
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.text-action:hover,
-.text-action:focus-visible {
-  text-decoration: underline;
-}
-
 .site-footer {
   min-height: var(--footer-height);
   display: flex;
@@ -1267,9 +1202,12 @@ button {
 }
 
 @media (max-width: 1380px) {
-  .site-header,
-  .quiz-layout {
+  .site-header {
     grid-template-columns: 300px minmax(500px, 1fr) 280px;
+  }
+
+  .quiz-layout {
+    grid-template-columns: 300px minmax(500px, 1fr);
   }
 
   .brand {
@@ -1289,11 +1227,6 @@ button {
   .day-rail {
     padding-right: 28px;
     padding-left: 28px;
-  }
-
-  .exam-rail {
-    padding-right: 28px;
-    padding-left: 34px;
   }
 
   .quiz-stage {
@@ -1350,8 +1283,7 @@ button {
     min-height: calc(100vh - var(--header-height));
   }
 
-  .day-rail,
-  .exam-rail {
+  .day-rail {
     display: none;
   }
 

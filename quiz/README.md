@@ -44,7 +44,7 @@ The debug APK is created at `android/app/build/outputs/apk/debug/app-debug.apk`.
 - Seven multiple-choice questions every local calendar day.
 - The score is hidden until the seventh question.
 - A correct answer reveals a concise explanation; a wrong answer reveals the correct fact, why the selected choice missed, and a memory cue.
-- Every explanation retains a direct Qur'an or hadith source link.
+- Every explanation retains a direct Quran.com or Sunnah.com source link.
 - Daily completion keeps the normal streak; the score does not need to be perfect.
 - Sunday's daily quiz unlocks a longer weekly exam containing every question served from Monday through Saturday, followed by five fresh bonus questions.
 - A complete six-day week produces a 47-question exam: 42 weekday questions plus five bonus questions.
@@ -52,23 +52,23 @@ The debug APK is created at `android/app/build/outputs/apk/debug/app-debug.apk`.
 - Failing the weekly review resets the streak immediately.
 - Skipping Sunday leaves the review open through Monday; expiry resets the streak.
 - The weekly review includes all of that week's weekday material and presents previously missed questions first.
-- Daily-question history is stored locally and the selector enforces a 320-day repeat lockout.
-- The v2 content migration clears the exhausted v1 question history once, keeps the user’s streak and completed results, and immediately prepares a fresh quiz when the old pool was empty.
+- Daily-question history is stored locally and the selector enforces a 730-day repeat lockout.
+- The v3 content migration clears the earlier question history once, keeps the user’s streak and completed results, and immediately prepares a fresh quiz when the old pool was empty.
 
 ## Accuracy and content capacity
 
-The library contains 2,300 source-linked questions: 84 hand-written fundamentals and 2,216 Qur'an passage-recognition questions. That supports seven unique daily questions for 320 days without recycling a daily question.
+The library contains 5,200 source-linked questions: 84 hand-written fundamentals and 5,116 Qur'an passage-recognition questions. Two years of seven unique daily questions requires 5,110 questions, so the library includes a 90-question reserve while enforcing a 730-day lockout.
 
-The passage pack uses Mohammed Marmaduke Pickthall’s public-domain English rendering, structured by the Al Quran Cloud `en.pickthall` dataset. Each question identifies an exact surah and ayah and links directly to that reference on Quran.com. The prompt explicitly describes the wording as an English rendering, not as the Arabic Qur'an itself.
+The passage pack uses the M. Pickthall English rendering from Quran.com's translation resource 19, together with Quran.com's chapter metadata. Each question identifies an exact surah and ayah and links directly to that reference on Quran.com. The prompt explicitly describes the wording as an English rendering, not as the Arabic Qur'an itself. Hadith questions are limited to Sahih al-Bukhari and Sahih Muslim references on Sunnah.com.
 
 Regenerate and validate the committed passage pack with:
 
 ```powershell
-(Invoke-WebRequest -UseBasicParsing -Uri 'https://api.alquran.cloud/v1/quran/en.pickthall').Content | node scripts/generate-quran-pack.mjs --stdin
+node scripts/generate-quran-pack.mjs
 npm run check
 ```
 
-The generator rejects short, overly long, and duplicate passage text before selecting a broad round-robin sample across the surahs. The app never invents a fallback question or silently reuses a daily item inside the 320-day lockout.
+The generator rejects overly short, overly long, and duplicate passage text before selecting a broad round-robin sample across the surahs. The app never invents a fallback question or silently reuses a daily item inside the 730-day lockout.
 
 ## Design references
 
