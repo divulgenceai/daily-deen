@@ -1,8 +1,11 @@
 import { QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "./questions.js";
 import { DAILY_SIZE, isPassingWeeklyExam, isWeeklyExamExpired, LOCKOUT_DAYS, weeklyExamPassScore, WEEKLY_BONUS_SIZE } from "./rules.js";
 import { buildWeeklyExamQuestionIds, WEEKLY_EXAM_FORMAT_VERSION } from "./weekly-exam.js";
+import { seededShuffle, selectDailyQuestionIds } from "./daily-selection.js";
+import { migrateQuestionContent } from "./state-migration.js";
 
 const STORAGE_KEY = "daily-deen-quiz-state-v1";
+const CONTENT_VERSION = 2;
 const DAY_MS = 86_400_000;
 const letters = ["A", "B", "C", "D"];
 
@@ -28,6 +31,7 @@ const elements = {
   toast: document.querySelector("#toast"),
 };
 
+let libraryWasRefreshed = false;
 let store = loadStore();
 let activeMode = "daily";
 let toastTimer = 0;
@@ -38,6 +42,9 @@ const todayKey = toDateKey(today);
 reconcileStreak();
 ensureDailyQuiz();
 render();
+if (libraryWasRefreshed) {
+  showToast("Question library refreshed — 2,300 questions are now ready.");
+}
 
 document.addEventListener("click", (event) => {
   const answerButton = event.target.closest("[data-answer]");
@@ -62,6 +69,7 @@ elements.examStatusButton.addEventListener("click", () => openInfoDialog("exam")
 
 function emptyStore() {
   return {
+    contentVersion: CONTENT_VERSION,
     daily: {},
     history: [],
     streak: {
@@ -77,14 +85,28 @@ function loadStore() {
   try {
     const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!parsed || typeof parsed !== "object") return emptyStore();
-    return {
+    let loaded = {
       ...emptyStore(),
       ...parsed,
+      contentVersion: parsed.contentVersion,
       streak: { ...emptyStore().streak, ...(parsed.streak || {}) },
       daily: parsed.daily || {},
       history: Array.isArray(parsed.history) ? parsed.history : [],
       weeklyExams: parsed.weeklyExams || {},
     };
+
+    const migration = migrateQuestionContent(loaded, {
+      contentVersion: CONTENT_VERSION,
+      todayKey: toDateKey(new Date()),
+      dailySize: DAILY_SIZE,
+    });
+    loaded = migration.state;
+    if (migration.refreshed) {
+      libraryWasRefreshed = true;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(loaded));
+    }
+
+    return loaded;
   } catch {
     return emptyStore();
   }
@@ -124,32 +146,6 @@ function mondayFor(key) {
   return toDateKey(date);
 }
 
-function hashString(value) {
-  let hash = 2166136261;
-  for (let index = 0; index < value.length; index += 1) {
-    hash ^= value.charCodeAt(index);
-    hash = Math.imul(hash, 16777619);
-  }
-  return hash >>> 0;
-}
-
-function seededShuffle(items, seedText) {
-  const result = [...items];
-  let seed = hashString(seedText) || 1;
-  const random = () => {
-    seed ^= seed << 13;
-    seed ^= seed >>> 17;
-    seed ^= seed << 5;
-    return (seed >>> 0) / 4294967296;
-  };
-
-  for (let index = result.length - 1; index > 0; index -= 1) {
-    const swapIndex = Math.floor(random() * (index + 1));
-    [result[index], result[swapIndex]] = [result[swapIndex], result[index]];
-  }
-  return result;
-}
-
 function reconcileStreak() {
   const { streak } = store;
   let changed = false;
@@ -177,24 +173,15 @@ function ensureDailyQuiz() {
       .map((entry) => entry.questionId),
   );
 
-  const selected = [];
-  for (const topic of TOPICS) {
-    const candidates = QUESTIONS.filter((question) => question.topic === topic && !recentIds.has(question.id));
-    if (!candidates.length) continue;
-    const index = hashString(`${todayKey}:${topic}`) % candidates.length;
-    selected.push(candidates[index]);
-  }
-
-  if (selected.length < DAILY_SIZE) {
-    const remaining = QUESTIONS.filter(
-      (question) => !recentIds.has(question.id) && !selected.some((picked) => picked.id === question.id),
-    );
-    selected.push(...seededShuffle(remaining, `${todayKey}:fill`).slice(0, DAILY_SIZE - selected.length));
-  }
-
   store.daily[todayKey] = {
     date: todayKey,
-    questionIds: seededShuffle(selected, `${todayKey}:order`).slice(0, DAILY_SIZE).map((question) => question.id),
+    questionIds: selectDailyQuestionIds({
+      questions: QUESTIONS,
+      topics: TOPICS,
+      recentIds,
+      todayKey,
+      dailySize: DAILY_SIZE,
+    }),
     currentIndex: 0,
     answers: {},
     draft: null,
@@ -336,8 +323,9 @@ function renderQuestion(session, mode) {
   const total = session.questionIds.length;
   const actionLabel = revealed ? (session.currentIndex === total - 1 ? "See my score" : "Next question") : "Check answer";
   const motionClass = `motion-${renderMotion}`;
+  const passageClass = question.id.startsWith("quran-passage-") ? " passage-question" : "";
 
-  elements.stageContent.innerHTML = `<div class="question-shell ${motionClass}">
+  elements.stageContent.innerHTML = `<div class="question-shell ${motionClass}${passageClass}">
     <p class="topic-label">${mode === "exam" ? `Weekly exam ${session.currentIndex + 1}/${total} · ${escapeHtml(question.topic)}` : escapeHtml(question.topic)}</p>
     <h2 class="question-title">${escapeHtml(question.prompt)}</h2>
     <div class="answer-list" role="group" aria-label="Answer choices">
@@ -608,9 +596,9 @@ function renderReviewRows(session) {
 
 function renderContentLimit() {
   elements.stageContent.innerHTML = `<section class="empty-state">
-    <p class="topic-label">Content lockout active</p>
-    <h1>No reviewed questions are eligible today.</h1>
-    <p>The app will never silently break the ${LOCKOUT_DAYS}-day no-repeat promise. Add another reviewed content pack before launch rather than recycling an old question early.</p>
+    <p class="topic-label">Question library unavailable</p>
+    <h1>Today’s quiz could not be prepared.</h1>
+    <p>The refreshed library contains enough questions for ${LOCKOUT_DAYS} no-repeat days. Close and reopen the app to reload the content pack.</p>
   </section>`;
 }
 
@@ -640,12 +628,12 @@ function openInfoDialog(type) {
         <div class="status-block"><strong>${daily.completedAt ? `Completed · ${daily.score}/7` : `Question ${daily.currentIndex + 1} of 7`}</strong><p>${daily.completedAt ? "Come back after midnight for a new set." : "Finish today to keep your normal daily streak moving."}</p></div>`,
     },
     topics: {
-      kicker: "Balanced curriculum",
+      kicker: "Source-linked curriculum",
       title: "Seven topic lanes",
-      body: `<p>Each daily set takes one question from every lane so one subject cannot crowd out the rest.</p>
-        <div class="topic-grid">${topicCounts.map(({ topic, count }) => `<div class="topic-row"><strong>${escapeHtml(topic)}</strong><span>${count} source-checked starter questions</span></div>`).join("")}</div>
+      body: `<p>Each daily set spreads questions across the available lanes, then fills from the complete source-linked pool.</p>
+        <div class="topic-grid">${topicCounts.map(({ topic, count }) => `<div class="topic-row"><strong>${escapeHtml(topic)}</strong><span>${count.toLocaleString()} questions</span></div>`).join("")}</div>
         <h3>Content status</h3>
-        <p>This MVP contains ${QUESTION_LIBRARY_META.reviewedQuestions} manually source-checked questions. The ${LOCKOUT_DAYS}-day lockout engine is implemented and will refuse to recycle a daily question early. A public launch needs at least ${QUESTION_LIBRARY_META.productionTarget.toLocaleString()} independently reviewed daily questions to cover roughly ten months at seven per day.</p>`,
+        <p>The library now contains ${QUESTION_LIBRARY_META.reviewedQuestions.toLocaleString()} questions: ${QUESTION_LIBRARY_META.coreQuestions} hand-written fundamentals plus ${QUESTION_LIBRARY_META.generatedVerseQuestions.toLocaleString()} exact-reference Qur'an passage questions using Pickthall’s English rendering. The ${LOCKOUT_DAYS}-day lockout prevents a daily question from returning for more than ten months.</p>`,
     },
     how: {
       kicker: "One clear routine",

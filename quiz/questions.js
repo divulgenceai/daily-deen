@@ -1,3 +1,5 @@
+import { QURAN_VERSE_PACK_META, QURAN_VERSE_PASSAGES, SURAH_NAMES } from "./quran-verse-pack.js";
+
 const q = (id, topic, prompt, choices, answer, explanation, source, url) => ({
   id,
   topic,
@@ -19,7 +21,7 @@ export const TOPICS = [
   "Hereafter",
 ];
 
-export const QUESTIONS = [
+const CORE_QUESTIONS = [
   // Foundations
   q("foundations-01", "Foundations", "How many principles are named in the hadith, ‘Islam is based on…’?", ["Three", "Four", "Five", "Seven"], "Five", "The hadith lists the testimony of faith, prayer, zakat, Hajj, and fasting Ramadan.", "Sahih al-Bukhari 8", "https://sunnah.com/bukhari:8"),
   q("foundations-02", "Foundations", "Which of these is one of the five pillars of Islam?", ["Giving zakat", "Learning Arabic", "Visiting Madinah", "Fasting every Monday"], "Giving zakat", "Paying obligatory zakat is one of the five pillars named by the Prophet ﷺ.", "Sahih al-Bukhari 8", "https://sunnah.com/bukhari:8"),
@@ -119,10 +121,53 @@ export const QUESTIONS = [
   q("hereafter-12", "Hereafter", "What does Qur'an 32:17 say no soul knows?", ["The hidden joy kept as a reward", "The number of stars", "Every language", "The exact age of the earth"], "The hidden joy kept as a reward", "The verse says no soul knows what comfort of the eyes has been hidden as reward for what they did.", "Qur'an 32:17", "https://quran.com/32/17"),
 ];
 
+function surahChoices(surahNumber, ayahNumber) {
+  const answer = SURAH_NAMES[surahNumber - 1];
+  const choices = [answer];
+  let cursor = (surahNumber * 37 + ayahNumber * 19) % SURAH_NAMES.length;
+
+  while (choices.length < 4) {
+    const candidate = SURAH_NAMES[cursor];
+    if (!choices.includes(candidate)) choices.push(candidate);
+    cursor = (cursor + 29 + choices.length * 11) % SURAH_NAMES.length;
+  }
+
+  return choices;
+}
+
+function passageTopic(passage) {
+  const text = passage.toLowerCase();
+  if (/\b(muhammad|o prophet|wives of the prophet|messenger of allah)\b/.test(text)) return "Prophetic life";
+  if (/\b(adam|noah|abraham|lot|ishmael|isaac|jacob|joseph|moses|aaron|david|solomon|job|jonah|elijah|elisha|jesus|mary|zachariah|john|hud|salih|shu.?eyb)\b/.test(text)) return "Prophets";
+  if (/\b(worship|prayer|pray|fast|fasting|pilgrimage|hajj|alms|poor-due|prostrat|bow|mosque|sacrifice|ablution|purif|qiblah)\w*/.test(text)) return "Worship";
+  if (/\b(resurrection|judg(e)?ment|hereafter|hell|fire|garden|paradise|doom|punishment|reward|graves?|raised alive|day of)\b/.test(text)) return "Hereafter";
+  if (/\b(kind|kindness|parent|orphan|needy|poor|forgiv|patien|justice|justly|truth|honest|anger|mercy|neighbou?r|charity|good works|righteous|wrong-do)\w*/.test(text)) return "Character";
+  if (/\b(allah|lord|believ|faith|unseen|angel|scripture|revelation|god|creator|sovereignty)\w*/.test(text)) return "Foundations";
+  return "Qur'an";
+}
+
+const QURAN_PASSAGE_QUESTIONS = QURAN_VERSE_PASSAGES.map(([surahNumber, ayahNumber, passage]) => {
+  const surahName = SURAH_NAMES[surahNumber - 1];
+  return q(
+    `quran-passage-${surahNumber}-${ayahNumber}`,
+    passageTopic(passage),
+    `Which surah contains this passage in Pickthall’s English rendering? “${passage}”`,
+    surahChoices(surahNumber, ayahNumber),
+    surahName,
+    `This passage is Qur'an ${surahNumber}:${ayahNumber}, in Surah ${surahName}. The wording shown is an English rendering by Mohammed Marmaduke Pickthall.`,
+    `Qur'an ${surahNumber}:${ayahNumber}`,
+    `https://quran.com/${surahNumber}/${ayahNumber}`,
+  );
+});
+
+export const QUESTIONS = [...CORE_QUESTIONS, ...QURAN_PASSAGE_QUESTIONS];
+
 export const QUESTION_LIBRARY_META = {
   reviewedQuestions: QUESTIONS.length,
+  coreQuestions: CORE_QUESTIONS.length,
+  generatedVerseQuestions: QURAN_VERSE_PACK_META.generatedQuestions,
   dailyQuestions: 7,
-  lockoutDays: 304,
-  productionTarget: 2128,
-  reviewPolicy: "Qur'an references and sahih hadith links are shown after every answer.",
+  lockoutDays: 320,
+  productionTarget: 2240,
+  reviewPolicy: "Every answer includes a direct Qur'an or sahih hadith reference. Passage questions use Pickthall’s English rendering and link to the exact ayah.",
 };

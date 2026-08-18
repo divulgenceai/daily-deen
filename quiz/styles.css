@@ -476,6 +476,11 @@ button {
   text-wrap: balance;
 }
 
+.passage-question .question-title {
+  font-size: clamp(32px, 2.8vw, 48px);
+  line-height: 1.14;
+}
+
 .answer-list {
   display: grid;
   gap: 11px;
@@ -1527,6 +1532,12 @@ button {
     margin-bottom: 24px;
     font-size: clamp(33px, 9.7vw, 43px);
     line-height: 1.12;
+  }
+
+  .passage-question .question-title {
+    font-size: clamp(27px, 7.4vw, 32px);
+    line-height: 1.16;
+    text-wrap: pretty;
   }
 
   .answer-option {

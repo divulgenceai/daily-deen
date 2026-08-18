@@ -52,13 +52,23 @@ The debug APK is created at `android/app/build/outputs/apk/debug/app-debug.apk`.
 - Failing the weekly review resets the streak immediately.
 - Skipping Sunday leaves the review open through Monday; expiry resets the streak.
 - The weekly review includes all of that week's weekday material and presents previously missed questions first.
-- Daily-question history is stored locally and the selector enforces a 304-day repeat lockout.
+- Daily-question history is stored locally and the selector enforces a 320-day repeat lockout.
+- The v2 content migration clears the exhausted v1 question history once, keeps the user’s streak and completed results, and immediately prepares a fresh quiz when the old pool was empty.
 
 ## Accuracy and content capacity
 
-The MVP includes 84 manually written, source-linked starter questions across seven topics. The app never invents a fallback question or silently reuses an item inside the 304-day lockout.
+The library contains 2,300 source-linked questions: 84 hand-written fundamentals and 2,216 Qur'an passage-recognition questions. That supports seven unique daily questions for 320 days without recycling a daily question.
 
-Ten months of seven unique daily questions requires at least 2,128 independently reviewed questions (304 × 7), plus a reserve for withdrawals or corrections. The lockout and source schema are production-ready, but the starter library is intentionally not misrepresented as the full launch corpus. The next content phase should use a two-person review workflow: one qualified Islamic reviewer and one copy/logic reviewer, with every revision retaining its source link and review status.
+The passage pack uses Mohammed Marmaduke Pickthall’s public-domain English rendering, structured by the Al Quran Cloud `en.pickthall` dataset. Each question identifies an exact surah and ayah and links directly to that reference on Quran.com. The prompt explicitly describes the wording as an English rendering, not as the Arabic Qur'an itself.
+
+Regenerate and validate the committed passage pack with:
+
+```powershell
+(Invoke-WebRequest -UseBasicParsing -Uri 'https://api.alquran.cloud/v1/quran/en.pickthall').Content | node scripts/generate-quran-pack.mjs --stdin
+npm run check
+```
+
+The generator rejects short, overly long, and duplicate passage text before selecting a broad round-robin sample across the surahs. The app never invents a fallback question or silently reuses a daily item inside the 320-day lockout.
 
 ## Design references
 

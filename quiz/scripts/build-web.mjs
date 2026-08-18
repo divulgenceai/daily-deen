@@ -7,11 +7,14 @@ const projectRoot = resolve(scriptDirectory, "..");
 const outputDirectory = resolve(projectRoot, "www");
 const webAssets = [
   "app.js",
+  "daily-selection.js",
   "favicon.svg",
   "index.html",
   "manifest.webmanifest",
   "questions.js",
+  "quran-verse-pack.js",
   "rules.js",
+  "state-migration.js",
   "styles.css",
   "weekly-exam.js",
 ];
