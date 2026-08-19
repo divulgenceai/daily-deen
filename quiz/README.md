@@ -59,7 +59,7 @@ The debug APK is created at `android/app/build/outputs/apk/debug/app-debug.apk`.
 
 The library contains 5,200 source-linked questions: 84 hand-written fundamentals and 5,116 Qur'an passage-recognition questions. Two years of seven unique daily questions requires 5,110 questions, so the library includes a 90-question reserve while enforcing a 730-day lockout.
 
-The passage pack uses the M. Pickthall English rendering from Quran.com's translation resource 19, together with Quran.com's chapter metadata. Each question identifies an exact surah and ayah and links directly to that reference on Quran.com. The prompt explicitly describes the wording as an English rendering, not as the Arabic Qur'an itself. Hadith questions are limited to Sahih al-Bukhari and Sahih Muslim references on Sunnah.com.
+The passage pack uses the M. Pickthall English rendering from Quran.com's translation resource 19, together with Quran.com's chapter metadata. Each question shows a short, exact excerpt, identifies an exact surah and ayah, and links directly to that reference on Quran.com. Excerpts target 12 words and extend only when needed to keep the answer unambiguous; the answer explanation identifies the wording as an English rendering rather than the Arabic Qur'an itself. Hadith questions are limited to Sahih al-Bukhari and Sahih Muslim references on Sunnah.com.
 
 Regenerate and validate the committed passage pack with:
 

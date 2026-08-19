@@ -135,12 +135,12 @@ function surahChoices(surahNumber, ayahNumber) {
   return choices;
 }
 
-const QURAN_PASSAGE_QUESTIONS = QURAN_VERSE_PASSAGES.map(([surahNumber, ayahNumber, passage]) => {
+const QURAN_PASSAGE_QUESTIONS = QURAN_VERSE_PASSAGES.map(([surahNumber, ayahNumber, passage, excerpt]) => {
   const surahName = SURAH_NAMES[surahNumber - 1];
   return q(
     `quran-passage-${surahNumber}-${ayahNumber}`,
     "Qur'an",
-    `Which surah contains this passage in Pickthall’s English rendering? “${passage}”`,
+    `Which surah is this excerpt from? “${excerpt}”`,
     surahChoices(surahNumber, ayahNumber),
     surahName,
     `This passage is Qur'an ${surahNumber}:${ayahNumber}, in Surah ${surahName}. The wording shown is an English rendering by Mohammed Marmaduke Pickthall.`,

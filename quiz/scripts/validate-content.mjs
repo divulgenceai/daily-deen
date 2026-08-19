@@ -1,6 +1,6 @@
 import { selectDailyQuestionIds } from "../daily-selection.js";
 import { QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "../questions.js";
-import { QURAN_VERSE_PACK_META } from "../quran-verse-pack.js";
+import { QURAN_VERSE_PACK_META, QURAN_VERSE_PASSAGES } from "../quran-verse-pack.js";
 import { DAILY_SIZE, LOCKOUT_DAYS } from "../rules.js";
 import { migrateQuestionContent } from "../state-migration.js";
 
@@ -11,6 +11,7 @@ if (QUESTIONS.length < requiredQuestions) {
 
 const ids = new Set();
 const prompts = new Set();
+const passageExcerpts = new Map(QURAN_VERSE_PASSAGES.map(([surah, ayah, , excerpt]) => [`${surah}:${ayah}`, excerpt]));
 for (const question of QUESTIONS) {
   if (ids.has(question.id)) throw new Error(`Duplicate question id: ${question.id}`);
   ids.add(question.id);
@@ -36,6 +37,14 @@ for (const question of QUESTIONS) {
     const [, , surah, ayah] = question.id.split("-");
     if (question.source !== `Qur'an ${surah}:${ayah}` || question.url !== `https://quran.com/${surah}/${ayah}`) {
       throw new Error(`Passage reference mismatch on ${question.id}.`);
+    }
+    const excerpt = passageExcerpts.get(`${surah}:${ayah}`);
+    if (question.prompt !== `Which surah is this excerpt from? “${excerpt}”`) {
+      throw new Error(`Passage excerpt mismatch on ${question.id}.`);
+    }
+    const excerptWords = excerpt.replaceAll("…", "").trim().split(/\s+/).length;
+    if (excerptWords > QURAN_VERSE_PACK_META.maxExcerptWords) {
+      throw new Error(`Passage excerpt is too long on ${question.id}: ${excerptWords} words.`);
     }
   }
 }
@@ -75,7 +84,12 @@ for (const sourceUrl of [QURAN_VERSE_PACK_META.source, QURAN_VERSE_PACK_META.cha
     throw new Error(`Generated Qur'an content must come from Quran.com; found ${sourceUrl}.`);
   }
 }
-if (QURAN_VERSE_PACK_META.translationResourceId !== 19 || QURAN_VERSE_PACK_META.generatedQuestions !== 5116) {
+if (
+  QURAN_VERSE_PACK_META.translationResourceId !== 19 ||
+  QURAN_VERSE_PACK_META.generatedQuestions !== 5116 ||
+  QURAN_VERSE_PACK_META.targetExcerptWords !== 12 ||
+  QURAN_VERSE_PACK_META.maxExcerptWords > 19
+) {
   throw new Error("Quran.com passage-pack metadata does not match the reviewed Pickthall resource.");
 }
 
