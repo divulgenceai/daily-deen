@@ -121,6 +121,27 @@ const CORE_QUESTIONS = [
   q("hereafter-12", "Hereafter", "What does Qur'an 32:17 say no soul knows?", ["The hidden joy kept as a reward", "The number of stars", "Every language", "The exact age of the earth"], "The hidden joy kept as a reward", "The verse says no soul knows what comfort of the eyes has been hidden as reward for what they did.", "Qur'an 32:17", "https://quran.com/32/17"),
 ];
 
+// Short, everyday questions checked against the linked Sahih al-Bukhari reports.
+const BUKHARI_QUESTIONS = [
+  q("bukhari-01", "Character", "What should you do if you have nothing good to say?", ["Keep quiet", "Insult someone", "Spread a rumour", "Shout louder"], "Keep quiet", "The Prophet ﷺ said to speak good or remain silent.", "Sahih al-Bukhari 6018", "https://sunnah.com/bukhari:6018"),
+  q("bukhari-02", "Character", "How should you treat a guest?", ["Honour them", "Ignore them", "Mock them", "Turn them away without reason"], "Honour them", "The Prophet ﷺ linked faith in Allah and the Last Day with honouring a guest.", "Sahih al-Bukhari 6018", "https://sunnah.com/bukhari:6018"),
+  q("bukhari-03", "Character", "Who should you avoid harming?", ["Your neighbour", "Only strangers", "Only travellers", "Only merchants"], "Your neighbour", "The same hadith warns against harming one's neighbour.", "Sahih al-Bukhari 6018", "https://sunnah.com/bukhari:6018"),
+  q("bukhari-04", "Worship", "Which deeds are most loved by Allah?", ["Regular deeds, even if small", "Deeds done only once", "Deeds done for praise", "Only difficult deeds"], "Regular deeds, even if small", "The Prophet ﷺ taught that the most beloved deeds are those done regularly, even when they are few.", "Sahih al-Bukhari 6465", "https://sunnah.com/bukhari:6465"),
+  q("bukhari-05", "Worship", "Should you take on more worship than you can keep up?", ["No, do what you can manage", "Yes, always", "Only if others see", "Never worship"], "No, do what you can manage", "The hadith advises taking on deeds within one's ability and keeping them consistent.", "Sahih al-Bukhari 6465", "https://sunnah.com/bukhari:6465"),
+  q("bukhari-06", "Qur'an", "What does the Prophet ﷺ praise people for doing with the Qur'an?", ["Learning and teaching it", "Hiding it", "Selling it", "Ignoring it"], "Learning and teaching it", "He said the best among you are those who learn the Qur'an and teach it.", "Sahih al-Bukhari 5027", "https://sunnah.com/bukhari:5027"),
+  q("bukhari-07", "Foundations", "How does the Prophet ﷺ describe the religion?", ["Easy", "Impossible", "Secret", "Only for scholars"], "Easy", "The hadith says the religion is easy and warns against making it too hard on oneself.", "Sahih al-Bukhari 39", "https://sunnah.com/bukhari:39"),
+  q("bukhari-08", "Foundations", "What is better than going to extremes in worship?", ["A balanced approach", "Giving up", "Showing off", "Judging others"], "A balanced approach", "The Prophet ﷺ encouraged moderation and doing what one can sustain.", "Sahih al-Bukhari 39", "https://sunnah.com/bukhari:39"),
+  q("bukhari-09", "Worship", "Which deed is named first among those most loved by Allah?", ["Prayer on time", "A long journey", "Owning wealth", "Winning arguments"], "Prayer on time", "When asked about the most beloved deed, the Prophet ﷺ first named prayer at its proper time.", "Sahih al-Bukhari 527", "https://sunnah.com/bukhari:527"),
+  q("bukhari-10", "Character", "Which duty is named after prayer on time?", ["Being good to parents", "Buying gifts", "Travelling", "Public speaking"], "Being good to parents", "After prayer on time, the Prophet ﷺ named good treatment of parents.", "Sahih al-Bukhari 527", "https://sunnah.com/bukhari:527"),
+  q("bukhari-11", "Character", "Who was named first when a man asked who most deserves his good company?", ["His mother", "His friend", "His neighbour", "His employer"], "His mother", "The Prophet ﷺ answered 'your mother' first.", "Sahih al-Bukhari 5971", "https://sunnah.com/bukhari:5971"),
+  q("bukhari-12", "Character", "After mentioning the mother three times, whom did the Prophet ﷺ mention?", ["The father", "A ruler", "A cousin", "A teacher"], "The father", "He emphasised the mother three times, then mentioned the father.", "Sahih al-Bukhari 5971", "https://sunnah.com/bukhari:5971"),
+  q("bukhari-13", "Hereafter", "Who will be close to the Prophet ﷺ in Paradise, according to the hadith?", ["A person who cares for an orphan", "The richest person", "Only a traveller", "A famous speaker"], "A person who cares for an orphan", "The Prophet ﷺ showed with two fingers how close the person caring for an orphan would be to him in Paradise.", "Sahih al-Bukhari 6005", "https://sunnah.com/bukhari:6005"),
+  q("bukhari-14", "Character", "Is helping someone onto their ride a kind of charity?", ["Yes", "No", "Only for payment", "Only on Friday"], "Yes", "The hadith includes helping a person onto their mount among acts of charity.", "Sahih al-Bukhari 2989", "https://sunnah.com/bukhari:2989"),
+  q("bukhari-15", "Character", "Is removing something harmful from a road a kind of charity?", ["Yes", "No", "Only at night", "Only if rewarded"], "Yes", "The Prophet ﷺ listed removing a harmful thing from the road as charity.", "Sahih al-Bukhari 2989", "https://sunnah.com/bukhari:2989"),
+  q("bukhari-16", "Character", "What does the hadith call being fair between two people?", ["Charity", "A waste of time", "A private matter only", "A debt"], "Charity", "The Prophet ﷺ described acting justly between two people as charity.", "Sahih al-Bukhari 2989", "https://sunnah.com/bukhari:2989"),
+  q("bukhari-17", "Worship", "What can each step to prayer count as?", ["Charity", "A mistake", "A debt", "A fast"], "Charity", "The hadith includes each step taken to prayer among acts of charity.", "Sahih al-Bukhari 2989", "https://sunnah.com/bukhari:2989"),
+];
+
 function surahChoices(surahNumber, ayahNumber) {
   const answer = SURAH_NAMES[surahNumber - 1];
   const choices = [answer];
@@ -135,28 +156,33 @@ function surahChoices(surahNumber, ayahNumber) {
   return choices;
 }
 
-const QURAN_PASSAGE_QUESTIONS = QURAN_VERSE_PASSAGES.map(([surahNumber, ayahNumber, passage, excerpt]) => {
+const QURAN_PASSAGE_QUESTIONS = QURAN_VERSE_PASSAGES.map(([surahNumber, ayahNumber, start, length, active]) => {
   const surahName = SURAH_NAMES[surahNumber - 1];
-  return q(
+  return {
+    ...q(
     `quran-passage-${surahNumber}-${ayahNumber}`,
     "Qur'an",
-    `Which surah is this excerpt from? “${excerpt}”`,
+    "Which surah is this verse from?",
     surahChoices(surahNumber, ayahNumber),
     surahName,
-    `This passage is Qur'an ${surahNumber}:${ayahNumber}, in Surah ${surahName}. The wording shown is an English rendering by Mohammed Marmaduke Pickthall.`,
+    `This is Qur'an ${surahNumber}:${ayahNumber}, in Surah ${surahName}. The English translation is M.A.S. Abdel Haleem on Quran.com. Open the source to read the whole verse in context.`,
     `Qur'an ${surahNumber}:${ayahNumber}`,
     `https://quran.com/${surahNumber}/${ayahNumber}`,
-  );
+    ),
+    verse: { surah: surahNumber, ayah: ayahNumber, start, length },
+    active: Boolean(active),
+  };
 });
 
-export const QUESTIONS = [...CORE_QUESTIONS, ...QURAN_PASSAGE_QUESTIONS];
+export const QUESTIONS = [...CORE_QUESTIONS, ...BUKHARI_QUESTIONS, ...QURAN_PASSAGE_QUESTIONS];
+export const ACTIVE_QUESTIONS = QUESTIONS.filter((question) => question.active !== false);
 
 export const QUESTION_LIBRARY_META = {
-  reviewedQuestions: QUESTIONS.length,
-  coreQuestions: CORE_QUESTIONS.length,
+  reviewedQuestions: ACTIVE_QUESTIONS.length,
+  coreQuestions: CORE_QUESTIONS.length + BUKHARI_QUESTIONS.length,
   generatedVerseQuestions: QURAN_VERSE_PACK_META.generatedQuestions,
   dailyQuestions: 7,
-  lockoutDays: 730,
-  productionTarget: 5110,
-  reviewPolicy: "Every answer is sourced only to Quran.com or a sahih al-Bukhari/al-Muslim reference on Sunnah.com. Passage wording comes from Quran.com's Pickthall resource and links to the exact ayah.",
+  lockoutDays: 731,
+  productionTarget: 5642,
+  reviewPolicy: "Every answer links to Quran.com or a Sahih al-Bukhari/al-Muslim report on Sunnah.com. M.A.S. Abdel Haleem verse text is fetched from Quran.com when displayed, not bundled into the app.",
 };

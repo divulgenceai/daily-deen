@@ -1,8 +1,8 @@
 import { WEEKLY_BONUS_SIZE } from "./rules.js";
 
-export const WEEKLY_EXAM_FORMAT_VERSION = 2;
+export const WEEKLY_EXAM_FORMAT_VERSION = 3;
 
-export function buildWeeklyExamQuestionIds({ weekKey, dailySessions, allQuestionIds, shuffle }) {
+export function buildWeeklyExamQuestionIds({ weekKey, dailySessions, allQuestionIds, recentIds, shuffle }) {
   const learnedIds = [];
   const incorrectIds = [];
 
@@ -18,7 +18,7 @@ export function buildWeeklyExamQuestionIds({ weekKey, dailySessions, allQuestion
     ...shuffle(incorrectIds, `${weekKey}:incorrect`),
     ...shuffle(learnedIds.filter((id) => !incorrectIds.includes(id)), `${weekKey}:review`),
   ];
-  const bonusPool = allQuestionIds.filter((id) => !learnedIds.includes(id));
+  const bonusPool = allQuestionIds.filter((id) => !learnedIds.includes(id) && !recentIds.has(id));
   const bonusIds = shuffle(bonusPool, `${weekKey}:bonus`).slice(0, WEEKLY_BONUS_SIZE);
 
   return [...weeklyReview, ...bonusIds];

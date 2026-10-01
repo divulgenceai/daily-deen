@@ -1,13 +1,17 @@
-import { QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "./questions.js";
+import { ACTIVE_QUESTIONS, QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "./questions.js";
 import { DAILY_SIZE, isPassingWeeklyExam, isWeeklyExamExpired, LOCKOUT_DAYS, weeklyExamPassScore, WEEKLY_BONUS_SIZE } from "./rules.js";
 import { buildWeeklyExamQuestionIds, WEEKLY_EXAM_FORMAT_VERSION } from "./weekly-exam.js";
 import { seededShuffle, selectDailyQuestionIds } from "./daily-selection.js";
-import { migrateQuestionContent } from "./state-migration.js";
+import { migrateQuestionContent, reserveHistoryIds } from "./state-migration.js";
+import { versePrompt } from "./verse-content.js";
+import { SURAH_NAMES } from "./quran-verse-pack.js";
 
 const STORAGE_KEY = "daily-deen-quiz-state-v1";
-const CONTENT_VERSION = 3;
+const CONTENT_VERSION = 4;
 const DAY_MS = 86_400_000;
 const letters = ["A", "B", "C", "D"];
+const questionById = new Map(QUESTIONS.map((question) => [question.id, question]));
+const verseDisplay = new Map();
 
 const elements = {
   displayDate: document.querySelector("#displayDate"),
@@ -96,6 +100,7 @@ function loadStore() {
       contentVersion: CONTENT_VERSION,
       todayKey: toDateKey(new Date()),
       dailySize: DAILY_SIZE,
+      activeQuestionIds: new Set(ACTIVE_QUESTIONS.map((question) => question.id)),
     });
     loaded = migration.state;
     if (migration.refreshed) {
@@ -164,16 +169,12 @@ function reconcileStreak() {
 function ensureDailyQuiz() {
   if (store.daily[todayKey]) return;
 
-  const recentIds = new Set(
-    store.history
-      .filter((entry) => dayDifference(entry.date, todayKey) >= 0 && dayDifference(entry.date, todayKey) < LOCKOUT_DAYS)
-      .map((entry) => entry.questionId),
-  );
+  const recentIds = recentQuestionIds();
 
   store.daily[todayKey] = {
     date: todayKey,
     questionIds: selectDailyQuestionIds({
-      questions: QUESTIONS,
+      questions: ACTIVE_QUESTIONS,
       topics: TOPICS,
       recentIds,
       todayKey,
@@ -185,11 +186,18 @@ function ensureDailyQuiz() {
     completedAt: null,
     score: null,
   };
+  reserveHistoryIds(store.history, todayKey, store.daily[todayKey].questionIds);
   saveStore();
 }
 
 function getQuestion(id) {
-  return QUESTIONS.find((question) => question.id === id);
+  return questionById.get(id);
+}
+
+function recentQuestionIds() {
+  return new Set(store.history
+    .filter((entry) => Number.isFinite(dayDifference(entry.date, todayKey)) && dayDifference(entry.date, todayKey) < LOCKOUT_DAYS)
+    .map((entry) => entry.questionId));
 }
 
 function currentSession() {
@@ -312,6 +320,28 @@ function renderQuestion(session, mode) {
     return;
   }
 
+  if (question.verse?.length) {
+    const displayed = verseDisplay.get(questionId);
+    if (!displayed || displayed.loading) {
+      elements.stageContent.innerHTML = `<div class="question-shell motion-idle passage-question"><p class="topic-label">Qur'an · ${escapeHtml(question.source)}</p><h2 class="question-title">Loading the verse…</h2><p class="source-note">Getting the M.A.S. Abdel Haleem translation from Quran.com.</p></div>`;
+      if (!displayed) {
+        verseDisplay.set(questionId, { loading: true });
+        versePrompt(question).then((prompt) => {
+          verseDisplay.set(questionId, { prompt });
+          if (currentSession()?.questionIds[currentSession().currentIndex] === questionId) renderQuestion(currentSession(), activeMode);
+        }).catch(() => {
+          verseDisplay.set(questionId, { error: true });
+          if (currentSession()?.questionIds[currentSession().currentIndex] === questionId) renderQuestion(currentSession(), activeMode);
+        });
+      }
+      return;
+    }
+    if (displayed.error) {
+      elements.stageContent.innerHTML = `<div class="question-shell motion-idle passage-question"><p class="topic-label">Qur'an · ${escapeHtml(question.source)}</p><h2 class="question-title">Verse unavailable right now</h2><p>Connect to the internet to load the translation, then try again.</p><button class="primary-action" type="button" data-quiz-action="retry-verse"><span>Try again</span></button><a class="source-link" href="${escapeAttribute(question.url)}" target="_blank" rel="noopener noreferrer">Open this verse on Quran.com ↗</a></div>`;
+      return;
+    }
+  }
+
   const answer = session.answers[questionId];
   const selected = answer?.selected || (session.draft?.questionId === questionId ? session.draft.selected : null);
   const revealed = Boolean(answer?.revealed);
@@ -323,7 +353,7 @@ function renderQuestion(session, mode) {
 
   elements.stageContent.innerHTML = `<div class="question-shell ${motionClass}${passageClass}">
     <p class="topic-label">${mode === "exam" ? `Weekly exam ${session.currentIndex + 1}/${total} · ${escapeHtml(question.topic)}` : escapeHtml(question.topic)}</p>
-    <h2 class="question-title">${escapeHtml(question.prompt)}</h2>
+    <h2 class="question-title">${escapeHtml(displayedPrompt(question))}</h2>
     <div class="answer-list" role="group" aria-label="Answer choices">
       ${choices.map((choice, index) => renderAnswerOption(question, choice, index, selected, revealed)).join("")}
     </div>
@@ -335,6 +365,8 @@ function renderQuestion(session, mode) {
     ${revealed ? "" : `<p class="source-note"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H7a3 3 0 0 0-3 3zM4 5.5V21M8 7h8M8 11h7"/></svg><span>Sources and a short explanation appear after every answer.</span></p>`}
   </div>`;
   renderMotion = "idle";
+  const nextQuestion = getQuestion(session.questionIds[session.currentIndex + 1]);
+  if (nextQuestion?.verse?.length) versePrompt(nextQuestion).catch(() => {});
 }
 
 function renderAnswerOption(question, choice, index, selected, revealed) {
@@ -383,14 +415,18 @@ function renderFeedback(question, answer) {
       </div>
       <div class="explanation-part">
         <span class="explanation-label">Why your answer missed</span>
-        <p>Your choice, “${escapeHtml(answer.selected)},” is not the fact identified by ${escapeHtml(question.source)}. For this question, the cited source supports “${escapeHtml(question.answer)}.”</p>
+        <p>${question.verse ? escapeHtml(`The reference ${question.verse.surah}:${question.verse.ayah} means chapter ${question.verse.surah}, verse ${question.verse.ayah}. Chapter ${question.verse.surah} is ${question.answer}; ${answer.selected} is chapter ${SURAH_NAMES.indexOf(answer.selected) + 1}.`) : `Your choice, “${escapeHtml(answer.selected)},” is not the fact identified by ${escapeHtml(question.source)}. For this question, the cited source supports “${escapeHtml(question.answer)}.”`}</p>
       </div>
       <div class="explanation-part memory-cue">
         <span class="explanation-label">Memory cue</span>
-        <p><span>${escapeHtml(question.prompt)}</span><strong>${escapeHtml(question.answer)}</strong></p>
+        <p><span>${escapeHtml(displayedPrompt(question))}</span><strong>${escapeHtml(question.answer)}</strong></p>
       </div>
     </div>
   </section>`;
+}
+
+function displayedPrompt(question) {
+  return verseDisplay.get(question.id)?.prompt || question.prompt;
 }
 
 function selectAnswer(choice) {
@@ -404,6 +440,11 @@ function selectAnswer(choice) {
 }
 
 function handleQuizAction(action) {
+  if (action === "retry-verse") {
+    const questionId = currentSession()?.questionIds[currentSession().currentIndex];
+    if (questionId) verseDisplay.delete(questionId);
+    render();
+  }
   if (action === "check") checkAnswer();
   if (action === "continue") continueQuiz();
   if (action === "start-exam") startWeeklyExam();
@@ -457,11 +498,7 @@ function completeDailyQuiz(session) {
     store.streak.lastCompletedDate = todayKey;
   }
 
-  for (const questionId of session.questionIds) {
-    if (!store.history.some((entry) => entry.date === todayKey && entry.questionId === questionId)) {
-      store.history.push({ date: todayKey, questionId });
-    }
-  }
+  reserveHistoryIds(store.history, todayKey, session.questionIds);
   store.history = store.history.filter((entry) => dayDifference(entry.date, todayKey) < LOCKOUT_DAYS + 14);
 
   if (today.getDay() === 0) {
@@ -485,12 +522,16 @@ function ensureWeeklyExam(weekKey) {
   if (existing?.completedAt || existing?.formatVersion === WEEKLY_EXAM_FORMAT_VERSION) return existing;
 
   const dailySessions = Array.from({ length: 6 }, (_, offset) => store.daily[addDays(weekKey, offset)]);
+  const recentIds = recentQuestionIds();
   const questionIds = buildWeeklyExamQuestionIds({
     weekKey,
     dailySessions,
-    allQuestionIds: QUESTIONS.map((question) => question.id),
+    allQuestionIds: ACTIVE_QUESTIONS.map((question) => question.id),
+    recentIds,
     shuffle: seededShuffle,
   });
+  const learnedIds = new Set(dailySessions.flatMap((session) => session?.questionIds || []));
+  reserveHistoryIds(store.history, todayKey, questionIds.filter((id) => !learnedIds.has(id)));
 
   store.weeklyExams[weekKey] = {
     weekKey,
@@ -603,7 +644,7 @@ function openInfoDialog(type) {
   const pending = store.streak.pendingExam;
   const topicCounts = TOPICS.map((topic) => ({
     topic,
-    count: QUESTIONS.filter((question) => question.topic === topic).length,
+    count: ACTIVE_QUESTIONS.filter((question) => question.topic === topic).length,
   }));
 
   const dialogContent = {
@@ -619,7 +660,7 @@ function openInfoDialog(type) {
       body: `<p>Each daily set spreads questions across the available lanes, then fills from the complete source-linked pool.</p>
         <div class="topic-grid">${topicCounts.map(({ topic, count }) => `<div class="topic-row"><strong>${escapeHtml(topic)}</strong><span>${count.toLocaleString()} questions</span></div>`).join("")}</div>
         <h3>Content status</h3>
-        <p>The library now contains ${QUESTION_LIBRARY_META.reviewedQuestions.toLocaleString()} questions: ${QUESTION_LIBRARY_META.coreQuestions} hand-written fundamentals plus ${QUESTION_LIBRARY_META.generatedVerseQuestions.toLocaleString()} exact-reference Qur'an passage questions using Pickthall’s English rendering. The ${LOCKOUT_DAYS}-day lockout prevents a daily question from returning for two full years.</p>`,
+        <p>The library now contains ${QUESTION_LIBRARY_META.reviewedQuestions.toLocaleString()} questions: ${QUESTION_LIBRARY_META.coreQuestions} hand-written questions plus ${QUESTION_LIBRARY_META.generatedVerseQuestions.toLocaleString()} Qur'an verse questions using Quran.com's M.A.S. Abdel Haleem English translation. The ${LOCKOUT_DAYS}-day lockout covers at least two full calendar years for daily questions and fresh weekly bonus questions.</p>`,
     },
     how: {
       kicker: "One clear routine",

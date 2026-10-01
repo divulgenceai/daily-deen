@@ -16,6 +16,7 @@ const webAssets = [
   "rules.js",
   "state-migration.js",
   "styles.css",
+  "verse-content.js",
   "weekly-exam.js",
 ];
 

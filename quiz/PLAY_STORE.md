@@ -8,15 +8,15 @@ The Android project is technically ready for device testing, but it is not yet r
 - Development package ID: `com.zubairmohammed.dailydeenquiz`
 - Minimum Android version: Android 7 / API 24
 - Compile and target SDK: Android 16 / API 36
-- Version code: `1`
-- Version name: `1.0`
-- Native permissions: internet only, for opening the cited HTTPS sources
-- Data model: quiz history and streak data stay in local app storage; there are no accounts, analytics, ads, location, contacts, or tracking SDKs
+- Version code: `8`
+- Version name: `1.7`
+- Native permissions: internet only, for loading Quran.com verse translations and opening cited HTTPS sources
+- Data model: quiz history and streak data stay in local app storage; there are no accounts, analytics, ads, location, contacts, or tracking SDKs. Verse wording is fetched from Quran.com over HTTPS, so verify its network/privacy disclosure before release.
 
 ## Before creating the Play Console app
 
 1. Finalize the public name, icon, developer name, support email, website, and permanent package ID.
-2. Expand the reviewed question library. The current 84-question starter pack proves the product, but the 304-day no-repeat promise requires at least 2,128 independently reviewed daily questions, plus a correction reserve.
+2. Commission a qualified Islamic content review of the 101 authored questions and check the generated verse-reference workflow against the selected Quran.com translation. The bank has capacity for 731 days of daily questions plus weekly bonuses, but capacity is not the same thing as independent religious review.
 3. Have the full question corpus and explanations reviewed by a qualified Islamic reviewer and a separate copy/logic reviewer.
 4. Publish a privacy policy at a stable public HTTPS URL and add a privacy link or text inside the app. Even an app that collects no user data must complete Play's Data safety form and provide a privacy policy.
 5. Prepare the store listing: short and full descriptions, phone and tablet screenshots, feature graphic, app icon, category, content rating, and support contact.

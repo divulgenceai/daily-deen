@@ -1,11 +1,12 @@
 import { readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
+import { QURAN_VERSE_PASSAGES as previousPassages } from "../quran-verse-pack.js";
 
-const TRANSLATION_RESOURCE_ID = 19;
+const TRANSLATION_RESOURCE_ID = 85;
 const TRANSLATIONS_URL = `https://api.quran.com/api/v4/quran/translations/${TRANSLATION_RESOURCE_ID}`;
 const CHAPTERS_URL = "https://api.quran.com/api/v4/chapters?language=en";
-const TARGET_SIZE = 5116;
-const PASSAGE_EXCERPT_WORDS = 12;
+const TARGET_SIZE = 5700;
+const TARGET_EXCERPT_WORDS = 12;
 const outputPath = fileURLToPath(new URL("../quran-verse-pack.js", import.meta.url));
 
 async function readStdin() {
@@ -14,12 +15,12 @@ async function readStdin() {
   return Buffer.concat(chunks).toString("utf8");
 }
 
-async function fetchJson(url, label) {
+async function fetchJson(url) {
   let lastError;
   for (let attempt = 1; attempt <= 3; attempt += 1) {
     try {
       const response = await fetch(url, { signal: AbortSignal.timeout(30_000) });
-      if (!response.ok) throw new Error(`${label} returned HTTP ${response.status}`);
+      if (!response.ok) throw new Error(`Quran.com returned HTTP ${response.status}`);
       return response.json();
     } catch (error) {
       lastError = error;
@@ -29,90 +30,66 @@ async function fetchJson(url, label) {
   throw lastError;
 }
 
-async function fetchSource() {
-  const [translationPayload, chapterPayload] = await Promise.all([
-    fetchJson(TRANSLATIONS_URL, "Quran.com translation source"),
-    fetchJson(CHAPTERS_URL, "Quran.com chapter source"),
-  ]);
-  return {
-    translations: translationPayload.translations,
-    chapters: chapterPayload.chapters,
-  };
+function plainTranslation(html) {
+  return html
+    .replace(/<sup\b[^>]*>[\s\S]*?<\/sup>/gi, "")
+    .replace(/<[^>]*>/g, "")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-function normaliseText(value) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+function normalise(value) {
+  return value.toLowerCase().match(/[\p{L}\p{N}]+/gu)?.join(" ") || "";
 }
 
-function isUsefulPassage(text) {
-  const words = text.trim().split(/\s+/).length;
-  return words >= 5 && words <= 60 && text.length >= 40 && text.length <= 340;
+function suitable(text) {
+  const words = text.split(/\s+/).length;
+  return words >= 5 && words <= 85 && text.length >= 32 && text.length <= 550;
 }
 
-function roundRobinPassages(surahs) {
-  const seenText = new Set();
-  const queues = surahs.map((surah) =>
-    surah.ayahs
-      .filter((ayah) => {
-        const key = normaliseText(ayah.text);
-        if (!isUsefulPassage(ayah.text) || seenText.has(key)) return false;
-        seenText.add(key);
-        return true;
-      })
-      .map((ayah) => [surah.number, ayah.numberInSurah, ayah.text]),
-  );
-
+function roundRobin(versesByChapter) {
   const selected = [];
-  let row = 0;
-  while (selected.length < TARGET_SIZE) {
-    let added = false;
-    for (const queue of queues) {
-      if (queue[row]) {
-        selected.push(queue[row]);
-        added = true;
-        if (selected.length === TARGET_SIZE) return selected;
-      }
+  const longest = Math.max(...versesByChapter.map((chapter) => chapter.length));
+  for (let row = 0; row < longest; row += 1) {
+    for (const chapter of versesByChapter) {
+      if (chapter[row]) selected.push(chapter[row]);
     }
-    if (!added) break;
-    row += 1;
   }
   return selected;
 }
 
-function buildPassageExcerpts(passages) {
-  const passageWords = passages.map(([, , passage]) => passage.trim().split(/\s+/));
-  const windowCounts = new Map();
-  const longestPassage = Math.max(...passageWords.map((words) => words.length));
-
-  for (let length = PASSAGE_EXCERPT_WORDS; length <= longestPassage; length += 1) {
+function uniqueExcerptWindows(verses, selected) {
+  const wordsByVerse = verses.map((verse) => verse.text.split(/\s+/));
+  const maxWords = Math.max(...selected.map((verse) => verse.text.split(/\s+/).length));
+  const windowsByLength = new Map();
+  for (let length = TARGET_EXCERPT_WORDS; length <= maxWords; length += 1) {
     const counts = new Map();
-    for (const words of passageWords) {
+    for (const words of wordsByVerse) {
       if (words.length < length) continue;
-      const passageWindows = new Set();
+      const uniqueInVerse = new Set();
       for (let start = 0; start <= words.length - length; start += 1) {
-        passageWindows.add(normaliseText(words.slice(start, start + length).join(" ")));
+        uniqueInVerse.add(normalise(words.slice(start, start + length).join(" ")));
       }
-      for (const window of passageWindows) counts.set(window, (counts.get(window) || 0) + 1);
+      for (const key of uniqueInVerse) counts.set(key, (counts.get(key) || 0) + 1);
     }
-    windowCounts.set(length, counts);
+    windowsByLength.set(length, counts);
   }
-
-  return passageWords.map((words) => {
-    if (words.length <= PASSAGE_EXCERPT_WORDS) return words.join(" ");
-
-    for (let length = PASSAGE_EXCERPT_WORDS; length <= words.length; length += 1) {
-      const counts = windowCounts.get(length);
+  return selected.map((verse) => {
+    const words = verse.text.split(/\s+/);
+    if (words.length < TARGET_EXCERPT_WORDS && verse.unique) return [0, words.length];
+    for (let length = TARGET_EXCERPT_WORDS; length <= words.length; length += 1) {
+      const counts = windowsByLength.get(length);
       for (let start = 0; start <= words.length - length; start += 1) {
-        const excerptWords = words.slice(start, start + length);
-        if (counts.get(normaliseText(excerptWords.join(" "))) === 1) {
-          const leadingEllipsis = start > 0 ? "…" : "";
-          const trailingEllipsis = start + length < words.length ? "…" : "";
-          return `${leadingEllipsis}${excerptWords.join(" ")}${trailingEllipsis}`;
+        if (counts.get(normalise(words.slice(start, start + length).join(" "))) === 1) {
+          return [start, length];
         }
       }
     }
-
-    return words.join(" ");
+    return [0, 0];
   });
 }
 
@@ -121,56 +98,82 @@ const sourceText = process.argv.includes("--stdin")
   : process.argv[2]
     ? await readFile(process.argv[2], "utf8")
     : null;
-const payload = sourceText ? JSON.parse(sourceText) : await fetchSource();
-const chapters = payload?.chapters;
-const translations = payload?.translations;
-
+const payload = sourceText ? JSON.parse(sourceText) : {
+  translations: (await fetchJson(TRANSLATIONS_URL)).translations,
+  chapters: (await fetchJson(CHAPTERS_URL)).chapters,
+};
+const { chapters, translations } = payload;
 if (!Array.isArray(chapters) || chapters.length !== 114 || !Array.isArray(translations)) {
-  throw new Error("Expected complete Quran.com chapter and Pickthall translation datasets.");
+  throw new Error("Expected Quran.com chapter and M.A.S. Abdel Haleem translation data.");
 }
-
 const expectedVerseCount = chapters.reduce((total, chapter) => total + chapter.verses_count, 0);
 if (translations.length !== expectedVerseCount || translations.some((verse) => verse.resource_id !== TRANSLATION_RESOURCE_ID)) {
-  throw new Error(`Expected ${expectedVerseCount} verses from Quran.com translation resource ${TRANSLATION_RESOURCE_ID}.`);
+  throw new Error(`Expected ${expectedVerseCount} Quran.com translation verses from resource ${TRANSLATION_RESOURCE_ID}.`);
 }
 
-let translationCursor = 0;
-const surahs = chapters.map((chapter) => {
-  const chapterTranslations = translations.slice(translationCursor, translationCursor + chapter.verses_count);
-  translationCursor += chapter.verses_count;
-  return {
-    number: chapter.id,
-    englishName: chapter.name_simple,
-    ayahs: chapterTranslations.map((verse, index) => ({
-      numberInSurah: index + 1,
-      text: verse.text,
-    })),
-  };
+let cursor = 0;
+const versesByChapter = chapters.map((chapter) => {
+  const verses = translations.slice(cursor, cursor + chapter.verses_count).map((translation, index) => ({
+    surah: chapter.id,
+    ayah: index + 1,
+    text: plainTranslation(translation.text),
+  }));
+  cursor += chapter.verses_count;
+  return verses;
 });
-
-const passages = roundRobinPassages(surahs);
-if (passages.length !== TARGET_SIZE) {
-  throw new Error(`Expected ${TARGET_SIZE} suitable unique passages, found ${passages.length}.`);
+const allVerses = versesByChapter.flat();
+const byKey = new Map(allVerses.map((verse) => [`${verse.surah}:${verse.ayah}`, verse]));
+// The first 5,116 IDs shipped in v1.6; keep them available for saved sessions.
+const priorKeys = [...new Set(previousPassages.slice(0, 5116).map(([surah, ayah]) => `${surah}:${ayah}`))];
+const selected = priorKeys.map((key) => byKey.get(key)).filter(Boolean);
+const selectedKeys = new Set(priorKeys);
+const usedText = new Set();
+let active = 0;
+for (const verse of selected) {
+  const key = normalise(verse.text);
+  verse.unique = Boolean(key) && !usedText.has(key);
+  if (verse.unique) {
+    usedText.add(key);
+    active += 1;
+  }
 }
-const passageExcerpts = buildPassageExcerpts(passages);
-const passagesWithExcerpts = passages.map((passage, index) => [...passage, passageExcerpts[index]]);
-const maxExcerptWords = Math.max(...passageExcerpts.map((excerpt) => excerpt.replaceAll("…", "").trim().split(/\s+/).length));
+for (const verse of roundRobin(versesByChapter)) {
+  if (active >= TARGET_SIZE) break;
+  const key = `${verse.surah}:${verse.ayah}`;
+  const textKey = normalise(verse.text);
+  if (selectedKeys.has(key) || !suitable(verse.text) || usedText.has(textKey)) continue;
+  verse.unique = true;
+  selected.push(verse);
+  selectedKeys.add(key);
+  usedText.add(textKey);
+  active += 1;
+}
+if (active !== TARGET_SIZE) throw new Error(`Needed ${TARGET_SIZE} distinct verses; found ${active}.`);
 
-const surahNames = surahs.map((surah) => surah.englishName);
-const generated = `// Generated by scripts/generate-quran-pack.mjs. Do not edit by hand.\n` +
-  `// English rendering: Mohammed Marmaduke Pickthall. References link to Quran.com.\n\n` +
+const excerptWindows = uniqueExcerptWindows(allVerses, selected);
+const entries = selected.map((verse, index) => {
+  const [start, length] = excerptWindows[index];
+  return [verse.surah, verse.ayah, start, length, verse.unique && length > 0 ? 1 : 0];
+});
+const activeEntries = entries.filter((entry) => entry[4]);
+const maxExcerptWords = Math.max(...activeEntries.map((entry) => entry[3]));
+if (activeEntries.length < 5600 || maxExcerptWords > 30) {
+  throw new Error(`Only ${activeEntries.length} short, unique excerpts were found; longest was ${maxExcerptWords} words.`);
+}
+
+const generated = `// Quran.com verse references and excerpt positions only. Translation text is fetched when shown.\n` +
+  `// Generated by scripts/generate-quran-pack.mjs; do not edit by hand.\n\n` +
   `export const QURAN_VERSE_PACK_META = ${JSON.stringify({
-    generatedQuestions: passages.length,
-    translation: "M. Pickthall",
-    edition: "quran.en.pickthall",
+    generatedQuestions: activeEntries.length,
+    legacyReferences: entries.length - activeEntries.length,
+    translation: "M.A.S. Abdel Haleem",
     translationResourceId: TRANSLATION_RESOURCE_ID,
     source: TRANSLATIONS_URL,
     chaptersSource: CHAPTERS_URL,
-    targetExcerptWords: PASSAGE_EXCERPT_WORDS,
+    targetExcerptWords: TARGET_EXCERPT_WORDS,
     maxExcerptWords,
   }, null, 2)};\n\n` +
-  `export const SURAH_NAMES = ${JSON.stringify(surahNames, null, 2)};\n\n` +
-  `export const QURAN_VERSE_PASSAGES = ${JSON.stringify(passagesWithExcerpts)};\n`;
-
+  `export const SURAH_NAMES = ${JSON.stringify(chapters.map((chapter) => chapter.name_simple))};\n\n` +
+  `export const QURAN_VERSE_PASSAGES = ${JSON.stringify(entries)};\n`;
 await writeFile(outputPath, generated, "utf8");
-console.log(`Generated ${passages.length} unique Qur'an passage questions at ${outputPath}`);
+console.log(`Generated ${activeEntries.length} active Quran.com references (${entries.length - activeEntries.length} legacy); longest excerpt: ${maxExcerptWords} words.`);

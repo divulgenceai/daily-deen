@@ -1,7 +1,8 @@
 export const DAILY_SIZE = 7;
 export const WEEKLY_BONUS_SIZE = 5;
 export const WEEKLY_PASS_RATIO = 0.7;
-export const LOCKOUT_DAYS = 730;
+// Covers two calendar years even when the interval includes a leap day.
+export const LOCKOUT_DAYS = 731;
 
 export function weeklyExamPassScore(questionCount) {
   if (!Number.isFinite(questionCount) || questionCount < 1) return 0;

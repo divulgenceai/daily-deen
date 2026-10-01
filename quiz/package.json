@@ -1,6 +1,6 @@
 {
   "name": "daily-deen-quiz-web",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "android:open": "npm run android:sync && cap open android",
     "android:apk": "npm run android:sync && cd android && gradlew.bat assembleDebug",
     "android:bundle": "npm run android:sync && cd android && gradlew.bat bundleRelease",
-    "check": "node --check app.js && node --check questions.js && node --check quran-verse-pack.js && node --check daily-selection.js && node --check state-migration.js && node --check rules.js && node --check weekly-exam.js && node --check server.mjs && node --check scripts/build-web.mjs && node --check scripts/generate-quran-pack.mjs && node scripts/validate-content.mjs"
+    "check": "node --check app.js && node --check questions.js && node --check quran-verse-pack.js && node --check verse-content.js && node --check daily-selection.js && node --check state-migration.js && node --check rules.js && node --check weekly-exam.js && node --check server.mjs && node --check scripts/build-web.mjs && node --check scripts/generate-quran-pack.mjs && node scripts/validate-content.mjs"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.2",

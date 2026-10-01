@@ -26,15 +26,22 @@ export function seededShuffle(items, seedText) {
 
 export function selectDailyQuestionIds({ questions, topics, recentIds, todayKey, dailySize }) {
   const selected = [];
+  const dayOrdinal = Math.floor(Date.parse(`${todayKey}T00:00:00Z`) / 86_400_000);
+  const bukhariQuestions = questions.filter((question) => question.id.startsWith("bukhari-") && !recentIds.has(question.id));
+  if (Number.isFinite(dayOrdinal) && dayOrdinal % 42 === 0 && bukhariQuestions.length) {
+    selected.push(bukhariQuestions[hashString(`${todayKey}:bukhari`) % bukhariQuestions.length]);
+  }
+  const regularQuestions = questions.filter((question) => !question.id.startsWith("bukhari-"));
   for (const topic of topics) {
-    const candidates = questions.filter((question) => question.topic === topic && !recentIds.has(question.id));
+    if (selected.length >= dailySize) break;
+    const candidates = regularQuestions.filter((question) => question.topic === topic && !recentIds.has(question.id));
     if (!candidates.length) continue;
     const index = hashString(`${todayKey}:${topic}`) % candidates.length;
     selected.push(candidates[index]);
   }
 
   if (selected.length < dailySize) {
-    const remaining = questions.filter(
+    const remaining = regularQuestions.filter(
       (question) => !recentIds.has(question.id) && !selected.some((picked) => picked.id === question.id),
     );
     selected.push(...seededShuffle(remaining, `${todayKey}:fill`).slice(0, dailySize - selected.length));

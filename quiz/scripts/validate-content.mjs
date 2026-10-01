@@ -1,113 +1,126 @@
-import { selectDailyQuestionIds } from "../daily-selection.js";
-import { QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "../questions.js";
+import { selectDailyQuestionIds, seededShuffle } from "../daily-selection.js";
+import { ACTIVE_QUESTIONS, QUESTION_LIBRARY_META, QUESTIONS, TOPICS } from "../questions.js";
 import { QURAN_VERSE_PACK_META, QURAN_VERSE_PASSAGES } from "../quran-verse-pack.js";
-import { DAILY_SIZE, LOCKOUT_DAYS } from "../rules.js";
-import { migrateQuestionContent } from "../state-migration.js";
+import { DAILY_SIZE, LOCKOUT_DAYS, WEEKLY_BONUS_SIZE } from "../rules.js";
+import { migrateQuestionContent, reserveHistoryIds } from "../state-migration.js";
+import { buildWeeklyExamQuestionIds } from "../weekly-exam.js";
 
-const requiredQuestions = DAILY_SIZE * LOCKOUT_DAYS;
-if (QUESTIONS.length < requiredQuestions) {
-  throw new Error(`Need at least ${requiredQuestions} questions for ${LOCKOUT_DAYS} no-repeat days; found ${QUESTIONS.length}.`);
+const weeklyExams = Math.ceil(LOCKOUT_DAYS / 7);
+const requiredQuestions = DAILY_SIZE * LOCKOUT_DAYS + WEEKLY_BONUS_SIZE * weeklyExams;
+if (ACTIVE_QUESTIONS.length < requiredQuestions) {
+  throw new Error(`Need ${requiredQuestions} active questions for two years including weekly bonus questions; found ${ACTIVE_QUESTIONS.length}.`);
 }
 
 const ids = new Set();
 const prompts = new Set();
-const passageExcerpts = new Map(QURAN_VERSE_PASSAGES.map(([surah, ayah, , excerpt]) => [`${surah}:${ayah}`, excerpt]));
 for (const question of QUESTIONS) {
-  if (ids.has(question.id)) throw new Error(`Duplicate question id: ${question.id}`);
+  if (ids.has(question.id)) throw new Error(`Duplicate question ID: ${question.id}`);
   ids.add(question.id);
-
-  const promptKey = question.prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-  if (prompts.has(promptKey)) throw new Error(`Duplicate question prompt: ${question.id}`);
-  prompts.add(promptKey);
-
-  if (!TOPICS.includes(question.topic)) throw new Error(`Unknown topic on ${question.id}: ${question.topic}`);
+  if (!question.verse) {
+    const key = question.prompt.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+    if (prompts.has(key)) throw new Error(`Duplicate authored prompt: ${question.id}`);
+    prompts.add(key);
+  }
+  if (!TOPICS.includes(question.topic)) throw new Error(`Unknown topic: ${question.id}`);
   if (!Array.isArray(question.choices) || question.choices.length !== 4 || new Set(question.choices).size !== 4) {
-    throw new Error(`Question ${question.id} must have four unique choices.`);
+    throw new Error(`Question ${question.id} needs four distinct choices.`);
   }
-  if (!question.choices.includes(question.answer)) throw new Error(`Question ${question.id} is missing its answer choice.`);
+  if (!question.choices.includes(question.answer)) throw new Error(`Answer missing from choices: ${question.id}`);
   if (!question.explanation || !question.source || !/^https:\/\/(quran\.com|sunnah\.com)\//.test(question.url)) {
-    throw new Error(`Question ${question.id} is missing a supported direct source.`);
+    throw new Error(`Missing supported direct source: ${question.id}`);
   }
-
   if (question.url.startsWith("https://sunnah.com/") && !/^https:\/\/sunnah\.com\/(bukhari|muslim):[0-9]+[a-z]?$/.test(question.url)) {
-    throw new Error(`Question ${question.id} must use a Sahih al-Bukhari or Sahih Muslim reference on Sunnah.com.`);
+    throw new Error(`Unsupported hadith reference: ${question.id}`);
   }
-
-  if (question.id.startsWith("quran-passage-")) {
-    const [, , surah, ayah] = question.id.split("-");
+  if (question.verse) {
+    const { surah, ayah, start, length } = question.verse;
     if (question.source !== `Qur'an ${surah}:${ayah}` || question.url !== `https://quran.com/${surah}/${ayah}`) {
-      throw new Error(`Passage reference mismatch on ${question.id}.`);
+      throw new Error(`Passage reference mismatch: ${question.id}`);
     }
-    const excerpt = passageExcerpts.get(`${surah}:${ayah}`);
-    if (question.prompt !== `Which surah is this excerpt from? “${excerpt}”`) {
-      throw new Error(`Passage excerpt mismatch on ${question.id}.`);
-    }
-    const excerptWords = excerpt.replaceAll("…", "").trim().split(/\s+/).length;
-    if (excerptWords > QURAN_VERSE_PACK_META.maxExcerptWords) {
-      throw new Error(`Passage excerpt is too long on ${question.id}: ${excerptWords} words.`);
+    if (question.active && (length < 1 || length > QURAN_VERSE_PACK_META.maxExcerptWords || start < 0)) {
+      throw new Error(`Bad excerpt metadata: ${question.id}`);
     }
   }
 }
 
+if (QURAN_VERSE_PACK_META.translationResourceId !== 85 || QURAN_VERSE_PACK_META.translation !== "M.A.S. Abdel Haleem") {
+  throw new Error("The passage pack must use the Quran.com M.A.S. Abdel Haleem translation resource.");
+}
+if (QURAN_VERSE_PASSAGES.filter((entry) => entry[4]).length !== QURAN_VERSE_PACK_META.generatedQuestions) {
+  throw new Error("Passage-pack active count is inconsistent.");
+}
+for (const url of [QURAN_VERSE_PACK_META.source, QURAN_VERSE_PACK_META.chaptersSource]) {
+  if (new URL(url).hostname !== "api.quran.com") throw new Error(`Unexpected Quran source: ${url}`);
+}
+
+const startDate = new Date("2026-01-05T12:00:00Z"); // Monday
 const history = [];
 const lastSeen = new Map();
-for (let day = 0; day < LOCKOUT_DAYS + 45; day += 1) {
+const dailySessions = new Map();
+let bonusCount = 0;
+for (let day = 0; day < LOCKOUT_DAYS; day += 1) {
+  const date = new Date(startDate.getTime() + day * 86_400_000).toISOString().slice(0, 10);
   const recentIds = new Set(history.filter((entry) => day - entry.day < LOCKOUT_DAYS).map((entry) => entry.id));
   const questionIds = selectDailyQuestionIds({
-    questions: QUESTIONS,
+    questions: ACTIVE_QUESTIONS,
     topics: TOPICS,
     recentIds,
-    todayKey: `simulation-day-${day}`,
+    todayKey: date,
     dailySize: DAILY_SIZE,
   });
-
   if (questionIds.length !== DAILY_SIZE || new Set(questionIds).size !== DAILY_SIZE) {
-    throw new Error(`Selector returned an incomplete or duplicate set on simulated day ${day + 1}.`);
+    throw new Error(`Daily set incomplete on ${date}.`);
   }
-
   for (const id of questionIds) {
-    const previousDay = lastSeen.get(id);
-    if (previousDay !== undefined && day - previousDay < LOCKOUT_DAYS) {
-      throw new Error(`Question ${id} repeated after ${day - previousDay} days.`);
-    }
+    if (lastSeen.has(id) && day - lastSeen.get(id) < LOCKOUT_DAYS) throw new Error(`Question repeated within two years: ${id}`);
     lastSeen.set(id, day);
     history.push({ id, day });
   }
-}
+  dailySessions.set(date, { questionIds, answers: {} });
 
-if (QUESTION_LIBRARY_META.reviewedQuestions !== QUESTIONS.length || QUESTION_LIBRARY_META.lockoutDays !== LOCKOUT_DAYS) {
-  throw new Error("Question library metadata does not match the runtime rules.");
-}
-
-for (const sourceUrl of [QURAN_VERSE_PACK_META.source, QURAN_VERSE_PACK_META.chaptersSource]) {
-  if (new URL(sourceUrl).hostname !== "api.quran.com") {
-    throw new Error(`Generated Qur'an content must come from Quran.com; found ${sourceUrl}.`);
+  if (day % 7 === 6) {
+    const weekKey = new Date(startDate.getTime() + (day - 6) * 86_400_000).toISOString().slice(0, 10);
+    const weekdays = Array.from({ length: 6 }, (_, offset) => {
+      const key = new Date(startDate.getTime() + (day - 6 + offset) * 86_400_000).toISOString().slice(0, 10);
+      return dailySessions.get(key);
+    });
+    const learnedIds = new Set(weekdays.flatMap((session) => session.questionIds));
+    const idsForExam = buildWeeklyExamQuestionIds({
+      weekKey,
+      dailySessions: weekdays,
+      allQuestionIds: ACTIVE_QUESTIONS.map((question) => question.id),
+      recentIds: new Set(history.filter((entry) => day - entry.day < LOCKOUT_DAYS).map((entry) => entry.id)),
+      shuffle: seededShuffle,
+    });
+    if (idsForExam.length !== 6 * DAILY_SIZE + WEEKLY_BONUS_SIZE) throw new Error(`Weekly exam incomplete on ${date}.`);
+    for (const id of idsForExam.filter((item) => !learnedIds.has(item))) {
+      if (lastSeen.has(id) && day - lastSeen.get(id) < LOCKOUT_DAYS) throw new Error(`Weekly bonus repeated: ${id}`);
+      lastSeen.set(id, day);
+      history.push({ id, day });
+      bonusCount += 1;
+    }
   }
 }
-if (
-  QURAN_VERSE_PACK_META.translationResourceId !== 19 ||
-  QURAN_VERSE_PACK_META.generatedQuestions !== 5116 ||
-  QURAN_VERSE_PACK_META.targetExcerptWords !== 12 ||
-  QURAN_VERSE_PACK_META.maxExcerptWords > 19
-) {
-  throw new Error("Quran.com passage-pack metadata does not match the reviewed Pickthall resource.");
-}
 
-const exhaustedV2State = {
-  contentVersion: 2,
-  daily: { "2026-08-18": { questionIds: [], completedAt: null } },
-  history: QUESTIONS.slice(0, 2300).map((question) => ({ date: "2026-08-17", questionId: question.id })),
-  streak: { count: 27, lastCompletedDate: "2026-08-17", pendingExam: null },
-};
-const migration = migrateQuestionContent(exhaustedV2State, {
+const migrationHistory = [{ date: "2026-08-16", questionId: "foundations-01" }];
+reserveHistoryIds(migrationHistory, "2026-08-17", ["quran-01"]);
+const migration = migrateQuestionContent({
   contentVersion: 3,
+  daily: { "2026-08-18": { questionIds: ["quran-02"], completedAt: null } },
+  weeklyExams: {},
+  history: migrationHistory,
+  streak: { count: 27 },
+}, {
+  contentVersion: 4,
   todayKey: "2026-08-18",
   dailySize: DAILY_SIZE,
+  activeQuestionIds: new Set(ACTIVE_QUESTIONS.map((question) => question.id)),
 });
-if (!migration.refreshed || migration.state.history.length || migration.state.daily["2026-08-18"] || migration.state.streak.count !== 27) {
-  throw new Error("The exhausted v2 state did not refresh while preserving the streak.");
+if (!migration.refreshed || migration.state.history.length !== 3 || migration.state.daily["2026-08-18"] || migration.state.streak.count !== 27) {
+  throw new Error("Migration must retain used IDs and streak while replacing an incomplete quiz.");
+}
+if (QUESTION_LIBRARY_META.reviewedQuestions !== ACTIVE_QUESTIONS.length || QUESTION_LIBRARY_META.lockoutDays !== LOCKOUT_DAYS) {
+  throw new Error("Question library metadata does not match active content.");
 }
 
-console.log(
-  `Validated ${QUESTIONS.length.toLocaleString()} unique source-linked questions, the v2 reset, and ${LOCKOUT_DAYS + 45} simulated days with a ${LOCKOUT_DAYS}-day repeat lockout.`,
-);
+console.log(`Validated ${ACTIVE_QUESTIONS.length.toLocaleString()} active questions over ${LOCKOUT_DAYS} days, including ${bonusCount} unique weekly bonus uses, with history-preserving migration.`);

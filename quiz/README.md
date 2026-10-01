@@ -52,14 +52,14 @@ The debug APK is created at `android/app/build/outputs/apk/debug/app-debug.apk`.
 - Failing the weekly review resets the streak immediately.
 - Skipping Sunday leaves the review open through Monday; expiry resets the streak.
 - The weekly review includes all of that week's weekday material and presents previously missed questions first.
-- Daily-question history is stored locally and the selector enforces a 730-day repeat lockout.
-- The v3 content migration clears the earlier question history once, keeps the user’s streak and completed results, and immediately prepares a fresh quiz when the old pool was empty.
+- Every daily question and fresh weekly bonus question is reserved in local history as soon as its quiz is created, even if the quiz is not finished. The selector enforces a 731-day lockout (at least two calendar years, including a leap day) on those IDs. Weekly review questions intentionally repeat material from the preceding Monday–Saturday.
+- The v4 content migration preserves earlier question history and saved quiz IDs, keeps the streak and completed results, and replaces only an incomplete daily quiz whose questions are no longer active.
 
 ## Accuracy and content capacity
 
-The library contains 5,200 source-linked questions: 84 hand-written fundamentals and 5,116 Qur'an passage-recognition questions. Two years of seven unique daily questions requires 5,110 questions, so the library includes a 90-question reserve while enforcing a 730-day lockout.
+The library contains 5,783 active source-linked questions: 101 short authored questions, including 17 new Sahih al-Bukhari questions, and 5,682 Qur'an verse-recognition questions. A 731-day span needs 5,117 daily questions plus up to 525 fresh weekly bonus questions; this bank has 141 more than that conservative maximum. The automated check simulates 731 days with every weekly exam and rejects any repeat inside the lockout.
 
-The passage pack uses the M. Pickthall English rendering from Quran.com's translation resource 19, together with Quran.com's chapter metadata. Each question shows a short, exact excerpt, identifies an exact surah and ayah, and links directly to that reference on Quran.com. Excerpts target 12 words and extend only when needed to keep the answer unambiguous; the answer explanation identifies the wording as an English rendering rather than the Arabic Qur'an itself. Hadith questions are limited to Sahih al-Bukhari and Sahih Muslim references on Sunnah.com.
+The verse questions use Quran.com's M.A.S. Abdel Haleem translation resource 85 for plainer English. Each question shows a short excerpt and links to the exact ayah for context. The shipped pack stores verse references and excerpt positions, not translation text; the app fetches the English wording when a question appears. An internet connection is therefore needed for verse questions on both web and Android. Hadith questions link only to Sahih al-Bukhari and Sahih Muslim on Sunnah.com. The generated verse questions are reference/translation checks, not individually reviewed interpretive claims; the authored hadith and Qur'an facts should still receive qualified Islamic review before public release.
 
 Regenerate and validate the committed passage pack with:
 
@@ -68,7 +68,7 @@ node scripts/generate-quran-pack.mjs
 npm run check
 ```
 
-The generator rejects overly short, overly long, and duplicate passage text before selecting a broad round-robin sample across the surahs. The app never invents a fallback question or silently reuses a daily item inside the 730-day lockout.
+The generator rejects overly short, overly long, and duplicate passage text before selecting a broad sample across the surahs. Saved data is local to each browser or APK installation: clearing app data or using a second device without sync can restart the history. Cross-device non-repeat requires a future account/sync system.
 
 ## Design references
 
