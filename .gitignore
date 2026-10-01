@@ -7,3 +7,5 @@ Thumbs.db
 android/key.properties
 android/*.jks
 android/*.keystore
+quiz/.playwright-cli/
+quiz/output/

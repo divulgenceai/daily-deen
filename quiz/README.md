@@ -39,6 +39,8 @@ npm run android:open
 
 The debug APK is created at `android/app/build/outputs/apk/debug/app-debug.apk`. Use `npm run android:bundle` to build a release Android App Bundle. A Play-uploadable release must also be signed with a protected upload key; see `PLAY_STORE.md`.
 
+The GitHub debug-APK workflow is a fallback when the local Windows Java build environment cannot compile. Its downloaded artifact is signed with a temporary cloud debug key. If replacing a version installed from this computer, re-sign that APK with this computer's existing Android debug keystore before installing; otherwise Android rejects the update.
+
 ## Product rules implemented
 
 - Seven multiple-choice questions every local calendar day.

@@ -2,7 +2,7 @@ name: Quiz Android debug APK
 
 on:
   push:
-    branches: [agent/daily-deen-quiz]
+    branches: [main, agent/daily-deen-quiz]
     paths:
       - .github/workflows/quiz-apk.yml
       - quiz/**
