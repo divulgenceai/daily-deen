@@ -19,12 +19,14 @@ jobs:
           node-version: 22
           cache: npm
           cache-dependency-path: quiz/package-lock.json
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'
           cache: gradle
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
+        with:
+          packages: platform-tools
       - name: Install and verify web app
         run: |
           npm ci --prefix quiz
