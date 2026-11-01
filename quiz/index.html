@@ -13,12 +13,10 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Daily Deen Quiz" />
     <title>Daily Deen Quiz</title>
+    <base href="/quiz/" />
     <script>
-      // Vercel serves /quiz/ at /quiz, so keep relative assets inside this folder.
-      if (location.pathname === "/quiz" || location.pathname.startsWith("/quiz/")) {
-        const base = document.createElement("base");
-        base.href = "/quiz/";
-        document.head.append(base);
+      if (location.pathname !== "/quiz" && !location.pathname.startsWith("/quiz/")) {
+        document.querySelector("base").href = new URL(".", location.href).href;
       }
     </script>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />

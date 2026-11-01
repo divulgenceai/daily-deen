@@ -24,7 +24,8 @@ const mimeTypes = {
 
 function safeFilePath(urlPath) {
   const decoded = decodeURIComponent(urlPath);
-  const requested = decoded === "/" ? "index.html" : decoded.replace(/^\/+/, "");
+  const sitePath = decoded.replace(/^\/quiz(?=\/|$)/, "") || "/";
+  const requested = sitePath === "/" ? "index.html" : sitePath.replace(/^\/+/, "");
   const candidate = resolve(root, requested);
   const fromRoot = relative(root, candidate);
   if (fromRoot.startsWith("..") || isAbsolute(fromRoot)) return null;

@@ -1,4 +1,4 @@
-import { copyFile, mkdir } from "node:fs/promises";
+import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
 import { basename, dirname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { build } from "esbuild";
@@ -46,8 +46,17 @@ await build({
   minify: true,
   legalComments: "inline",
 });
-await Promise.all(
-  webAssets.map((asset) => copyFile(resolve(projectRoot, asset), resolve(outputDirectory, basename(asset)))),
-);
+await Promise.all(webAssets.map(async (asset) => {
+  const source = resolve(projectRoot, asset);
+  const destination = resolve(outputDirectory, basename(asset));
+  if (!asset.endsWith(".html")) {
+    await copyFile(source, destination);
+    return;
+  }
+  const html = await readFile(source, "utf8");
+  const deploymentBase = '<base href="/quiz/" />';
+  if (!html.includes(deploymentBase)) throw new Error(`Missing deployment base in ${asset}`);
+  await writeFile(destination, html.replace(deploymentBase, '<base href="./" />'));
+}));
 
 console.log(`Copied ${webAssets.length} web assets to ${outputDirectory}`);

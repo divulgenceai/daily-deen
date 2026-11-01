@@ -6,12 +6,10 @@
     <meta name="description" content="A source-linked overview of how to pray salah, with men's and women's preparation guidance." />
     <meta name="theme-color" content="#000000" />
     <title>Prayer Guide | Daily Deen Quiz</title>
+    <base href="/quiz/" />
     <script>
-      // Vercel serves /quiz/ at /quiz, so keep relative assets inside this folder.
-      if (location.pathname === "/quiz" || location.pathname.startsWith("/quiz/")) {
-        const base = document.createElement("base");
-        base.href = "/quiz/";
-        document.head.append(base);
+      if (location.pathname !== "/quiz" && !location.pathname.startsWith("/quiz/")) {
+        document.querySelector("base").href = new URL(".", location.href).href;
       }
     </script>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />

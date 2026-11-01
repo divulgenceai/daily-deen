@@ -6,12 +6,10 @@
     <meta name="description" content="Find the approximate Qibla direction with your phone compass." />
     <meta name="theme-color" content="#000000" />
     <title>Qibla | Daily Deen Quiz</title>
+    <base href="/quiz/" />
     <script>
-      // Vercel serves /quiz/ at /quiz, so keep relative assets inside this folder.
-      if (location.pathname === "/quiz" || location.pathname.startsWith("/quiz/")) {
-        const base = document.createElement("base");
-        base.href = "/quiz/";
-        document.head.append(base);
+      if (location.pathname !== "/quiz" && !location.pathname.startsWith("/quiz/")) {
+        document.querySelector("base").href = new URL(".", location.href).href;
       }
     </script>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
