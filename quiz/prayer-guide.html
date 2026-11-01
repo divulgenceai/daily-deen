@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="A source-linked overview of how to pray salah, with men's and women's preparation guidance." />
+    <meta name="theme-color" content="#000000" />
+    <title>Prayer Guide | Daily Deen Quiz</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="stylesheet" href="feature-pages.css?v=2" />
+  </head>
+  <body class="feature-page guide-page">
+    <div class="ambient" aria-hidden="true"></div>
+    <header class="site-header feature-header">
+      <a class="brand" href="./" aria-label="Daily Deen Quiz home">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6 40 23 58 32 40 41 32 58 24 41 6 32 24 23Z" /><path d="M32 16 37 27 48 32 37 37 32 48 27 37 16 32 27 27Z" /></svg>
+        <span>Daily Deen Quiz</span>
+      </a>
+    </header>
+    <nav class="page-dock" aria-label="Daily Deen pages">
+      <a href="./"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM9 9h6M9 13h6" /></svg><span>Today</span></a>
+      <a href="qibla.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m10 14 5-5-2 6-3-1Z" /></svg><span>Qibla</span></a>
+      <a href="prayer-guide.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5c2.6-1.2 5.2-1.2 8 0v13c-2.8-1.2-5.4-1.2-8 0zm16 0c-2.6-1.2-5.2-1.2-8 0v13c2.8-1.2 5.4-1.2 8 0z" /></svg><span>Prayer Guide</span></a>
+    </nav>
+    <main class="feature-main guide-main">
+      <div class="feature-intro guide-intro">
+        <span class="feature-kicker">Learn salah</span>
+        <h1>Prayer Guide</h1>
+        <p>A step-by-step overview of preparation, two rak'ahs, and how to continue for the daily obligatory prayers.</p>
+        <p class="overview-note">Educational overview, not an individual fatwa for unusual circumstances. Scholars differ on some details.</p>
+      </div>
+      <section id="guideChoice" class="guide-choice" aria-labelledby="choiceHeading">
+        <h2 id="choiceHeading">Which guide would you like?</h2>
+        <div class="guide-choice-actions">
+          <button type="button" data-guide="men"><span>Men's guide</span><span aria-hidden="true">→</span></button>
+          <button type="button" data-guide="women"><span>Women's guide</span><span aria-hidden="true">→</span></button>
+        </div>
+      </section>
+      <div id="guideExperience" class="guide-experience" hidden>
+        <div class="guide-toolbar">
+          <span id="guidePathLabel"></span>
+          <button id="switchGuide" type="button">Switch guide</button>
+        </div>
+        <div class="guide-layout">
+          <nav id="guideSections" class="guide-sections" aria-label="Prayer guide sections"></nav>
+          <section id="guideContent" class="guide-content" aria-live="polite"></section>
+        </div>
+        <div class="guide-step-actions">
+          <button id="previousGuideSection" type="button">Previous</button>
+          <span id="guideProgress" aria-live="polite"></span>
+          <button id="nextGuideSection" type="button">Next</button>
+        </div>
+      </div>
+    </main>
+    <footer class="site-footer feature-footer"><span>Daily Deen Quiz</span><i aria-hidden="true"></i><span>Read the linked primary sources</span></footer>
+    <script type="module" src="prayer-guide.js?v=2"></script>
+  </body>
+</html>

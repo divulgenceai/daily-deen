@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="description" content="Find the approximate Qibla direction with your phone compass." />
+    <meta name="theme-color" content="#000000" />
+    <title>Qibla | Daily Deen Quiz</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=4" />
+    <link rel="stylesheet" href="feature-pages.css?v=2" />
+  </head>
+  <body class="feature-page qibla-page">
+    <div class="ambient" aria-hidden="true"></div>
+    <header class="site-header feature-header">
+      <a class="brand" href="./" aria-label="Daily Deen Quiz home">
+        <svg class="brand-mark" viewBox="0 0 64 64" aria-hidden="true"><path d="M32 6 40 23 58 32 40 41 32 58 24 41 6 32 24 23Z" /><path d="M32 16 37 27 48 32 37 37 32 48 27 37 16 32 27 27Z" /></svg>
+        <span>Daily Deen Quiz</span>
+      </a>
+    </header>
+    <nav class="page-dock" aria-label="Daily Deen pages">
+      <a href="./"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM9 9h6M9 13h6" /></svg><span>Today</span></a>
+      <a href="qibla.html" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m10 14 5-5-2 6-3-1Z" /></svg><span>Qibla</span></a>
+      <a href="prayer-guide.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5c2.6-1.2 5.2-1.2 8 0v13c-2.8-1.2-5.4-1.2-8 0zm16 0c-2.6-1.2-5.2-1.2-8 0v13c2.8-1.2 5.4-1.2 8 0z" /></svg><span>Prayer Guide</span></a>
+    </nav>
+    <main class="feature-main qibla-main">
+      <div class="feature-intro">
+        <span class="feature-kicker">Direction of prayer</span>
+        <h1>Find Qibla</h1>
+        <p>Use your phone's location and compass to face the Sacred Mosque in Makkah. Your position and compass readings stay on this page.</p>
+        <a class="feature-source" href="https://quran.com/2/144" target="_blank" rel="noopener noreferrer">Why face the Sacred Mosque? <span aria-hidden="true">↗</span></a>
+      </div>
+      <section class="qibla-workspace" aria-label="Live Qibla compass">
+        <div class="compass-frame">
+          <div id="liveCompass" class="live-compass" hidden aria-label="Approximate live Qibla direction">
+            <div id="compassRose" class="compass-rose" aria-hidden="true">
+              <span class="compass-tick north-tick"></span>
+              <span class="compass-tick east-tick"></span>
+              <span class="compass-tick south-tick"></span>
+              <span class="compass-tick west-tick"></span>
+            </div>
+            <div id="qiblaArrow" class="qibla-arrow" aria-hidden="true"><span class="arrow-tip"></span><span class="arrow-tail"></span></div>
+            <span class="compass-center" aria-hidden="true"></span>
+          </div>
+          <div class="compass-idle" aria-hidden="true"><span class="idle-mark">⌖</span></div>
+        </div>
+        <div class="qibla-actions">
+          <p id="qiblaStatus" class="qibla-status" role="status" aria-live="polite">Location and compass access start only when you tap the button.</p>
+          <p id="directionText" class="direction-text" hidden>Approximate Qibla direction</p>
+          <button id="findQibla" class="feature-primary" type="button">Find Qibla</button>
+          <p class="qibla-hint">If the arrow behaves erratically, move the phone in a figure eight and check another reliable Qibla indication.</p>
+          <p class="qibla-hint">Magnetic headings are corrected on this device using <a href="https://www.ncei.noaa.gov/products/world-magnetic-model" target="_blank" rel="noopener noreferrer">NOAA WMM2025</a>.</p>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer feature-footer"><span>Daily Deen Quiz</span><i aria-hidden="true"></i><span>Sources shown with guidance</span></footer>
+    <script type="module" src="qibla.js?v=2"></script>
+  </body>
+</html>

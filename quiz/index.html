@@ -16,6 +16,7 @@
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="manifest" href="manifest.webmanifest" />
     <link rel="stylesheet" href="styles.css?v=3" />
+    <link rel="stylesheet" href="feature-pages.css?v=2" />
   </head>
   <body>
     <div class="ambient" aria-hidden="true"></div>
@@ -42,6 +43,12 @@
         <span><strong id="streakCount">0</strong> day streak</span>
       </button>
     </header>
+
+    <nav class="page-dock" aria-label="Daily Deen pages">
+      <a href="./" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5zM9 9h6M9 13h6" /></svg><span>Today</span></a>
+      <a href="qibla.html"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="m10 14 5-5-2 6-3-1Z" /></svg><span>Qibla</span></a>
+      <a href="prayer-guide.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5c2.6-1.2 5.2-1.2 8 0v13c-2.8-1.2-5.4-1.2-8 0zm16 0c-2.6-1.2-5.2-1.2-8 0v13c2.8-1.2 5.4-1.2 8 0z" /></svg><span>Prayer Guide</span></a>
+    </nav>
 
     <main class="quiz-layout" id="app">
       <aside class="day-rail" aria-label="Today's quiz progress">

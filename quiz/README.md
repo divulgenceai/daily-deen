@@ -1,6 +1,6 @@
 # Daily Deen Quiz — web and Android app
 
-This folder is a separate, dependency-free web app so the existing DailyDeen reading app remains untouched. `Daily Deen Quiz` is a working title and can be changed before launch.
+This folder is a separate web app so the existing DailyDeen reading app remains untouched. `Daily Deen Quiz` is a working title and can be changed before launch.
 
 ## Run it
 
@@ -14,11 +14,17 @@ The server prints two kinds of links:
 - Open `http://localhost:4180` on this computer.
 - Open the printed `Device` URL on a phone or tablet connected to the same Wi-Fi network.
 
+The Qibla compass requires a secure context and a phone with an absolute orientation sensor. A plain HTTP Wi-Fi preview is useful for layout checks but cannot grant compass/location access on most phones; use the deployed HTTPS site for live testing. Location and sensor samples are kept only in memory while the Qibla page is active.
+
+`Today`, `Qibla`, and `Prayer Guide` are separate pages. The guide asks for a men's or women's path each visit and does not save that choice. Its religious guidance links directly to Qur'an.com and Sunnah.com.
+
+The Qibla direction uses a great-circle bearing to the Kaaba. Apple's magnetic heading is corrected locally using the bundled NOAA WMM2025 coefficients through `geomagnetism` (Apache-2.0, license in `geomagnetism-LICENSE.txt`). The magnetic path fails closed after the bundled model expires in November 2029; update and retest the model before then. Run `npm run check` and `npm run build:web` after changing Qibla or guide assets so `www/` and the generated `qibla-magnetic.js` stay current. A real phone test is still required before claiming live sensor accuracy.
+
 The preview binds to `0.0.0.0` on port `4180`. If another device cannot connect, allow Node.js through Windows Firewall for private networks.
 
-When this branch is merged into the main repository, the production web app is available at:
+The production web app is available at:
 
-`https://daily-deen-seven.vercel.app/quiz/`
+`https://dailydeen.zubibair.com/quiz/`
 
 The browser version uses the same quiz source, animations, explanations, streak rules, and weekly-exam logic as the Android app.
 
